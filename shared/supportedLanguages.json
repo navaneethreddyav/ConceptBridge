@@ -1,0 +1,20 @@
+{
+  "supportedLanguages": [
+    "English",
+    "Hindi",
+    "Telugu",
+    "Tamil",
+    "Gujarati",
+    "Marathi",
+    "Bengali"
+  ],
+  "languageLocaleMap": {
+    "English": "en",
+    "Hindi": "hi",
+    "Telugu": "te",
+    "Tamil": "ta",
+    "Gujarati": "gu",
+    "Marathi": "mr",
+    "Bengali": "bn"
+  }
+}

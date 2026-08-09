@@ -23,7 +23,9 @@ class ExplanationValidator {
             keyPoints: Array.isArray(data.keyPoints) ? data.keyPoints : [],
             commonMistakes: Array.isArray(data.commonMistakes) ? data.commonMistakes : [],
             relatedConcepts: Array.isArray(data.relatedConcepts) ? data.relatedConcepts : [],
-            difficulty: data.difficulty || "Beginner"
+            difficulty: data.difficulty || "Beginner",
+            // Optional and best-effort: passed through as-is for visualService to validate.
+            visualSpec: (data.visualSpec && typeof data.visualSpec === 'object') ? data.visualSpec : null
         };
     }
 }

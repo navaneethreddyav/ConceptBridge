@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const pdfService = require('./pdfService');
 
 /**
@@ -14,9 +15,15 @@ const processDocument = async (file) => {
         .replace(/\n{3,}/g, '\n\n')
         .trim();
 
+    // Content-derived ID (not a timestamp): re-uploading the same PDF — e.g. after a
+    // page reload wipes client state — reproduces the same ID, so the concept-detection
+    // and explanation caches (both keyed by documentId) transparently hit instead of
+    // re-spending free-tier Gemini quota on a document already analyzed this session.
+    const contentHash = crypto.createHash('sha256').update(cleanedText).digest('hex').slice(0, 16);
+
     // Create the structured document object for future compatibility
     const document = {
-        id: `doc_${Date.now()}`,
+        id: `doc_${contentHash}`,
         filename: file.originalname,
         metadata: {
             pageCount: pageCount,

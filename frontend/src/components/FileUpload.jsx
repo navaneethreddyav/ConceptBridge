@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { UploadCloud, File, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
+import { API_BASE_URL } from '../config/api';
 
 const FileUpload = ({ onUploadSuccess }) => {
     const [isDragging, setIsDragging] = useState(false);
@@ -66,7 +67,7 @@ const FileUpload = ({ onUploadSuccess }) => {
                 });
             }, 200);
 
-            const response = await fetch('http://localhost:5000/api/upload', {
+            const response = await fetch(`${API_BASE_URL}/api/upload`, {
                 method: 'POST',
                 body: formData,
             });
@@ -95,9 +96,9 @@ const FileUpload = ({ onUploadSuccess }) => {
             <div
                 className={clsx(
                     "relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl transition-all duration-300",
-                    isDragging ? "border-primary bg-primary/10 scale-105" : "border-surface hover:border-primary/50 hover:bg-surface/30",
+                    isDragging ? "border-primary bg-primary/10 scale-105" : "border-white/10 hover:border-primary/50 hover:bg-white/5",
                     status === 'error' && "border-red-500/50 bg-red-500/5",
-                    status === 'success' && "border-secondary/50 bg-secondary/5"
+                    status === 'success' && "border-primary/50"
                 )}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -114,7 +115,7 @@ const FileUpload = ({ onUploadSuccess }) => {
 
                 {status === 'idle' && (
                     <>
-                        <div className="p-4 bg-surface rounded-full mb-4">
+                        <div className="p-4 bg-white/5 rounded-full mb-4">
                             <UploadCloud className="w-8 h-8 text-primary" />
                         </div>
                         <p className="text-lg font-medium text-text-main">
@@ -132,7 +133,7 @@ const FileUpload = ({ onUploadSuccess }) => {
                         <p className="text-lg font-medium text-text-main mb-4">
                             Extracting concepts...
                         </p>
-                        <div className="w-full h-2 bg-surface rounded-full overflow-hidden">
+                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
                             <div 
                                 className="h-full bg-primary transition-all duration-300 rounded-full"
                                 style={{ width: `${progress}%` }}
@@ -163,10 +164,10 @@ const FileUpload = ({ onUploadSuccess }) => {
 
                 {status === 'success' && (
                     <>
-                        <div className="p-4 bg-secondary/10 rounded-full mb-4">
-                            <CheckCircle2 className="w-8 h-8 text-secondary" />
+                        <div className="p-4 border border-primary/30 rounded-full mb-4">
+                            <CheckCircle2 className="w-8 h-8 text-primary" />
                         </div>
-                        <p className="text-lg font-medium text-secondary">
+                        <p className="text-lg font-medium text-primary">
                             Upload Successful
                         </p>
                         <p className="text-sm text-text-muted mt-2">

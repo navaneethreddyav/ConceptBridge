@@ -1,12 +1,11 @@
 @import "tailwindcss";
+@import "react-pdf/dist/Page/TextLayer.css";
 
 @theme {
-  --color-primary: #3b82f6;
-  --color-secondary: #10b981;
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-text-main: #f8fafc;
-  --color-text-muted: #94a3b8;
+  --color-primary: #D4AF37;
+  --color-background: #000000;
+  --color-text-main: #FFFFFF;
+  --color-text-muted: rgb(255 255 255 / 0.6);
 }
 
 @layer base {
@@ -14,5 +13,25 @@
     background-color: var(--color-background);
     color: var(--color-text-main);
     font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .react-pdf__Page__textContent mark,
+  [data-context-root] mark {
+    background-color: rgb(212 175 55 / 0.25);
+    color: inherit;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .react-pdf__Page__textContent mark:hover,
+  [data-context-root] mark:hover {
+    background-color: rgb(212 175 55 / 0.45);
+  }
+
+  .react-pdf__Page__textContent ::selection,
+  [data-context-root] ::selection {
+    background-color: rgb(212 175 55 / 0.4);
   }
 }

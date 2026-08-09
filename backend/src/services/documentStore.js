@@ -4,6 +4,26 @@
 class DocumentStore {
     constructor() {
         this.documents = new Map();
+        // Kept separate from the document object, which is JSON-serialized in API responses.
+        this.buffers = new Map();
+    }
+
+    /**
+     * Stores the raw PDF bytes for a document.
+     * @param {string} id
+     * @param {Buffer} buffer
+     */
+    saveBuffer(id, buffer) {
+        this.buffers.set(id, buffer);
+    }
+
+    /**
+     * Retrieves the raw PDF bytes for a document.
+     * @param {string} id
+     * @returns {Buffer|null}
+     */
+    getBuffer(id) {
+        return this.buffers.get(id) || null;
     }
 
     /**

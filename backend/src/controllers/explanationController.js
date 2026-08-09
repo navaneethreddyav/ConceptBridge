@@ -1,37 +1,43 @@
 const explanationService = require('../services/explanation/explanationService');
 const documentStore = require('../services/documentStore');
+const { sendError } = require('../utils/errorResponse');
 
 const generateExplanation = async (req, res) => {
     try {
-        const { documentId, concept, context, language, difficulty } = req.body;
+        const { documentId, concept, contextBefore, contextAfter, language, difficulty } = req.body;
 
         if (!concept) {
             return res.status(400).json({ success: false, error: 'Concept name is required.' });
         }
 
-        let contextText = context || "";
+        let before = contextBefore || '';
+        let after = contextAfter || '';
 
-        if (documentId && !contextText) {
+        // Safety net for callers that send no selection context at all.
+        if (!before && !after && documentId) {
             const doc = documentStore.getDocument(documentId);
             if (doc && doc.content && doc.content.rawText) {
-                contextText = doc.content.rawText;
+                before = doc.content.rawText;
             }
         }
 
-        const explanation = await explanationService.generateExplanation(concept, contextText, language, difficulty, documentId);
+        const { explanation, visual } = await explanationService.generateExplanation(
+            concept,
+            { contextBefore: before, contextAfter: after },
+            language,
+            difficulty,
+            documentId
+        );
 
         return res.status(200).json({
             success: true,
-            explanation
+            explanation,
+            visual
         });
 
     } catch (error) {
         console.error('Explanation Error:', error);
-        return res.status(500).json({
-            success: false,
-            error: 'Failed to generate explanation.',
-            details: error.message
-        });
+        return sendError(res, error, 'Failed to generate explanation.');
     }
 };
 

@@ -1,5 +1,6 @@
 const conceptDetectionService = require('../services/conceptDetectionService');
 const documentStore = require('../services/documentStore');
+const { sendError } = require('../utils/errorResponse');
 
 const detectConcepts = async (req, res) => {
     try {
@@ -32,11 +33,7 @@ const detectConcepts = async (req, res) => {
         });
     } catch (error) {
         console.error('Concept Detection Error:', error);
-        return res.status(500).json({
-            success: false,
-            error: 'Failed to detect concepts.',
-            details: error.message
-        });
+        return sendError(res, error, 'Failed to detect concepts.');
     }
 };
 

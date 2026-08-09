@@ -1,4 +1,4 @@
-const ollamaService = require('./ai/ollamaService');
+const aiProvider = require('./ai/aiProvider');
 const promptService = require('./ai/promptService');
 const ConceptParser = require('./conceptParser');
 const ConceptValidator = require('./conceptValidator');
@@ -37,14 +37,16 @@ class ConceptDetectionService {
 
         const chunks = this.chunkText(text);
         let allConcepts = [];
+        let rateLimitError = null;
+        let otherChunkFailed = false;
 
         for (const chunk of chunks) {
             try {
                 // 1. Generate Prompt
                 const prompt = promptService.formatConceptExtractionPrompt(chunk);
 
-                // 2. Call AI Service (Ollama)
-                const rawResponse = await ollamaService.generateResponse(prompt);
+                // 2. Call AI Service
+                const rawResponse = await aiProvider.generateResponse(prompt);
 
                 // 3. Parse JSON robustly
                 const parsedData = ConceptParser.parse(rawResponse);
@@ -55,12 +57,22 @@ class ConceptDetectionService {
                     allConcepts.push(...validConcepts);
                 }
             } catch (error) {
+                if (error.isRateLimit || error.statusCode === 503) {
+                    rateLimitError = error;
+                } else {
+                    otherChunkFailed = true;
+                }
                 console.warn("Failed to process a chunk, skipping...", error.message);
                 // Continue with other chunks
             }
         }
 
         if (allConcepts.length === 0) {
+            // A total failure caused purely by AI rate limiting keeps its 503/userFacing
+            // tagging so the client sees the same "busy" message as the explanation path.
+            if (rateLimitError && !otherChunkFailed) {
+                throw rateLimitError;
+            }
             throw new Error("No valid concepts could be extracted from any part of the document.");
         }
 

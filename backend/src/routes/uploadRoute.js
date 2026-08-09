@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { handleUpload } = require('../controllers/uploadController');
+const { handleUpload, getDocumentFile } = require('../controllers/uploadController');
 const { MAX_FILE_SIZE } = require('../services/fileValidationService');
 
 const router = express.Router();
@@ -15,6 +15,17 @@ const upload = multer({
     }
 });
 
-router.post('/', upload.single('pdf'), handleUpload);
+const handleMulterError = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        const message = err.code === 'LIMIT_FILE_SIZE'
+            ? 'The PDF is too large.'
+            : `Upload the PDF as a single "pdf" form field. (${err.code})`;
+        return res.status(400).json({ success: false, error: message });
+    }
+    return next(err);
+};
+
+router.post('/', upload.single('pdf'), handleMulterError, handleUpload);
+router.get('/:id/file', getDocumentFile);
 
 module.exports = router;

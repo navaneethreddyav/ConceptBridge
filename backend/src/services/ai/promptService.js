@@ -1,3 +1,7 @@
+const { supportedLanguages } = require('../../../../shared/supportedLanguages.json');
+
+const CONTEXT_CHAR_LIMIT = 4000;
+
 /**
  * Generates specific prompts for the AI model.
  */
@@ -58,16 +62,22 @@ ${documentText}
 `;
     }
     /**
-     * Formats the prompt for generating an educational explanation.
-     * @param {string} conceptName 
-     * @param {string} contextText 
-     * @param {string} language 
-     * @param {string} difficulty 
+     * Formats the prompt for generating an educational explanation of selected text.
+     * @param {string} conceptName - The text the reader selected
+     * @param {string} contextBefore - Document text immediately preceding the selection
+     * @param {string} contextAfter - Document text immediately following the selection
+     * @param {string} language
+     * @param {string} difficulty
      * @returns {string}
      */
-    static formatExplanationPrompt(conceptName, contextText, language = 'English', difficulty = 'Beginner') {
+    static formatExplanationPrompt(conceptName, contextBefore = '', contextAfter = '', language = 'English', difficulty = 'Beginner') {
         const validatedLanguage = supportedLanguages.includes(language) ? language : 'English';
-        
+
+        // Keep the text closest to the selection on both sides.
+        const before = String(contextBefore || '').slice(-CONTEXT_CHAR_LIMIT);
+        const after = String(contextAfter || '').slice(0, CONTEXT_CHAR_LIMIT);
+        const contextText = `${before}\n[SELECTED TEXT: ${conceptName}]\n${after}`;
+
         return `
 You are an expert, experienced, and deeply empathetic teacher. 
 Your task is to explain the concept "${conceptName}" to a student at the "${difficulty}" level.
@@ -81,7 +91,8 @@ Instructions:
 4. Use a highly memorable, real-world analogy (culturally familiar if applicable).
 5. Provide a step-by-step breakdown if applicable.
 6. Base your explanation strictly on the context provided below.
-7. Return ONLY valid JSON in the exact format shown below. The JSON keys MUST remain in English, but the values MUST be written in ${validatedLanguage}. Do NOT use markdown.
+7. Write the way a good teacher actually speaks ${validatedLanguage} — not a literal, dictionary-style translation. Keep widely used English technical terms (for example "algorithm", "voltage", "compiler") in English where that is how people genuinely say them; natural code-switching is expected. Technical accuracy is non-negotiable.
+8. Return ONLY valid JSON in the exact format shown below. The JSON keys MUST remain in English, but the values MUST be written in ${validatedLanguage}. Do NOT use markdown.
 
 Expected JSON format:
 {
@@ -95,12 +106,26 @@ Expected JSON format:
     "keyPoints": ["Key point 1 in ${validatedLanguage}", "Key point 2 in ${validatedLanguage}"],
     "commonMistakes": ["Common misconception 1 in ${validatedLanguage}"],
     "relatedConcepts": ["Related concept 1 in ${validatedLanguage}"],
-    "difficulty": "${difficulty}"
+    "difficulty": "${difficulty}",
+    "visualSpec": {
+        "type": "process | comparison | hierarchy | none",
+        "title": "Very short diagram title in ${validatedLanguage}",
+        "nodes": [{ "id": "n1", "label": "Short label in ${validatedLanguage}" }],
+        "edges": [{ "from": "n1", "to": "n2", "label": "optional short label" }],
+        "items": [{ "label": "Column title in ${validatedLanguage}", "points": ["Short point in ${validatedLanguage}"] }]
+    }
 }
 
-Context Document:
+Rules for "visualSpec" (optional, best-effort — a simple diagram that is rendered next to the explanation):
+- Choose "process" for an ordered sequence of steps: supply 2-6 "nodes" and "edges" chaining them in order. Omit "items".
+- Choose "hierarchy" for a parent concept with its parts/types: the FIRST node is the parent, the remaining 2-6 nodes are its children. Omit "edges" and "items".
+- Choose "comparison" to contrast 2-3 alternatives: supply 2-3 "items", each with a short label and up to 5 short points (under 40 characters each). Omit "nodes" and "edges".
+- If no diagram would genuinely help explain this concept, return { "type": "none" } and nothing else inside visualSpec. Never invent a diagram just to fill the field.
+- Keep every node/item label under 40 characters. Labels are rendered as plain text inside small boxes.
+
+Context Document (the reader selected the text marked [SELECTED TEXT: ...] below; explain it as used in this context):
 ---
-${contextText.substring(0, 15000)}
+${contextText}
 ---
 `;
     }

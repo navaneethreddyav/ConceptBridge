@@ -1,4 +1,4 @@
-const ollamaService = require('../services/ai/ollamaService');
+const aiProvider = require('../services/ai/aiProvider');
 const promptService = require('../services/ai/promptService');
 
 const handleTestPrompt = async (req, res) => {
@@ -12,7 +12,7 @@ const handleTestPrompt = async (req, res) => {
         const formattedPrompt = promptService.formatTestPrompt(prompt);
         
         // Expose generateResponse(prompt) seamlessly as requested
-        const response = await ollamaService.generateResponse(formattedPrompt);
+        const response = await aiProvider.generateResponse(formattedPrompt);
 
         return res.status(200).json({
             success: true,
