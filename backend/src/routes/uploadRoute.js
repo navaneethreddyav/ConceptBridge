@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const { handleUpload, getDocumentFile } = require('../controllers/uploadController');
+const { handleUpload, getDocumentFile, getDocumentPages } = require('../controllers/uploadController');
 const { MAX_FILE_SIZE } = require('../services/fileValidationService');
 
 const router = express.Router();
@@ -27,5 +27,6 @@ const handleMulterError = (err, req, res, next) => {
 
 router.post('/', upload.single('pdf'), handleMulterError, handleUpload);
 router.get('/:id/file', getDocumentFile);
+router.get('/:id/pages', getDocumentPages);
 
 module.exports = router;

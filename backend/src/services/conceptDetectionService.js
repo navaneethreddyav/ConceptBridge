@@ -35,7 +35,12 @@ class ConceptDetectionService {
             throw new Error("Document text is empty.");
         }
 
-        const chunks = this.chunkText(text);
+        // Callers are expected to already pass a bounded sample (see
+        // documentService.SAMPLE_PAGES), not a whole book — this cap is defense in
+        // depth, not the primary control: it guarantees detection can never spend more
+        // than a handful of Gemini calls regardless of what text it's actually given.
+        const MAX_CHUNKS = 3;
+        const chunks = this.chunkText(text).slice(0, MAX_CHUNKS);
         let allConcepts = [];
         let rateLimitError = null;
         let otherChunkFailed = false;

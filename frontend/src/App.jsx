@@ -9,7 +9,7 @@ function App() {
 
   return (
     <div className="h-screen bg-background text-text-main font-sans flex flex-col overflow-hidden">
-      <Header />
+      <Header onHome={() => setDocument(null)} />
 
       {!document ? (
         <>

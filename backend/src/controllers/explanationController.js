@@ -13,11 +13,14 @@ const generateExplanation = async (req, res) => {
         let before = contextBefore || '';
         let after = contextAfter || '';
 
-        // Safety net for callers that send no selection context at all.
+        // Safety net for callers that send no selection context at all. Uses the
+        // bounded upload-time sample, not the full document — in normal operation the
+        // frontend always supplies real contextBefore/After from the live PDF text
+        // layer, so this only matters for an edge-case caller with no selection.
         if (!before && !after && documentId) {
-            const doc = documentStore.getDocument(documentId);
-            if (doc && doc.content && doc.content.rawText) {
-                before = doc.content.rawText;
+            const sampleText = documentStore.getSampleText(documentId);
+            if (sampleText) {
+                before = sampleText;
             }
         }
 

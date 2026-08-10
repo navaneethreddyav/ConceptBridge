@@ -6,6 +6,10 @@ class DocumentStore {
         this.documents = new Map();
         // Kept separate from the document object, which is JSON-serialized in API responses.
         this.buffers = new Map();
+        // The bounded (first-N-page) text sample — also kept off the document object so
+        // it's never accidentally serialized into a response. Used for auto-detect input
+        // and as the explanation-context fallback; never the full document text.
+        this.sampleTexts = new Map();
     }
 
     /**
@@ -27,8 +31,26 @@ class DocumentStore {
     }
 
     /**
+     * Stores the bounded first-N-page text sample for a document.
+     * @param {string} id
+     * @param {string} text
+     */
+    saveSampleText(id, text) {
+        this.sampleTexts.set(id, text);
+    }
+
+    /**
+     * Retrieves the bounded text sample for a document.
+     * @param {string} id
+     * @returns {string|null}
+     */
+    getSampleText(id) {
+        return this.sampleTexts.get(id) || null;
+    }
+
+    /**
      * Stores a document object.
-     * @param {Object} document 
+     * @param {Object} document
      */
     saveDocument(document) {
         this.documents.set(document.id, document);

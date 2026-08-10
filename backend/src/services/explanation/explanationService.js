@@ -49,9 +49,19 @@ class ExplanationService {
             difficulty
         );
 
-        const rawResponse = await aiProvider.generateResponse(prompt);
-        const parsedData = ExplanationParser.parse(rawResponse);
-        const validExplanation = ExplanationValidator.validate(parsedData);
+        // A malformed/unparseable model response is rare but real (observed in
+        // production as an intermittent 500) — one retry of the whole generate+parse
+        // cycle before giving up, since a fresh generation often succeeds where the
+        // first one didn't.
+        let validExplanation;
+        try {
+            const rawResponse = await aiProvider.generateResponse(prompt);
+            validExplanation = ExplanationValidator.validate(ExplanationParser.parse(rawResponse));
+        } catch (error) {
+            if (error.userFacing) throw error; // e.g. the rate-limit "busy" message — don't mask it with a retry
+            const rawResponse = await aiProvider.generateResponse(prompt);
+            validExplanation = ExplanationValidator.validate(ExplanationParser.parse(rawResponse));
+        }
 
         const { visualSpec, ...explanation } = validExplanation;
         const result = {

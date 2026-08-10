@@ -51,11 +51,22 @@ class GeminiService {
             throw new Error('Gemini API key is not configured.');
         }
 
+        let triedTruncatedRetry = false;
+
         for (;;) {
             const model = modelManager.getGeminiModel();
             try {
                 return await this._callModel(model, apiKey, prompt);
             } catch (error) {
+                if (error.isTruncated && !triedTruncatedRetry) {
+                    // Sampling is stochastic — an immediate retry of the same model
+                    // often just doesn't truncate the second time. One retry only;
+                    // if it happens again, surface the failure rather than loop.
+                    triedTruncatedRetry = true;
+                    console.warn(`Gemini response from "${model}" was truncated (MAX_TOKENS); retrying once.`);
+                    continue;
+                }
+
                 if (!error.isRateLimit) throw error;
 
                 const nextModel = modelManager.advanceGeminiModel();
@@ -81,7 +92,17 @@ class GeminiService {
                     role: 'user',
                     parts: [{ text: prompt }]
                 }
-            ]
+            ],
+            generationConfig: {
+                // Every prompt in this app asks for a JSON object back; forcing JSON
+                // mode eliminates the whole class of parse failures caused by markdown
+                // fences or conversational wrapping around the JSON. maxOutputTokens is
+                // set generously (explanations return many fields, incl. a visualSpec)
+                // since a model's default budget can otherwise cut a response short —
+                // observed in production as an intermittent "could not parse" 500.
+                responseMimeType: 'application/json',
+                maxOutputTokens: 8192
+            }
         };
 
         let response;
@@ -125,6 +146,13 @@ class GeminiService {
         const candidate = response.data
             && Array.isArray(response.data.candidates)
             && response.data.candidates[0];
+
+        if (candidate && candidate.finishReason === 'MAX_TOKENS') {
+            const truncated = new Error(`Gemini response from "${model}" was truncated (MAX_TOKENS).`);
+            truncated.isTruncated = true;
+            throw truncated;
+        }
+
         const text = candidate
             && candidate.content
             && Array.isArray(candidate.content.parts)

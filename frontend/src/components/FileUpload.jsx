@@ -31,6 +31,38 @@ const parseUploadResponse = async (response) => {
     return data;
 };
 
+// XMLHttpRequest rather than fetch(): fetch has no widely-supported way to observe
+// request-body progress, and a 50MB textbook needs real byte-level feedback. The
+// resolved object mimics the slice of the Response interface parseUploadResponse uses.
+const uploadWithProgress = (file, onProgress) =>
+    new Promise((resolve, reject) => {
+        const formData = new FormData();
+        formData.append('pdf', file);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${API_BASE_URL}/api/upload`);
+
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+                onProgress(Math.round((event.loaded / event.total) * 100));
+            }
+        };
+        xhr.upload.onload = () => onProgress(100);
+
+        xhr.onload = () => {
+            resolve({
+                ok: xhr.status >= 200 && xhr.status < 300,
+                status: xhr.status,
+                headers: { get: (name) => xhr.getResponseHeader(name) },
+                json: async () => JSON.parse(xhr.responseText),
+            });
+        };
+        xhr.onerror = () => reject(new Error('Network error during upload. Please try again.'));
+        xhr.onabort = () => reject(new Error('Upload was cancelled.'));
+
+        xhr.send(formData);
+    });
+
 const FileUpload = ({ onUploadSuccess }) => {
     const [isDragging, setIsDragging] = useState(false);
     const [status, setStatus] = useState('idle'); // idle, uploading, success, error
@@ -70,9 +102,9 @@ const FileUpload = ({ onUploadSuccess }) => {
             setErrorMessage('Only PDF files are allowed.');
             return;
         }
-        if (file.size > 10 * 1024 * 1024) {
+        if (file.size > 50 * 1024 * 1024) {
             setStatus('error');
-            setErrorMessage('File exceeds the 10MB limit.');
+            setErrorMessage('File exceeds the 50MB limit.');
             return;
         }
 
@@ -80,41 +112,22 @@ const FileUpload = ({ onUploadSuccess }) => {
         setErrorMessage('');
         setProgress(0);
 
-        const formData = new FormData();
-        formData.append('pdf', file);
-
         try {
-            // Fake progress for visual feedback (XMLHttpRequest could be used for real progress)
-            const progressInterval = setInterval(() => {
-                setProgress(prev => {
-                    if (prev >= 90) {
-                        clearInterval(progressInterval);
-                        return 90;
-                    }
-                    return prev + 10;
-                });
-            }, 200);
-
-            const doUpload = () =>
-                fetch(`${API_BASE_URL}/api/upload`, {
-                    method: 'POST',
-                    body: formData,
-                }).then(parseUploadResponse);
+            const doUpload = () => {
+                setProgress(0);
+                return uploadWithProgress(file, setProgress).then(parseUploadResponse);
+            };
 
             let data;
             try {
-                try {
-                    data = await doUpload();
-                } catch (err) {
-                    // One silent retry, only for the platform-transient case above — a
-                    // real validation error (bad file type, oversized file, corrupt PDF)
-                    // comes back as proper JSON and never hits this branch.
-                    if (!err.transient) throw err;
-                    await sleep(1500);
-                    data = await doUpload();
-                }
-            } finally {
-                clearInterval(progressInterval);
+                data = await doUpload();
+            } catch (err) {
+                // One silent retry, only for the platform-transient case above — a
+                // real validation error (bad file type, oversized file, corrupt PDF)
+                // comes back as proper JSON and never hits this branch.
+                if (!err.transient) throw err;
+                await sleep(1500);
+                data = await doUpload();
             }
             setProgress(100);
 
@@ -159,7 +172,7 @@ const FileUpload = ({ onUploadSuccess }) => {
                             Drag & drop your PDF here
                         </p>
                         <p className="text-sm text-text-muted mt-2">
-                            or click to browse (Max 10MB)
+                            or click to browse (Max 50MB)
                         </p>
                     </>
                 )}
@@ -167,11 +180,16 @@ const FileUpload = ({ onUploadSuccess }) => {
                 {status === 'uploading' && (
                     <div className="flex flex-col items-center w-full px-12">
                         <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
-                        <p className="text-lg font-medium text-text-main mb-4">
-                            Extracting concepts...
+                        <p className="text-lg font-medium text-text-main mb-1">
+                            {progress < 100 ? 'Uploading PDF...' : 'Processing document...'}
+                        </p>
+                        <p className="text-sm text-text-muted mb-4">
+                            {progress < 100
+                                ? `${progress}% transferred`
+                                : 'Extracting text and concepts. This can take a moment for large documents.'}
                         </p>
                         <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div 
+                            <div
                                 className="h-full bg-primary transition-all duration-300 rounded-full"
                                 style={{ width: `${progress}%` }}
                             />

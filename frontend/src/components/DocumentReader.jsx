@@ -12,6 +12,14 @@ const CONTEXT_CHARS = 800;
 const MAX_HIGHLIGHTED_TERMS = 40;
 const CONTEXT_ROOT_SELECTOR = '.react-pdf__Page__textContent, [data-context-root]';
 
+// Only pages within this radius of the current page mount a real <Page>; a 500-page
+// book therefore never has more than 2*RADIUS+1 canvases and text layers alive.
+const WINDOW_RADIUS = 2;
+const DEFAULT_PAGE_RATIO = 1.294;
+const FALLBACK_PAGE_WIDTH = 640;
+
+const WORD_CHAR = /[\p{L}\p{N}_'-]/u;
+
 const escapeHtml = (value) =>
     value.replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char]);
 
@@ -66,27 +74,171 @@ const markUpTerms = (raw, termRegex) => {
     return output;
 };
 
+const rootFor = (node) => {
+    if (!node) return null;
+    const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+    return element?.closest(CONTEXT_ROOT_SELECTOR) || null;
+};
+
+const textNodesIn = (root) => {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    let node = walker.nextNode();
+    while (node) {
+        if (node.length > 0) nodes.push(node);
+        node = walker.nextNode();
+    }
+    return nodes;
+};
+
+// pdf.js splits a line into many spans, and consecutive spans in document order are
+// often on *different* visual lines. Word-joining across a node boundary is only
+// correct when the two fragments actually sit on the same line.
+const sameVisualLine = (a, b) => {
+    const rectA = (a.parentElement || a).getBoundingClientRect?.();
+    const rectB = (b.parentElement || b).getBoundingClientRect?.();
+    if (!rectA || !rectB || !rectA.height || !rectB.height) return false;
+    return Math.abs(rectA.top - rectB.top) <= Math.min(rectA.height, rectB.height) * 0.5;
+};
+
+const findTextNode = (nodes, container, fromEnd) => {
+    if (fromEnd) {
+        for (let i = nodes.length - 1; i >= 0; i -= 1) {
+            if (container.contains(nodes[i])) return i;
+        }
+        return -1;
+    }
+    return nodes.findIndex((node) => container.contains(node));
+};
+
+// Normalizes an arbitrary (node, offset) Range boundary onto the page's flat text-node
+// list. A boundary sitting on a node seam is pulled to the touching side so the snap
+// walk inspects the character the user actually stopped next to.
+const toTextPoint = (container, offset, nodes, isEnd) => {
+    if (container.nodeType === Node.TEXT_NODE) {
+        let index = nodes.indexOf(container);
+        if (index === -1) return null;
+        let position = Math.min(offset, container.length);
+        if (isEnd && position === 0 && index > 0) {
+            index -= 1;
+            position = nodes[index].length;
+        }
+        if (!isEnd && position === container.length && index < nodes.length - 1) {
+            index += 1;
+            position = 0;
+        }
+        return { index, offset: position };
+    }
+
+    const children = Array.from(container.childNodes);
+    if (children.length === 0) return null;
+
+    if (isEnd) {
+        const child = children[Math.max(0, Math.min(offset, children.length) - 1)];
+        const index = findTextNode(nodes, child, true);
+        return index === -1 ? null : { index, offset: nodes[index].length };
+    }
+
+    const child = children[Math.min(offset, children.length - 1)];
+    const index = findTextNode(nodes, child, false);
+    return index === -1 ? null : { index, offset: 0 };
+};
+
+const snapStart = (nodes, point) => {
+    let { index, offset } = point;
+
+    for (;;) {
+        if (offset > 0) {
+            if (!WORD_CHAR.test(nodes[index].data[offset - 1])) return { index, offset };
+            offset -= 1;
+            continue;
+        }
+        const previous = index - 1;
+        if (previous < 0) return { index, offset };
+        const data = nodes[previous].data;
+        if (!sameVisualLine(nodes[index], nodes[previous])) return { index, offset };
+        if (!WORD_CHAR.test(data[data.length - 1])) return { index, offset };
+        index = previous;
+        offset = data.length;
+    }
+};
+
+const snapEnd = (nodes, point) => {
+    let { index, offset } = point;
+
+    for (;;) {
+        const data = nodes[index].data;
+        if (offset < data.length) {
+            if (!WORD_CHAR.test(data[offset])) return { index, offset };
+            offset += 1;
+            continue;
+        }
+        const next = index + 1;
+        if (next >= nodes.length) return { index, offset };
+        if (!sameVisualLine(nodes[index], nodes[next])) return { index, offset };
+        if (!WORD_CHAR.test(nodes[next].data[0])) return { index, offset };
+        index = next;
+        offset = 0;
+    }
+};
+
+// Clamps a selection to the page it started on, then widens partial words out to whole
+// words. Already-clean selections (double-click, deliberate word-boundary drags) are
+// left untouched because both boundaries already sit next to a non-word character.
+const refineRange = (range) => {
+    const startRoot = rootFor(range.startContainer);
+    if (!startRoot) return null;
+
+    const nodes = textNodesIn(startRoot);
+    if (nodes.length === 0) return null;
+
+    const refined = range.cloneRange();
+    if (rootFor(range.endContainer) !== startRoot) {
+        const last = nodes[nodes.length - 1];
+        refined.setEnd(last, last.length);
+    }
+
+    const start = toTextPoint(refined.startContainer, refined.startOffset, nodes, false);
+    const end = toTextPoint(refined.endContainer, refined.endOffset, nodes, true);
+    if (!start || !end) return refined;
+
+    const snappedStart = snapStart(nodes, start);
+    const snappedEnd = snapEnd(nodes, end);
+
+    refined.setStart(nodes[snappedStart.index], snappedStart.offset);
+    refined.setEnd(nodes[snappedEnd.index], snappedEnd.offset);
+    return refined;
+};
+
 // Offsets are measured against the nearest context root (a pdf.js text layer, or the
-// raw-text container in fallback mode) so both render modes share one context path.
+// page-text container in fallback mode) so both render modes share one context path.
+// pdf.js emits one text node per rendered line with no trailing space, so line ends
+// get a separator — otherwise the context reads "a set of registersThe arithmetic".
 const contextFromRange = (range) => {
-    const startEl =
-        range.startContainer.nodeType === Node.ELEMENT_NODE
-            ? range.startContainer
-            : range.startContainer.parentElement;
-    const root = startEl?.closest(CONTEXT_ROOT_SELECTOR);
+    const root = rootFor(range.startContainer);
     if (!root) return { contextBefore: '', contextAfter: '' };
 
-    const full = root.textContent || '';
-    const preRange = document.createRange();
-    preRange.selectNodeContents(root);
-    preRange.setEnd(range.startContainer, range.startOffset);
+    const nodes = textNodesIn(root);
+    const start = toTextPoint(range.startContainer, range.startOffset, nodes, false);
+    const end = toTextPoint(range.endContainer, range.endOffset, nodes, true);
+    if (!start || !end) return { contextBefore: '', contextAfter: '' };
 
-    const start = preRange.toString().length;
-    const end = start + range.toString().length;
+    let full = '';
+    let startPos = 0;
+    let endPos = 0;
+
+    nodes.forEach((node, index) => {
+        if (index > 0 && !sameVisualLine(nodes[index - 1], node)) full += ' ';
+        if (index === start.index) startPos = full.length + start.offset;
+        if (index === end.index) endPos = full.length + end.offset;
+        full += node.data;
+    });
+
+    const clean = (value) => value.replace(/\s+/g, ' ');
 
     return {
-        contextBefore: full.slice(Math.max(0, start - CONTEXT_CHARS), start),
-        contextAfter: full.slice(end, end + CONTEXT_CHARS)
+        contextBefore: clean(full.slice(Math.max(0, startPos - CONTEXT_CHARS), startPos)),
+        contextAfter: clean(full.slice(endPos, endPos + CONTEXT_CHARS))
     };
 };
 
@@ -94,14 +246,19 @@ const DocumentReader = ({ document: doc, onSelect }) => {
     const containerRef = useRef(null);
     const pageRefs = useRef([]);
     const detectRequestRef = useRef({ key: null, promise: null });
+    const pageTextCacheRef = useRef(new Map());
+    const pageRatioRef = useRef(0);
     const [numPages, setNumPages] = useState(0);
     const [pageWidth, setPageWidth] = useState(0);
+    const [pageRatio, setPageRatio] = useState(DEFAULT_PAGE_RATIO);
     const [currentPage, setCurrentPage] = useState(1);
     const [pdfFailed, setPdfFailed] = useState(false);
     const [concepts, setConcepts] = useState([]);
+    const [pageText, setPageText] = useState('');
+    const [pageTextLoading, setPageTextLoading] = useState(false);
 
     const fileUrl = `${API_BASE_URL}/api/upload/${doc.id}/file`;
-    const rawText = doc.content?.rawText || '';
+    const totalPages = numPages || doc.metadata?.pageCount || 0;
 
     useEffect(() => {
         const element = containerRef.current;
@@ -125,7 +282,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                 promise: fetch(`${API_BASE_URL}/api/concepts/detect`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ documentId: doc.id, text: rawText })
+                    body: JSON.stringify({ documentId: doc.id })
                 })
                     .then((res) => res.json())
                     // Auto-highlighting is an enhancement; manual selection works without it.
@@ -142,7 +299,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         return () => {
             cancelled = true;
         };
-    }, [doc.id, rawText]);
+    }, [doc.id]);
 
     // Keeps the page counter honest during free scrolling, not just button clicks.
     // Tracks every observed page's latest intersection ratio (IntersectionObserver
@@ -176,13 +333,47 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         return () => observer.disconnect();
     }, [pdfFailed, numPages]);
 
+    // Fallback mode has no rendered PDF to scroll, so text is pulled one page at a
+    // time and cached — never the whole book, which is what made large files hang.
+    useEffect(() => {
+        if (!pdfFailed) return undefined;
+
+        const cache = pageTextCacheRef.current;
+        if (cache.has(currentPage)) {
+            setPageText(cache.get(currentPage));
+            setPageTextLoading(false);
+            return undefined;
+        }
+
+        let cancelled = false;
+        setPageTextLoading(true);
+
+        fetch(`${API_BASE_URL}/api/upload/${doc.id}/pages?first=${currentPage}&last=${currentPage}`)
+            .then((res) => res.json())
+            .then((data) => {
+                const text = data?.pages?.[0]?.text || '';
+                cache.set(currentPage, text);
+                if (!cancelled) setPageText(text);
+            })
+            .catch(() => {
+                if (!cancelled) setPageText('');
+            })
+            .finally(() => {
+                if (!cancelled) setPageTextLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [pdfFailed, currentPage, doc.id]);
+
     const termRegex = useMemo(() => buildTermRegex(concepts), [concepts]);
 
     const emitSelection = useCallback(
         (text, contextBefore, contextAfter) => {
-            const trimmed = text.trim();
-            if (!trimmed) return;
-            onSelect({ text: trimmed, contextBefore, contextAfter });
+            const cleaned = text.replace(/\s+/g, ' ').trim();
+            if (!cleaned) return;
+            onSelect({ text: cleaned, contextBefore, contextAfter });
         },
         [onSelect]
     );
@@ -192,8 +383,16 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         if (!selection || selection.isCollapsed || selection.rangeCount === 0) return;
         if (!selection.toString().trim()) return;
 
-        const range = selection.getRangeAt(0);
-        const { contextBefore, contextAfter } = contextFromRange(range);
+        const refined = refineRange(selection.getRangeAt(0));
+        if (!refined) return;
+
+        // Re-applying the range keeps the on-screen highlight identical to what is
+        // sent, and Selection.toString() (unlike Range.toString()) keeps the line
+        // breaks between pdf.js spans, so wrapped phrases don't lose their spaces.
+        selection.removeAllRanges();
+        selection.addRange(refined);
+
+        const { contextBefore, contextAfter } = contextFromRange(refined);
         emitSelection(selection.toString(), contextBefore, contextAfter);
     }, [emitSelection]);
 
@@ -215,11 +414,26 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         [termRegex]
     );
 
+    const handlePageLoadSuccess = useCallback((page) => {
+        if (pageRatioRef.current) return;
+        const width = page.originalWidth || page.width;
+        const height = page.originalHeight || page.height;
+        if (!width || !height) return;
+        pageRatioRef.current = height / width;
+        setPageRatio(height / width);
+    }, []);
+
     const goToPage = (target) => {
-        const clamped = Math.min(Math.max(target, 1), numPages || 1);
+        const clamped = Math.min(Math.max(target, 1), totalPages || 1);
         setCurrentPage(clamped);
-        pageRefs.current[clamped - 1]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (pdfFailed) {
+            containerRef.current?.scrollTo({ top: 0 });
+        } else {
+            pageRefs.current[clamped - 1]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     };
+
+    const placeholderHeight = Math.round((pageWidth || FALLBACK_PAGE_WIDTH) * pageRatio);
 
     return (
         <div className="flex flex-col h-full min-h-0 bg-black">
@@ -233,7 +447,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                     </p>
                 </div>
 
-                {!pdfFailed && numPages > 0 && (
+                {totalPages > 0 && (
                     <div className="flex items-center gap-2 shrink-0">
                         <button
                             onClick={() => goToPage(currentPage - 1)}
@@ -244,11 +458,11 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                             <ChevronLeft className="w-4 h-4" />
                         </button>
                         <span className="text-xs font-mono text-text-muted tabular-nums">
-                            {currentPage} / {numPages}
+                            {currentPage} / {totalPages}
                         </span>
                         <button
                             onClick={() => goToPage(currentPage + 1)}
-                            disabled={currentPage >= numPages}
+                            disabled={currentPage >= totalPages}
                             className="p-2 rounded-lg border border-white/10 text-text-main hover:border-primary/50 disabled:opacity-30 transition-colors"
                             title="Next page"
                         >
@@ -270,11 +484,22 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                             <AlertCircle className="w-4 h-4 text-primary" />
                             Showing extracted text (the PDF could not be rendered).
                         </div>
-                        <div
-                            data-context-root="true"
-                            className="whitespace-pre-wrap leading-relaxed text-text-main text-[15px] selection:bg-primary/40"
-                            dangerouslySetInnerHTML={{ __html: markUpTerms(rawText, termRegex) }}
-                        />
+                        {pageTextLoading ? (
+                            <div className="flex items-center gap-2 py-12 text-sm text-text-muted">
+                                <Loader2 className="w-4 h-4 text-primary animate-spin" />
+                                Loading page {currentPage}...
+                            </div>
+                        ) : pageText ? (
+                            <div
+                                data-context-root="true"
+                                className="whitespace-pre-wrap leading-relaxed text-text-main text-[15px] selection:bg-primary/40"
+                                dangerouslySetInnerHTML={{ __html: markUpTerms(pageText, termRegex) }}
+                            />
+                        ) : (
+                            <p className="py-12 text-sm text-text-muted">
+                                No text could be extracted from page {currentPage}.
+                            </p>
+                        )}
                     </div>
                 ) : (
                     <Document
@@ -296,28 +521,46 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                         }
                         className="flex flex-col items-center gap-6"
                     >
-                        {Array.from({ length: numPages }, (_, index) => (
-                            <div
-                                key={index}
-                                ref={(el) => {
-                                    pageRefs.current[index] = el;
-                                }}
-                                className="border border-white/10 rounded-lg overflow-hidden bg-white"
-                            >
-                                <Page
-                                    pageNumber={index + 1}
-                                    width={pageWidth || undefined}
-                                    renderTextLayer
-                                    renderAnnotationLayer={false}
-                                    customTextRenderer={customTextRenderer}
-                                    loading={
-                                        <div className="flex items-center justify-center h-96 bg-black">
-                                            <Loader2 className="w-6 h-6 text-primary animate-spin" />
-                                        </div>
+                        {Array.from({ length: numPages }, (_, index) => {
+                            const inWindow = Math.abs(index + 1 - currentPage) <= WINDOW_RADIUS;
+
+                            return (
+                                <div
+                                    key={index}
+                                    ref={(el) => {
+                                        pageRefs.current[index] = el;
+                                    }}
+                                    className="border border-white/10 rounded-lg overflow-hidden bg-white"
+                                    style={
+                                        inWindow
+                                            ? undefined
+                                            : {
+                                                  width: pageWidth || FALLBACK_PAGE_WIDTH,
+                                                  height: placeholderHeight
+                                              }
                                     }
-                                />
-                            </div>
-                        ))}
+                                >
+                                    {inWindow && (
+                                        <Page
+                                            pageNumber={index + 1}
+                                            width={pageWidth || undefined}
+                                            renderTextLayer
+                                            renderAnnotationLayer={false}
+                                            customTextRenderer={customTextRenderer}
+                                            onLoadSuccess={handlePageLoadSuccess}
+                                            loading={
+                                                <div
+                                                    className="flex items-center justify-center bg-black"
+                                                    style={{ height: placeholderHeight }}
+                                                >
+                                                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                                                </div>
+                                            }
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
                     </Document>
                 )}
             </div>

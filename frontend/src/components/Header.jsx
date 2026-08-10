@@ -4,7 +4,7 @@ import { useSettings } from '../context/SettingsContext';
 
 import { supportedLanguages } from '../../../shared/supportedLanguages.json';
 
-const Header = () => {
+const Header = ({ onHome }) => {
     const { settings, updateSettings } = useSettings();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -13,7 +13,12 @@ const Header = () => {
 
     return (
         <header className="w-full px-6 py-3 border-b border-white/10 bg-background flex justify-between items-center relative z-40">
-            <div className="flex items-center gap-3 min-w-0">
+            <button
+                type="button"
+                onClick={onHome}
+                aria-label="Go to ConceptBridge home"
+                className="flex items-center gap-3 min-w-0 cursor-pointer text-left rounded-md transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
+            >
                 <img
                     src="/assets/branding/conceptbridge-logo.png"
                     alt="ConceptBridge logo"
@@ -23,7 +28,7 @@ const Header = () => {
                     <span className="text-lg font-bold text-text-main tracking-tight truncate">ConceptBridge</span>
                     <span className="text-[11px] text-text-muted truncate">AI-Powered Engineering Learning Assistant</span>
                 </div>
-            </div>
+            </button>
 
             <div className="relative">
                 <button 

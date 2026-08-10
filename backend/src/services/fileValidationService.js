@@ -1,6 +1,9 @@
 const path = require('path');
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+// Raised from 10MB alongside the bounded-extraction/on-demand-pages/windowed-rendering
+// changes that make a large upload actually safe to handle — not a standalone bump.
+// A 500-1000 page text-heavy engineering textbook typically lands well under this.
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 /**
  * Validates the uploaded file.

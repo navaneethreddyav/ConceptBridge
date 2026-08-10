@@ -4,10 +4,10 @@ const { sendError } = require('../utils/errorResponse');
 
 const detectConcepts = async (req, res) => {
     try {
-        const { documentId, text } = req.body;
+        const { documentId } = req.body;
 
-        if (!text || !documentId) {
-            return res.status(400).json({ success: false, error: 'Document text and ID are required.' });
+        if (!documentId) {
+            return res.status(400).json({ success: false, error: 'Document ID is required.' });
         }
 
         // Check cache
@@ -21,7 +21,16 @@ const detectConcepts = async (req, res) => {
             });
         }
 
-        const concepts = await conceptDetectionService.detectConcepts(text);
+        // Detection always runs against the bounded upload-time sample (first ~20
+        // pages), never the full document — this is what keeps auto-detect to a small,
+        // constant number of Gemini calls regardless of whether the document is 5 pages
+        // or 5000. Manual selection (the primary path) works on any text either way.
+        const sampleText = documentStore.getSampleText(documentId);
+        if (!sampleText) {
+            return res.status(404).json({ success: false, error: 'Document not found.' });
+        }
+
+        const concepts = await conceptDetectionService.detectConcepts(sampleText);
 
         // Save to cache
         documentStore.updateConcepts(documentId, concepts);
