@@ -12,6 +12,11 @@ const CONTEXT_CHARS = 800;
 const MAX_HIGHLIGHTED_TERMS = 40;
 const CONTEXT_ROOT_SELECTOR = '.react-pdf__Page__textContent, [data-context-root]';
 
+// Touch selection has no "release" event of its own — the user keeps nudging the OS
+// selection handles, firing selectionchange each time. Acting only after this much
+// quiet is what separates "still dragging" from "settled on a phrase".
+const SELECTION_SETTLE_MS = 300;
+
 // Only pages within this radius of the current page mount a real <Page>; a 500-page
 // book therefore never has more than 2*RADIUS+1 canvases and text layers alive.
 const WINDOW_RADIUS = 2;
@@ -248,6 +253,8 @@ const DocumentReader = ({ document: doc, onSelect }) => {
     const detectRequestRef = useRef({ key: null, promise: null });
     const pageTextCacheRef = useRef(new Map());
     const pageRatioRef = useRef(0);
+    const touchInputRef = useRef(false);
+    const lastTouchTextRef = useRef('');
     const [numPages, setNumPages] = useState(0);
     const [pageWidth, setPageWidth] = useState(0);
     const [pageRatio, setPageRatio] = useState(DEFAULT_PAGE_RATIO);
@@ -264,8 +271,12 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         const element = containerRef.current;
         if (!element) return undefined;
 
+        // contentRect is already the padding-excluded content box, so the available
+        // width is used as-is — subtracting the gutter again shrank every page a second
+        // time. The floor only exists to keep a degenerate 0-width measurement from
+        // collapsing the page, so it sits below any real phone width.
         const observer = new ResizeObserver(([entry]) => {
-            setPageWidth(Math.max(320, entry.contentRect.width - 48));
+            setPageWidth(Math.max(240, entry.contentRect.width));
         });
         observer.observe(element);
         return () => observer.disconnect();
@@ -378,7 +389,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         [onSelect]
     );
 
-    const handleMouseUp = useCallback(() => {
+    const captureSelection = useCallback(() => {
         const selection = window.getSelection();
         if (!selection || selection.isCollapsed || selection.rangeCount === 0) return;
         if (!selection.toString().trim()) return;
@@ -395,6 +406,40 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         const { contextBefore, contextAfter } = contextFromRange(refined);
         emitSelection(selection.toString(), contextBefore, contextAfter);
     }, [emitSelection]);
+
+    // Touch input never reliably produces the mouseup that drives the pointer path, so
+    // settled selectionchange events are routed through the identical capture helper.
+    useEffect(() => {
+        let timer = null;
+
+        const settle = () => {
+            if (!touchInputRef.current) return;
+
+            const selection = window.getSelection();
+            const text = selection && !selection.isCollapsed ? selection.toString().trim() : '';
+            if (!text) {
+                lastTouchTextRef.current = '';
+                return;
+            }
+            // captureSelection re-applies the refined range, which itself fires
+            // selectionchange; without this the same phrase would be emitted twice.
+            if (text === lastTouchTextRef.current) return;
+
+            captureSelection();
+            lastTouchTextRef.current = (window.getSelection()?.toString() || text).trim();
+        };
+
+        const handleSelectionChange = () => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(settle, SELECTION_SETTLE_MS);
+        };
+
+        document.addEventListener('selectionchange', handleSelectionChange);
+        return () => {
+            if (timer) clearTimeout(timer);
+            document.removeEventListener('selectionchange', handleSelectionChange);
+        };
+    }, [captureSelection]);
 
     const handleClick = useCallback(
         (event) => {
@@ -437,22 +482,25 @@ const DocumentReader = ({ document: doc, onSelect }) => {
 
     return (
         <div className="flex flex-col h-full min-h-0 bg-black">
-            <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-white/10 shrink-0">
+            <div className="flex items-center justify-between gap-3 md:gap-4 px-4 py-3 border-b border-white/10 shrink-0 select-none">
                 <div className="min-w-0">
                     <p className="text-sm font-medium text-text-main truncate">
                         {doc.filename || doc.metadata?.title}
                     </p>
-                    <p className="text-xs text-text-muted">
+                    <p className="text-xs text-text-muted sm:hidden">
+                        Drag across any word or phrase to explain it
+                    </p>
+                    <p className="hidden sm:block text-xs text-text-muted">
                         Select any word or phrase to open ConceptBridge
                     </p>
                 </div>
 
                 {totalPages > 0 && (
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex items-center gap-1 md:gap-2 shrink-0 select-none">
                         <button
                             onClick={() => goToPage(currentPage - 1)}
                             disabled={currentPage <= 1}
-                            className="p-2 rounded-lg border border-white/10 text-text-main hover:border-primary/50 disabled:opacity-30 transition-colors"
+                            className="p-3 md:p-2 rounded-lg border border-white/10 text-text-main hover:border-primary/50 disabled:opacity-30 transition-colors"
                             title="Previous page"
                         >
                             <ChevronLeft className="w-4 h-4" />
@@ -463,7 +511,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                         <button
                             onClick={() => goToPage(currentPage + 1)}
                             disabled={currentPage >= totalPages}
-                            className="p-2 rounded-lg border border-white/10 text-text-main hover:border-primary/50 disabled:opacity-30 transition-colors"
+                            className="p-3 md:p-2 rounded-lg border border-white/10 text-text-main hover:border-primary/50 disabled:opacity-30 transition-colors"
                             title="Next page"
                         >
                             <ChevronRight className="w-4 h-4" />
@@ -474,9 +522,20 @@ const DocumentReader = ({ document: doc, onSelect }) => {
 
             <div
                 ref={containerRef}
-                onMouseUp={handleMouseUp}
+                // pointerType is read rather than pairing touchstart with mousedown: a tap
+                // emits a *synthetic* mousedown afterwards, which would wrongly re-classify
+                // the following long-press selection as mouse input and skip it.
+                onPointerDown={(event) => {
+                    touchInputRef.current = event.pointerType !== 'mouse';
+                    // A fresh gesture is always allowed to re-emit, so re-selecting the
+                    // same phrase after closing the sidebar reopens it. The re-emit guard
+                    // only needs to cover the selectionchange that captureSelection itself
+                    // triggers, and that never involves a pointerdown.
+                    lastTouchTextRef.current = '';
+                }}
+                onMouseUp={captureSelection}
                 onClick={handleClick}
-                className="flex-1 min-h-0 overflow-y-auto px-6 py-6"
+                className="flex-1 min-h-0 overflow-y-auto px-3 py-4 sm:px-6 sm:py-6"
             >
                 {pdfFailed ? (
                     <div className="mx-auto max-w-3xl">

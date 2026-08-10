@@ -42,12 +42,14 @@ const uploadWithProgress = (file, onProgress) =>
         const xhr = new XMLHttpRequest();
         xhr.open('POST', `${API_BASE_URL}/api/upload`);
 
+        // Second argument reports whether the browser actually gave us a byte total:
+        // without it a percentage would be invented rather than measured.
         xhr.upload.onprogress = (event) => {
             if (event.lengthComputable) {
-                onProgress(Math.round((event.loaded / event.total) * 100));
+                onProgress(Math.round((event.loaded / event.total) * 100), true);
             }
         };
-        xhr.upload.onload = () => onProgress(100);
+        xhr.upload.onload = () => onProgress(100, false);
 
         xhr.onload = () => {
             resolve({
@@ -68,7 +70,15 @@ const FileUpload = ({ onUploadSuccess }) => {
     const [status, setStatus] = useState('idle'); // idle, uploading, success, error
     const [errorMessage, setErrorMessage] = useState('');
     const [progress, setProgress] = useState(0);
+    const [progressMeasured, setProgressMeasured] = useState(false);
     const fileInputRef = useRef(null);
+
+    const isUploading = status === 'uploading';
+
+    const openFilePicker = () => {
+        if (isUploading) return;
+        fileInputRef.current?.click();
+    };
 
     const handleDragOver = (e) => {
         e.preventDefault();
@@ -94,9 +104,14 @@ const FileUpload = ({ onUploadSuccess }) => {
         if (files && files.length > 0) {
             handleFiles(files[0]);
         }
+        // Allow re-picking the same file after a failed attempt, which otherwise
+        // fires no change event and looks like a dead tap.
+        e.target.value = '';
     };
 
     const handleFiles = async (file) => {
+        if (isUploading) return;
+
         if (file.type !== 'application/pdf') {
             setStatus('error');
             setErrorMessage('Only PDF files are allowed.');
@@ -111,11 +126,18 @@ const FileUpload = ({ onUploadSuccess }) => {
         setStatus('uploading');
         setErrorMessage('');
         setProgress(0);
+        setProgressMeasured(false);
 
         try {
+            const handleProgress = (percent, measured) => {
+                if (measured) setProgressMeasured(true);
+                setProgress(percent);
+            };
+
             const doUpload = () => {
                 setProgress(0);
-                return uploadWithProgress(file, setProgress).then(parseUploadResponse);
+                setProgressMeasured(false);
+                return uploadWithProgress(file, handleProgress).then(parseUploadResponse);
             };
 
             let data;
@@ -142,18 +164,20 @@ const FileUpload = ({ onUploadSuccess }) => {
     };
 
     return (
-        <div className="w-full max-w-xl mx-auto mt-8">
+        <div className="w-full max-w-xl mx-auto mt-6 md:mt-8">
             <div
                 className={clsx(
-                    "relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-2xl transition-all duration-300",
-                    isDragging ? "border-primary bg-primary/10 scale-105" : "border-white/10 hover:border-primary/50 hover:bg-white/5",
+                    "relative flex flex-col items-center justify-center w-full h-56 md:h-64 border-2 border-dashed rounded-2xl transition-all duration-300",
+                    isDragging ? "border-primary bg-primary/10 scale-105" : "border-white/10",
+                    !isDragging && !isUploading && "hover:border-primary/50 hover:bg-white/5",
+                    isUploading && "cursor-wait",
                     status === 'error' && "border-red-500/50 bg-red-500/5",
                     status === 'success' && "border-primary/50"
                 )}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
+                onClick={openFilePicker}
             >
                 <input 
                     type="file" 
@@ -178,22 +202,26 @@ const FileUpload = ({ onUploadSuccess }) => {
                 )}
 
                 {status === 'uploading' && (
-                    <div className="flex flex-col items-center w-full px-12">
+                    <div className="flex flex-col items-center w-full px-6 md:px-12">
                         <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
                         <p className="text-lg font-medium text-text-main mb-1">
                             {progress < 100 ? 'Uploading PDF...' : 'Processing document...'}
                         </p>
-                        <p className="text-sm text-text-muted mb-4">
-                            {progress < 100
-                                ? `${progress}% transferred`
-                                : 'Extracting text and concepts. This can take a moment for large documents.'}
+                        <p className="text-sm text-text-muted mb-4 text-center">
+                            {progress === 100
+                                ? 'Extracting text and concepts. This can take a moment for large documents.'
+                                : progressMeasured
+                                    ? `${progress}% transferred`
+                                    : 'Transferring your document. This can take a moment for large files.'}
                         </p>
-                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                            <div
-                                className="h-full bg-primary transition-all duration-300 rounded-full"
-                                style={{ width: `${progress}%` }}
-                            />
-                        </div>
+                        {(progressMeasured || progress === 100) && (
+                            <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-primary transition-all duration-300 rounded-full"
+                                    style={{ width: `${progress}%` }}
+                                />
+                            </div>
+                        )}
                     </div>
                 )}
 

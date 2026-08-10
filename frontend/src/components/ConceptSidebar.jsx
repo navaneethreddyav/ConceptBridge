@@ -170,7 +170,7 @@ const ConceptSidebar = ({ selection, documentId, onClose }) => {
                 </div>
                 <button
                     onClick={onClose}
-                    className="p-2 rounded-full border border-white/10 hover:border-primary/50 transition-colors shrink-0"
+                    className="p-3 md:p-2 rounded-full border border-white/10 hover:border-primary/50 transition-colors shrink-0 select-none"
                     title="Close and continue reading"
                 >
                     <X className="w-4 h-4 text-text-muted" />

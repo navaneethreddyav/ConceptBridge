@@ -11,12 +11,12 @@ import React from 'react';
 // All three logos render in the same fixed box size + object-contain, so they read as
 // visually equal-weight regardless of each source image's native aspect ratio — no
 // stretching/distortion, just proportional scale-to-fit within an identical footprint.
-const LOGO_BOX = 'h-12 w-12 md:h-14 md:w-14 object-contain';
+const LOGO_BOX = 'h-8 w-8 md:h-14 md:w-14 object-contain';
 
 const BrandingFooter = () => {
     return (
-        <footer className="w-full border-t border-white/10 px-6 py-6 shrink-0">
-            <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-6 md:gap-0 md:divide-x md:divide-white/10">
+        <footer className="w-full border-t border-white/10 px-4 py-4 md:px-6 md:py-6 shrink-0">
+            <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-3 md:gap-0 md:divide-x md:divide-white/10">
 
                 <div className="w-full md:flex-1 flex flex-col items-center justify-center text-center gap-2 md:px-6">
                     <img
