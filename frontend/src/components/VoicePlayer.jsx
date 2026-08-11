@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Play, Pause, Square, RotateCcw, Volume2, Loader2 } from 'lucide-react';
-import { languageLocaleMap } from '../../../shared/supportedLanguages.json';
+import { Play, Pause, Square, RotateCcw, Volume2, Loader2, VolumeX } from 'lucide-react';
+import { getTtsConfig, findCompatibleVoice } from '../utils/ttsLocales';
 
 // iOS Safari has historically truncated or silently dropped very long single
 // utterances. Chunking at sentence boundaries and queueing keeps each utterance
@@ -52,8 +52,14 @@ const chunkText = (text) => {
     return chunks.length > 0 ? chunks : [text];
 };
 
+// idle       - ready, compatible voice confirmed, nothing playing
+// resolving  - checking whether a compatible voice exists for this language
+// speaking   - actively playing
+// paused     - paused mid-playback
+// error      - a genuine runtime failure occurred while trying to play
+// unavailable- no voice compatible with this language exists on this device/browser
 const VoicePlayer = ({ text, language }) => {
-    const [status, setStatus] = useState('idle'); // idle | loading | speaking | paused | error
+    const [status, setStatus] = useState('resolving');
     const [errorMessage, setErrorMessage] = useState('');
 
     const synthRef = useRef(typeof window !== 'undefined' ? window.speechSynthesis : null);
@@ -63,69 +69,17 @@ const VoicePlayer = ({ text, language }) => {
     const queueRef = useRef([]);
     const activeVoiceRef = useRef(null);
     const activeLangRef = useRef('en');
+    // Per-language cache of the resolution outcome, so repeated language switches
+    // (e.g. English -> Marathi -> English) don't re-poll a language already known —
+    // only ever caches a DEFINITIVE result (a real, non-empty voice list was seen),
+    // never an empty-voice-list timeout, per "don't permanently cache an empty list".
+    const voiceCacheRef = useRef(new Map());
     // A strong reference to the in-flight utterance — WebKit is known to garbage
     // collect an utterance that's only referenced by a local variable, silently
     // killing speech mid-playback. Holding it here keeps it alive for its lifetime.
     const currentUtteranceRef = useRef(null);
 
     const synth = synthRef.current;
-
-    // Resolve and (re-)poll for a voice matching the selected language whenever the
-    // language changes. Never treated as fatal if no exact match exists — the
-    // browser's default voice is used instead, per utterance.lang below.
-    useEffect(() => {
-        if (!synth) return undefined;
-
-        let pollTimer = null;
-        let attempts = 0;
-
-        const resolveVoice = () => {
-            const voices = synth.getVoices();
-            if (voices.length === 0) return false;
-
-            const prefix = (languageLocaleMap[language] || 'en').toLowerCase();
-            const exact = voices.find((v) => v.lang.toLowerCase().startsWith(prefix));
-            // No English fallback here on purpose: forcing an English voice onto,
-            // say, Gujarati or Marathi text guarantees a wrong-script mispronunciation
-            // (English voice, foreign phonemes). Leaving voice unset when no real
-            // match exists still lets the browser pick its own default for
-            // utterance.lang below — not guaranteed better, but never guaranteed
-            // wrong the way forcing an unrelated voice is.
-            resolvedVoiceRef.current = exact || null;
-            return true;
-        };
-
-        const tryResolve = () => {
-            const found = resolveVoice();
-            if (found || attempts >= MAX_VOICE_POLL_ATTEMPTS) return;
-            attempts += 1;
-            pollTimer = setTimeout(tryResolve, VOICE_POLL_MS);
-        };
-
-        tryResolve();
-
-        const onVoicesChanged = () => resolveVoice();
-        synth.addEventListener?.('voiceschanged', onVoicesChanged);
-        const previousHandler = synth.onvoiceschanged;
-        synth.onvoiceschanged = onVoicesChanged;
-
-        return () => {
-            if (pollTimer) clearTimeout(pollTimer);
-            synth.removeEventListener?.('voiceschanged', onVoicesChanged);
-            synth.onvoiceschanged = previousHandler || null;
-        };
-    }, [language, synth]);
-
-    // A new explanation (different text/language) makes any in-flight speech
-    // stale — stop it and reset the control state rather than leaving a button
-    // that claims to be "speaking" something the user can no longer see.
-    useEffect(() => {
-        synth?.cancel();
-        queueRef.current = [];
-        currentUtteranceRef.current = null;
-        setStatus('idle');
-        setErrorMessage('');
-    }, [text, language, synth]);
 
     useEffect(() => {
         // Runs on every mount, including the mount that follows StrictMode's
@@ -139,6 +93,93 @@ const VoicePlayer = ({ text, language }) => {
         };
     }, [synth]);
 
+    // Resolves a voice for the current language whenever text or language changes.
+    // A new selection always invalidates in-flight speech first. Text-only changes
+    // (a new explanation, same language) reuse the cached resolution instantly
+    // instead of re-polling — the voice list for a given language doesn't change
+    // just because the text did.
+    useEffect(() => {
+        synth?.cancel();
+        queueRef.current = [];
+        currentUtteranceRef.current = null;
+        setErrorMessage('');
+
+        if (!synth) {
+            setStatus('unavailable');
+            setErrorMessage("Voice playback isn't available in this browser.");
+            return undefined;
+        }
+
+        const cached = voiceCacheRef.current.get(language);
+        if (cached) {
+            resolvedVoiceRef.current = cached.voice;
+            setStatus(cached.voice ? 'idle' : 'unavailable');
+            if (!cached.voice) {
+                setErrorMessage(`Voice playback for ${language} isn't available on this device/browser.`);
+            }
+            return undefined;
+        }
+
+        setStatus('resolving');
+        const config = getTtsConfig(language);
+        let pollTimer = null;
+        let attempts = 0;
+        let settled = false;
+
+        const settle = (voices, definitive) => {
+            if (settled) return;
+            settled = true;
+
+            const match = findCompatibleVoice(voices, config);
+            resolvedVoiceRef.current = match;
+            // Only cache a real, examined voice list's outcome — never the "gave up
+            // waiting" case, so a later attempt (e.g. re-selecting this language)
+            // gets a fresh chance if voices load slowly.
+            if (definitive) {
+                voiceCacheRef.current.set(language, { voice: match });
+            }
+
+            if (!mountedRef.current) return;
+            if (match) {
+                setStatus('idle');
+            } else {
+                setStatus('unavailable');
+                setErrorMessage(`Voice playback for ${language} isn't available on this device/browser.`);
+            }
+        };
+
+        const attempt = () => {
+            const voices = synth.getVoices();
+            if (voices.length > 0) {
+                settle(voices, true);
+                return;
+            }
+            attempts += 1;
+            if (attempts >= MAX_VOICE_POLL_ATTEMPTS) {
+                settle([], false);
+                return;
+            }
+            pollTimer = setTimeout(attempt, VOICE_POLL_MS);
+        };
+
+        attempt();
+
+        const onVoicesChanged = () => {
+            if (settled) return;
+            if (pollTimer) clearTimeout(pollTimer);
+            attempt();
+        };
+        synth.addEventListener?.('voiceschanged', onVoicesChanged);
+        const previousHandler = synth.onvoiceschanged;
+        synth.onvoiceschanged = onVoicesChanged;
+
+        return () => {
+            if (pollTimer) clearTimeout(pollTimer);
+            synth.removeEventListener?.('voiceschanged', onVoicesChanged);
+            synth.onvoiceschanged = previousHandler || null;
+        };
+    }, [text, language, synth]);
+
     const speakChunk = useCallback(
         (index) => {
             const chunks = queueRef.current;
@@ -149,8 +190,11 @@ const VoicePlayer = ({ text, language }) => {
             }
 
             const utterance = new SpeechSynthesisUtterance(chunks[index]);
-            utterance.lang = activeLangRef.current;
-            if (activeVoiceRef.current) utterance.voice = activeVoiceRef.current;
+            // Both set from the SAME resolved voice for every chunk — lang mirrors
+            // voice.lang exactly rather than our config's approximate locale, so the
+            // two can never disagree with each other mid-explanation.
+            utterance.voice = activeVoiceRef.current;
+            utterance.lang = activeVoiceRef.current?.lang || activeLangRef.current;
 
             // If cancel() replaced this utterance with a newer one before this one's
             // events arrive (possible when two speak() calls land in the same JS
@@ -187,6 +231,10 @@ const VoicePlayer = ({ text, language }) => {
     );
 
     const startFromBeginning = useCallback(() => {
+        // No compatible voice for this language — never speak with a mismatched
+        // one. Status should already be 'unavailable' in this case (button
+        // disabled), this is a defensive second check.
+        if (!resolvedVoiceRef.current) return;
         if (busyRef.current) return;
         busyRef.current = true;
 
@@ -198,7 +246,7 @@ const VoicePlayer = ({ text, language }) => {
         setErrorMessage('');
 
         activeVoiceRef.current = resolvedVoiceRef.current;
-        activeLangRef.current = languageLocaleMap[language] || 'en';
+        activeLangRef.current = getTtsConfig(language).preferredLocale;
         queueRef.current = chunkText(text);
         speakChunk(0);
 
@@ -250,16 +298,25 @@ const VoicePlayer = ({ text, language }) => {
 
     if (!text) return null;
 
-    if (!synth || status === 'error') {
+    if (status === 'unavailable' || (!synth && status !== 'resolving')) {
         return (
             <div className="flex items-center gap-2 bg-white/5 px-3 py-2 rounded-xl border border-white/10 text-xs text-text-muted">
-                <Volume2 className="w-4 h-4 shrink-0" />
-                <span>{errorMessage || "Voice playback isn't available in this browser."}</span>
+                <VolumeX className="w-4 h-4 shrink-0" />
+                <span>{errorMessage || `Voice playback for ${language} isn't available on this device/browser.`}</span>
             </div>
         );
     }
 
-    const isBusy = status === 'loading';
+    if (status === 'error') {
+        return (
+            <div className="flex items-center gap-2 bg-white/5 px-3 py-2 rounded-xl border border-white/10 text-xs text-text-muted">
+                <VolumeX className="w-4 h-4 shrink-0" />
+                <span>{errorMessage}</span>
+            </div>
+        );
+    }
+
+    const isBusy = status === 'loading' || status === 'resolving';
 
     return (
         <div className="flex items-center gap-2 bg-white/5 p-2 rounded-xl border border-white/10">
@@ -272,7 +329,7 @@ const VoicePlayer = ({ text, language }) => {
                         onClick={handlePlay}
                         disabled={isBusy}
                         className="p-2 bg-primary text-black rounded-lg hover:bg-primary/90 disabled:opacity-50 transition-colors"
-                        title={status === 'paused' ? 'Resume' : 'Play'}
+                        title={status === 'paused' ? 'Resume' : status === 'resolving' ? 'Initializing voice...' : 'Play'}
                     >
                         {isBusy ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -292,7 +349,7 @@ const VoicePlayer = ({ text, language }) => {
 
                 <button
                     onClick={handleStop}
-                    disabled={status === 'idle'}
+                    disabled={status === 'idle' || status === 'resolving'}
                     className="p-2 bg-background border border-white/10 text-text-main rounded-lg hover:bg-white/10 disabled:opacity-50 transition-colors"
                     title="Stop"
                 >
