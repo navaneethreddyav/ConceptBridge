@@ -23,8 +23,8 @@ function App() {
               className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain rounded-2xl shadow-md mb-3 md:mb-6"
             />
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 md:mb-6 tracking-tight">
-              Master any Concept, <br />
-              <span className="text-primary">Instantly.</span>
+              Understand any concept, <br />
+              <span className="text-primary">instantly.</span>
             </h2>
             <p className="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mb-6 md:mb-10">
               Upload any educational PDF, read it here, and highlight anything you get stuck on for an
