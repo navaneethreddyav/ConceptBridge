@@ -26,6 +26,18 @@ function App() {
               Understand any concept, <br />
               <span className="text-primary">instantly.</span>
             </h2>
+            {/* max-w/max-h (not fixed w) so a short viewport can shrink the image
+                proportionally via the height cap without distorting it — a fixed
+                width would force max-height to squash it instead of scaling it. The
+                34vh cap only binds on short desktop windows (e.g. 1366x768, where
+                the image was otherwise pushing the upload dropzone almost entirely
+                off-screen); it's above the image's natural height on any viewport
+                tall enough not to need it (e.g. 1440x900), so nothing changes there. */}
+            <img
+              src="/assets/branding/conceptbridge-hero.jpeg"
+              alt="ConceptBridge engineering learning illustration"
+              className="w-auto h-auto max-w-56 sm:max-w-72 md:max-w-[420px] lg:max-w-[480px] lg:max-h-[34vh] rounded-2xl border border-white/10 shadow-lg mb-4 md:mb-6"
+            />
             <p className="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mb-6 md:mb-10">
               Upload any educational PDF, read it here, and highlight anything you get stuck on for an
               instant explanation in your language.
