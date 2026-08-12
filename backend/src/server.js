@@ -21,9 +21,17 @@ app.use(helmet({
         }
     }
 }));
-app.use(cors());
+// origin: true reflects the requesting origin dynamically (rather than a fixed '*'),
+// which is required once credentials: true is set — needed so the anonymous identity
+// cookie (see middleware/userIdentity.js) actually rides along on cross-origin
+// requests from the Vite dev server; in production the frontend is served from this
+// same origin so this is effectively a same-origin request either way.
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+const { userIdentity } = require('./middleware/userIdentity');
+app.use(userIdentity);
 
 // Routes
 const uploadRoute = require('./routes/uploadRoute');

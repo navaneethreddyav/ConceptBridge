@@ -10,6 +10,10 @@ const detectConcepts = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Document ID is required.' });
         }
 
+        if (documentStore.getOwner(documentId) !== req.userId) {
+            return res.status(404).json({ success: false, error: 'Document not found.' });
+        }
+
         // Check cache
         const doc = documentStore.getDocument(documentId);
         if (doc && doc.concepts && doc.concepts.length > 0) {

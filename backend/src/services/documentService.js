@@ -15,9 +15,10 @@ const SAMPLE_PAGES = 20;
  * of a large document has no business travelling over the wire or living in the
  * browser's React state.
  * @param {Object} file - The uploaded file object (multer)
+ * @param {string} ownerId - the requesting owner's identity-cookie id
  * @returns {Promise<{document: Object, sampleText: string}>}
  */
-const processDocument = async (file) => {
+const processDocument = async (file, ownerId) => {
     const { text, pageCount, info } = await pdfService.extractPdfData(file.buffer, { first: SAMPLE_PAGES });
 
     // Clean up text slightly (remove excessive newlines, trim)
@@ -33,12 +34,18 @@ const processDocument = async (file) => {
     // two different documents that happen to share identical first-N pages (rare) would
     // incorrectly dedupe, but requiring a full-document pass just to compute a dedupe
     // key would reintroduce the exact cost this function exists to avoid.
-    const contentHash = crypto.createHash('sha256').update(cleanedText).digest('hex').slice(0, 16);
+    // ownerId is folded into the hash so two different owners uploading identical
+    // content land on different ids (independent quota accounting, no cross-owner
+    // collision) while the same owner re-uploading their own file still dedupes.
+    const contentHash = crypto.createHash('sha256').update(`${ownerId}:${cleanedText}`).digest('hex').slice(0, 16);
 
-    // Create the structured document object for future compatibility
+    // Create the structured document object for future compatibility. sizeBytes is
+    // the actual multer-measured upload size — the authoritative figure quota
+    // accounting sums, never a re-derived or client-supplied number.
     const document = {
         id: `doc_${contentHash}`,
         filename: file.originalname,
+        sizeBytes: file.size,
         metadata: {
             pageCount: pageCount,
             title: info?.Title || file.originalname,

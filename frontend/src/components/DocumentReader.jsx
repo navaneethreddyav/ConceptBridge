@@ -264,7 +264,12 @@ const DocumentReader = ({ document: doc, onSelect }) => {
     const [pageText, setPageText] = useState('');
     const [pageTextLoading, setPageTextLoading] = useState(false);
 
-    const fileUrl = `${API_BASE_URL}/api/upload/${doc.id}/file`;
+    // Object form (not a bare URL string) so pdf.js's own fetch sends the identity
+    // cookie the ownership-checked file route now requires.
+    const fileSource = useMemo(
+        () => ({ url: `${API_BASE_URL}/api/upload/${doc.id}/file`, withCredentials: true }),
+        [doc.id]
+    );
     const totalPages = numPages || doc.metadata?.pageCount || 0;
 
     useEffect(() => {
@@ -293,6 +298,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                 promise: fetch(`${API_BASE_URL}/api/concepts/detect`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
                     body: JSON.stringify({ documentId: doc.id })
                 })
                     .then((res) => res.json())
@@ -359,7 +365,9 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         let cancelled = false;
         setPageTextLoading(true);
 
-        fetch(`${API_BASE_URL}/api/upload/${doc.id}/pages?first=${currentPage}&last=${currentPage}`)
+        fetch(`${API_BASE_URL}/api/upload/${doc.id}/pages?first=${currentPage}&last=${currentPage}`, {
+            credentials: 'include'
+        })
             .then((res) => res.json())
             .then((data) => {
                 const text = data?.pages?.[0]?.text || '';
@@ -562,7 +570,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                     </div>
                 ) : (
                     <Document
-                        file={fileUrl}
+                        file={fileSource}
                         onLoadSuccess={({ numPages: total }) => setNumPages(total)}
                         onLoadError={() => setPdfFailed(true)}
                         onSourceError={() => setPdfFailed(true)}

@@ -29,6 +29,7 @@ const postJson = (path, body) =>
     fetch(`${API_BASE_URL}${path}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(body)
     })
         .then((res) => res.json().then((data) => ({ ok: res.ok, data })))

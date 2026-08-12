@@ -10,6 +10,13 @@ const generateExplanation = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Concept name is required.' });
         }
 
+        // documentId doubles as part of the explanation cache key, so ownership is
+        // checked whenever it's present — not just when it's needed to fetch context —
+        // to avoid letting a caller probe or pollute another owner's cache namespace.
+        if (documentId && documentStore.getOwner(documentId) !== req.userId) {
+            return res.status(404).json({ success: false, error: 'Document not found.' });
+        }
+
         let before = contextBefore || '';
         let after = contextAfter || '';
 

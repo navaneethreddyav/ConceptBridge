@@ -41,6 +41,9 @@ const uploadWithProgress = (file, onProgress) =>
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', `${API_BASE_URL}/api/upload`);
+        // Carries the anonymous identity cookie (see backend/src/middleware/userIdentity.js)
+        // so uploads are attributed to the right owner for quota accounting.
+        xhr.withCredentials = true;
 
         // Second argument reports whether the browser actually gave us a byte total:
         // without it a percentage would be invented rather than measured.

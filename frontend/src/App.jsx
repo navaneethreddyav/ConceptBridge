@@ -3,9 +3,11 @@ import FileUpload from './components/FileUpload';
 import ReaderLayout from './components/ReaderLayout';
 import Header from './components/Header';
 import BrandingFooter from './components/BrandingFooter';
+import StorageQuota from './components/StorageQuota';
 
 function App() {
   const [document, setDocument] = useState(null);
+  const [storageRefreshKey, setStorageRefreshKey] = useState(0);
 
   return (
     <div className="h-dvh bg-background text-text-main font-sans flex flex-col overflow-hidden">
@@ -42,7 +44,13 @@ function App() {
               Upload any educational PDF, read it here, and highlight anything you get stuck on for an
               instant explanation in your language.
             </p>
-            <FileUpload onUploadSuccess={setDocument} />
+            <FileUpload
+              onUploadSuccess={(doc) => {
+                setDocument(doc);
+                setStorageRefreshKey((key) => key + 1);
+              }}
+            />
+            <StorageQuota refreshKey={storageRefreshKey} onOpenDocument={setDocument} />
           </main>
           <BrandingFooter />
         </div>
