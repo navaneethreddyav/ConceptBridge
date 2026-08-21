@@ -3,12 +3,20 @@ const promptService = require('./ai/promptService');
 const ConceptParser = require('./conceptParser');
 const ConceptValidator = require('./conceptValidator');
 const ConceptNormalizationService = require('./conceptNormalizationService');
+const terminologyMatcher = require('./terminology/terminologyMatcher');
+
+// Below this many dataset-matched terms, the sample isn't considered well covered by
+// the local dataset (shared/terminologyDataset.json) and Gemini detection still runs,
+// with dataset matches merged into its result afterward. At or above it, local
+// coverage is treated as good enough on its own and the Gemini call — and the
+// free-tier quota it costs — is skipped entirely for this document.
+const MIN_DATASET_TERMS_TO_SKIP_GEMINI = 6;
 
 /**
  * Orchestrates the concept detection pipeline.
  */
 class ConceptDetectionService {
-    
+
     /**
      * Splits text into overlapping chunks.
      * @param {string} text 
@@ -33,6 +41,14 @@ class ConceptDetectionService {
     async detectConcepts(text) {
         if (!text || text.trim().length === 0) {
             throw new Error("Document text is empty.");
+        }
+
+        // Zero-quota local pass first. If it alone covers the document well enough,
+        // skip Gemini entirely — this is the main free-tier-quota saving this service
+        // provides. Otherwise fall through to Gemini as before and merge these in.
+        const datasetMatches = terminologyMatcher.matchTerms(text);
+        if (datasetMatches.length >= MIN_DATASET_TERMS_TO_SKIP_GEMINI) {
+            return datasetMatches;
         }
 
         // Callers are expected to already pass a bounded sample (see
@@ -72,7 +88,7 @@ class ConceptDetectionService {
             }
         }
 
-        if (allConcepts.length === 0) {
+        if (allConcepts.length === 0 && datasetMatches.length === 0) {
             // A total failure caused purely by AI rate limiting keeps its 503/userFacing
             // tagging so the client sees the same "busy" message as the explanation path.
             if (rateLimitError && !otherChunkFailed) {
@@ -81,8 +97,9 @@ class ConceptDetectionService {
             throw new Error("No valid concepts could be extracted from any part of the document.");
         }
 
-        // 5. Normalize, deduplicate, and rank
-        const unifiedConcepts = ConceptNormalizationService.process(allConcepts);
+        // 5. Merge in the below-threshold dataset matches from above, then
+        // normalize, deduplicate, and rank the combined set.
+        const unifiedConcepts = ConceptNormalizationService.process([...allConcepts, ...datasetMatches]);
 
         return unifiedConcepts;
     }
