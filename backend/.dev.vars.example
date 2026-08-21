@@ -1,0 +1,29 @@
+# Local `wrangler dev` environment variables — mirrors backend/.env.example.
+# Copy this file to `backend/.dev.vars` (gitignored, never committed) and fill in real
+# values for local testing. In production these secrets are set via
+# `wrangler secret put GEMINI_API_KEY` / `wrangler secret put YOUTUBE_API_KEY` — never
+# as plaintext `vars` in wrangler.jsonc.
+
+# Required: Google Gemini Developer API key. Server-side only, never exposed to the frontend.
+GEMINI_API_KEY=
+
+# Optional: override the Gemini model (defaults to gemini-3.6-flash). Tried first,
+# before the free-tier fallback waterfall below.
+GEMINI_MODEL=
+
+# Optional: comma-separated free-tier model fallback list. When the current model's
+# daily free-tier quota is exhausted, the next one in this list is tried automatically
+# (never a paid model, never a billing change). Defaults to a built-in list if unset —
+# see modelManager.js. Update if Google renames/retires a free-tier model.
+GEMINI_MODEL_CANDIDATES=
+
+# Required: YouTube Data API v3 key. Server-side only, never exposed to the frontend.
+YOUTUBE_API_KEY=
+
+# Optional: set to "development" for local wrangler dev to include error `details` in
+# API responses. Leave unset in any real deployment (see wrangler.jsonc's `vars`).
+NODE_ENV=development
+
+# Optional: local Ollama fallback used during development only. Not required in production.
+OLLAMA_URL=http://localhost:11434
+OLLAMA_MODEL=llama3

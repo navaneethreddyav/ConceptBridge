@@ -1,26 +1,25 @@
-const mediaService = require('../services/media/mediaService');
-const { sendError } = require('../utils/errorResponse');
+import * as mediaService from '../services/media/mediaService.js';
+import { sendError } from '../utils/errorResponse.js';
 
-const getMedia = async (req, res) => {
+const getMedia = async (c) => {
     try {
-        const { concept } = req.body;
+        const env = c.env;
+        const { concept } = await c.req.json();
 
         if (!concept) {
-            return res.status(400).json({ success: false, error: 'Concept name is required.' });
+            return c.json({ success: false, error: 'Concept name is required.' }, 400);
         }
 
-        const videos = await mediaService.getVideosForConcept(concept);
+        const videos = await mediaService.getVideosForConcept(env, concept);
 
-        return res.status(200).json({
+        return c.json({
             success: true,
             videos
-        });
+        }, 200);
     } catch (error) {
         console.error('Media Controller Error:', error);
-        return sendError(res, error, 'Failed to fetch media.');
+        return sendError(c, error, 'Failed to fetch media.');
     }
 };
 
-module.exports = {
-    getMedia
-};
+export { getMedia };

@@ -4,7 +4,7 @@
 class ConceptNormalizationService {
     /**
      * Normalizes a concept name to a standard format for comparison.
-     * @param {string} name 
+     * @param {string} name
      * @returns {string}
      */
     static normalizeName(name) {
@@ -27,15 +27,15 @@ class ConceptNormalizationService {
             if (conceptMap.has(normalizedKey)) {
                 // Merge duplicate: boost importance/confidence and merge arrays
                 const existing = conceptMap.get(normalizedKey);
-                
+
                 // Frequency boost
                 existing.frequency = (existing.frequency || 1) + 1;
-                
+
                 // Pick the longest summary
                 if (concept.summary && concept.summary.length > existing.summary.length) {
                     existing.summary = concept.summary;
                 }
-                
+
                 // Prefer the capitalized/longer name for display (e.g., "Artificial Intelligence (AI)" over "AI")
                 if (concept.name.length > existing.name.length) {
                     existing.name = concept.name;
@@ -44,7 +44,7 @@ class ConceptNormalizationService {
                 // Average confidence and importance
                 existing.confidence = (existing.confidence + concept.confidence) / 2;
                 existing.importance = Math.min(10, existing.importance + 1); // Boost importance if mentioned multiple times
-                
+
                 // Merge arrays
                 existing.keywords = [...new Set([...(existing.keywords || []), ...(concept.keywords || [])])];
                 existing.relatedConcepts = [...new Set([...(existing.relatedConcepts || []), ...(concept.relatedConcepts || [])])];
@@ -75,9 +75,8 @@ class ConceptNormalizationService {
             return b.confidence - a.confidence;
         });
 
-        // Optional: truncate list to top N if too many? We'll return all for now.
         return mergedConcepts;
     }
 }
 
-module.exports = ConceptNormalizationService;
+export default ConceptNormalizationService;

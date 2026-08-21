@@ -1,0 +1,55 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "conceptbridge-api",
+    "main": "src/worker.js",
+    "compatibility_date": "2024-11-01",
+    "compatibility_flags": ["nodejs_compat"],
+
+    // Raw PDF bytes, keyed by document id (see documentStore.js).
+    "r2_buckets": [
+        {
+            "binding": "PDF_BUCKET",
+            "bucket_name": "conceptbridge-pdfs"
+        }
+    ],
+
+    // Document metadata / ownership / quota accounting (see migrations/0001_init.sql).
+    // database_id is a placeholder until `wrangler d1 create conceptbridge` is run
+    // against a real Cloudflare account (requires credentials this dev environment
+    // doesn't have) — replace it with the real id before any `--remote`/deploy use.
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "conceptbridge",
+            "database_id": "REPLACE_AFTER_WRANGLER_D1_CREATE"
+        }
+    ],
+
+    // Stage 2 will use this for video/explanation response caching (see videoService.js
+    // / explanationService.js's current in-memory Maps). Bound now so stage 2 doesn't
+    // need to touch wrangler.jsonc just to add the cache. Same placeholder treatment as
+    // the D1 database_id above — replace after `wrangler kv namespace create`.
+    "kv_namespaces": [
+        {
+            "binding": "CACHE_KV",
+            "id": "REPLACE_AFTER_WRANGLER_KV_CREATE"
+        }
+    ],
+
+    // Non-secret config only. GEMINI_API_KEY / YOUTUBE_API_KEY are Worker *secrets*
+    // (`wrangler secret put GEMINI_API_KEY`, etc.) — never plaintext vars, never
+    // committed. Locally, `wrangler dev` reads secrets and vars alike from `.dev.vars`
+    // (gitignored) so both work the same way without a real secret store in dev.
+    //
+    // NODE_ENV is deliberately NOT set here: error responses only include internal
+    // details when it equals "development" (see uploadController.js/worker.js), so
+    // leaving it unset here keeps any real deploy safe-by-default, matching the old
+    // Express app's behavior of not leaking details unless NODE_ENV is explicitly
+    // "development". Local-only override lives in `.dev.vars` (gitignored).
+    "vars": {
+        "GEMINI_MODEL": "gemini-3.6-flash",
+        "GEMINI_MODEL_CANDIDATES": "gemini-3.5-flash-lite,gemini-3.1-flash-lite,gemini-3-flash-preview,gemini-3.6-flash",
+        "OLLAMA_URL": "http://localhost:11434",
+        "OLLAMA_MODEL": "llama3"
+    }
+}

@@ -1,8 +1,8 @@
-const express = require('express');
-const { handleTestPrompt } = require('../controllers/aiController');
+import { Hono } from 'hono';
+import { handleTestPrompt } from '../controllers/aiController.js';
 
-const router = express.Router();
+const aiRoute = new Hono();
 
-router.post('/test', handleTestPrompt);
+aiRoute.post('/test', handleTestPrompt);
 
-module.exports = router;
+export default aiRoute;

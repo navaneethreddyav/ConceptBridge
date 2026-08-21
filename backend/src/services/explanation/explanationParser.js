@@ -1,4 +1,4 @@
-const ConceptParser = require('../conceptParser');
+import ConceptParser from '../conceptParser.js';
 
 /**
  * Robustly parses AI JSON output for explanations.
@@ -10,4 +10,4 @@ class ExplanationParser {
     }
 }
 
-module.exports = ExplanationParser;
+export default ExplanationParser;

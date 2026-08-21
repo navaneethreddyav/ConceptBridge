@@ -1,4 +1,8 @@
-const { domains } = require('../../../../shared/terminologyDataset.json');
+// wrangler's esbuild-based bundler supports importing JSON as a default export
+// natively, no import-attribute syntax needed (same as Vite on the frontend side).
+import terminologyDataset from '../../../../shared/terminologyDataset.json';
+
+const { domains } = terminologyDataset;
 
 // Flattened once at module load — the dataset is small (a few hundred terms) and
 // static for the process lifetime, so there's no reason to rebuild this per call.
@@ -76,4 +80,4 @@ const matchTerms = (text) => {
     return Array.from(seen.values()).sort((a, b) => b.importance - a.importance || b.frequency - a.frequency);
 };
 
-module.exports = { matchTerms, ALL_TERMS };
+export { matchTerms, ALL_TERMS };

@@ -1,20 +1,26 @@
-const explanationService = require('../services/explanation/explanationService');
-const documentStore = require('../services/documentStore');
-const { sendError } = require('../utils/errorResponse');
+import * as explanationService from '../services/explanation/explanationService.js';
+import * as documentStore from '../services/documentStore.js';
+import { sendError } from '../utils/errorResponse.js';
 
-const generateExplanation = async (req, res) => {
+const generateExplanation = async (c) => {
     try {
-        const { documentId, concept, contextBefore, contextAfter, language, difficulty } = req.body;
+        const env = c.env;
+        const userId = c.get('userId');
+        const { documentId, concept, contextBefore, contextAfter, language, difficulty } = await c.req.json();
 
         if (!concept) {
-            return res.status(400).json({ success: false, error: 'Concept name is required.' });
+            return c.json({ success: false, error: 'Concept name is required.' }, 400);
         }
 
         // documentId doubles as part of the explanation cache key, so ownership is
         // checked whenever it's present — not just when it's needed to fetch context —
         // to avoid letting a caller probe or pollute another owner's cache namespace.
-        if (documentId && documentStore.getOwner(documentId) !== req.userId) {
-            return res.status(404).json({ success: false, error: 'Document not found.' });
+        // 404 (not 403) on mismatch, same convention as uploadController/conceptController.
+        if (documentId) {
+            const owner = await documentStore.getOwner(env, documentId);
+            if (owner !== userId) {
+                return c.json({ success: false, error: 'Document not found.' }, 404);
+            }
         }
 
         let before = contextBefore || '';
@@ -25,13 +31,14 @@ const generateExplanation = async (req, res) => {
         // frontend always supplies real contextBefore/After from the live PDF text
         // layer, so this only matters for an edge-case caller with no selection.
         if (!before && !after && documentId) {
-            const sampleText = documentStore.getSampleText(documentId);
+            const sampleText = await documentStore.getSampleText(env, documentId);
             if (sampleText) {
                 before = sampleText;
             }
         }
 
         const { explanation, visual } = await explanationService.generateExplanation(
+            env,
             concept,
             { contextBefore: before, contextAfter: after },
             language,
@@ -39,18 +46,16 @@ const generateExplanation = async (req, res) => {
             documentId
         );
 
-        return res.status(200).json({
+        return c.json({
             success: true,
             explanation,
             visual
-        });
+        }, 200);
 
     } catch (error) {
         console.error('Explanation Error:', error);
-        return sendError(res, error, 'Failed to generate explanation.');
+        return sendError(c, error, 'Failed to generate explanation.');
     }
 };
 
-module.exports = {
-    generateExplanation
-};
+export { generateExplanation };

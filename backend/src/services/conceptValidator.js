@@ -31,4 +31,4 @@ class ConceptValidator {
     }
 }
 
-module.exports = ConceptValidator;
+export default ConceptValidator;

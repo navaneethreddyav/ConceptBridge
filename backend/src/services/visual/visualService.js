@@ -246,4 +246,4 @@ class VisualService {
     }
 }
 
-module.exports = new VisualService();
+export default new VisualService();

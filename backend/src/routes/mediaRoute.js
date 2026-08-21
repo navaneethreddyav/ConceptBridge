@@ -1,8 +1,8 @@
-const express = require('express');
-const { getMedia } = require('../controllers/mediaController');
+import { Hono } from 'hono';
+import { getMedia } from '../controllers/mediaController.js';
 
-const router = express.Router();
+const mediaRoute = new Hono();
 
-router.post('/', getMedia);
+mediaRoute.post('/', getMedia);
 
-module.exports = router;
+export default mediaRoute;

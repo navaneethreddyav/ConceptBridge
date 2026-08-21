@@ -1,5 +1,4 @@
-const crypto = require('crypto');
-const pdfService = require('./pdfService');
+import { extractPdfData } from './pdfService.js';
 
 // Only the first N pages are extracted at upload time, regardless of how long the
 // document actually is — this is what keeps the upload request fast and memory-bounded
@@ -9,17 +8,29 @@ const pdfService = require('./pdfService');
 const SAMPLE_PAGES = 20;
 
 /**
+ * SHA-256 hex digest via Web Crypto (`crypto.subtle`), the Workers-compatible
+ * replacement for Node's synchronous `require('crypto').createHash('sha256')` — the
+ * latter isn't available in the Workers runtime. `crypto` itself needs no import; it's
+ * a Workers/browser global (same one `crypto.randomUUID()` already relies on).
+ * @returns {Promise<string>}
+ */
+const sha256Hex = async (input) => {
+    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
+    return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+};
+
+/**
  * Processes a PDF file and returns a structured document object plus its bounded text
  * sample. The sample is kept out of the document object on purpose — that object is
  * JSON-serialized straight into the /api/upload response, and the full extracted text
  * of a large document has no business travelling over the wire or living in the
  * browser's React state.
- * @param {Object} file - The uploaded file object (multer)
+ * @param {Object} file - { buffer: Uint8Array, originalname: string, size: number }
  * @param {string} ownerId - the requesting owner's identity-cookie id
  * @returns {Promise<{document: Object, sampleText: string}>}
  */
 const processDocument = async (file, ownerId) => {
-    const { text, pageCount, info } = await pdfService.extractPdfData(file.buffer, { first: SAMPLE_PAGES });
+    const { text, pageCount, info } = await extractPdfData(file.buffer, { first: SAMPLE_PAGES });
 
     // Clean up text slightly (remove excessive newlines, trim)
     const cleanedText = text
@@ -37,11 +48,12 @@ const processDocument = async (file, ownerId) => {
     // ownerId is folded into the hash so two different owners uploading identical
     // content land on different ids (independent quota accounting, no cross-owner
     // collision) while the same owner re-uploading their own file still dedupes.
-    const contentHash = crypto.createHash('sha256').update(`${ownerId}:${cleanedText}`).digest('hex').slice(0, 16);
+    const contentHash = (await sha256Hex(`${ownerId}:${cleanedText}`)).slice(0, 16);
 
     // Create the structured document object for future compatibility. sizeBytes is
-    // the actual multer-measured upload size — the authoritative figure quota
-    // accounting sums, never a re-derived or client-supplied number.
+    // the actual measured upload size (Web File.size, from Hono's parseBody) — the
+    // authoritative figure quota accounting sums, never a re-derived or client-supplied
+    // number.
     const document = {
         id: `doc_${contentHash}`,
         filename: file.originalname,
@@ -57,7 +69,4 @@ const processDocument = async (file, ownerId) => {
     return { document, sampleText: cleanedText };
 };
 
-module.exports = {
-    processDocument,
-    SAMPLE_PAGES
-};
+export { processDocument, SAMPLE_PAGES };

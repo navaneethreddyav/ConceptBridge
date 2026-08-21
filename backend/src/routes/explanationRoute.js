@@ -1,8 +1,8 @@
-const express = require('express');
-const { generateExplanation } = require('../controllers/explanationController');
+import { Hono } from 'hono';
+import { generateExplanation } from '../controllers/explanationController.js';
 
-const router = express.Router();
+const explanationRoute = new Hono();
 
-router.post('/', generateExplanation);
+explanationRoute.post('/', generateExplanation);
 
-module.exports = router;
+export default explanationRoute;

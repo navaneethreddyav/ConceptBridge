@@ -1,5 +1,5 @@
-const axios = require('axios');
-const modelManager = require('./modelManager');
+import axios from 'axios';
+import * as modelManager from './modelManager.js';
 
 const GEMINI_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 
@@ -27,143 +27,143 @@ function parseRetryDelayMs(responseData) {
 }
 
 /**
- * Service to interact with the Google Gemini Developer API.
+ * Whether a Gemini API key is configured. No network call.
+ * @returns {boolean}
  */
-class GeminiService {
-    /**
-     * Whether a Gemini API key is configured. No network call.
-     * @returns {boolean}
-     */
-    isAvailable() {
-        return !!modelManager.getGeminiApiKey();
-    }
+const isAvailable = (env) => !!modelManager.getGeminiApiKey(env);
 
-    /**
-     * Sends a prompt to Gemini, walking the free-tier model fallback list
-     * (modelManager) if the current model's daily quota is exhausted. Never
-     * selects a paid model — every candidate comes from the same free-tier list.
-     * @param {string} prompt
-     * @returns {Promise<string>}
-     */
-    async generateResponse(prompt) {
-        const apiKey = modelManager.getGeminiApiKey();
-        if (!apiKey) {
-            throw new Error('Gemini API key is not configured.');
+/**
+ * Single-model call with short in-budget 429 backoff (does not switch models).
+ * @param {string} model
+ * @param {string} apiKey
+ * @param {string} prompt
+ * @returns {Promise<string>}
+ */
+async function callModel(model, apiKey, prompt) {
+    const url = `${GEMINI_BASE_URL}/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const payload = {
+        contents: [
+            {
+                role: 'user',
+                parts: [{ text: prompt }]
+            }
+        ],
+        generationConfig: {
+            // Every prompt in this app asks for a JSON object back; forcing JSON
+            // mode eliminates the whole class of parse failures caused by markdown
+            // fences or conversational wrapping around the JSON. maxOutputTokens is
+            // set generously (explanations return many fields, incl. a visualSpec)
+            // since a model's default budget can otherwise cut a response short —
+            // observed in production as an intermittent "could not parse" 500.
+            responseMimeType: 'application/json',
+            maxOutputTokens: 8192
         }
+    };
 
-        let triedTruncatedRetry = false;
+    let response;
+    let budgetMs = MAX_BACKOFF_BUDGET_MS;
 
-        for (;;) {
-            const model = modelManager.getGeminiModel();
-            try {
-                return await this._callModel(model, apiKey, prompt);
-            } catch (error) {
-                if (error.isTruncated && !triedTruncatedRetry) {
-                    // Sampling is stochastic — an immediate retry of the same model
-                    // often just doesn't truncate the second time. One retry only;
-                    // if it happens again, surface the failure rather than loop.
-                    triedTruncatedRetry = true;
-                    console.warn(`Gemini response from "${model}" was truncated (MAX_TOKENS); retrying once.`);
+    for (let attempt = 0; ; attempt++) {
+        try {
+            response = await axios.post(url, payload, {
+                headers: { 'Content-Type': 'application/json' },
+                timeout: 120000
+            });
+            break;
+        } catch (error) {
+            // Never surface the request URL: it carries the API key as a query param.
+            const status = error.response ? error.response.status : null;
+            const data = error.response && error.response.data;
+            const apiMessage = data && data.error
+                ? data.error.message
+                : error.code || 'network error';
+
+            if (status === 429 && attempt < MAX_RETRIES) {
+                const delayMs = parseRetryDelayMs(data);
+                // Only wait when the server's own delay fits the budget; a longer
+                // delay means the quota window will not reopen in time to be worth
+                // holding the request open.
+                if (delayMs !== null && delayMs <= budgetMs) {
+                    console.warn(`Gemini rate limited; retrying in ${Math.round(delayMs / 1000)}s.`);
+                    await sleep(delayMs);
+                    budgetMs -= delayMs;
                     continue;
                 }
-
-                if (!error.isRateLimit) throw error;
-
-                const nextModel = modelManager.advanceGeminiModel();
-                if (!nextModel) throw error; // every free-tier candidate exhausted
-
-                console.warn(`Gemini model "${model}" is out of free-tier quota today; switching to "${nextModel}".`);
             }
+
+            const failure = new Error(
+                `Gemini request failed${status ? ` (HTTP ${status})` : ''}: ${apiMessage}`);
+            failure.isRateLimit = status === 429;
+            throw failure;
         }
     }
 
-    /**
-     * Single-model call with short in-budget 429 backoff (does not switch models).
-     * @param {string} model
-     * @param {string} apiKey
-     * @param {string} prompt
-     * @returns {Promise<string>}
-     */
-    async _callModel(model, apiKey, prompt) {
-        const url = `${GEMINI_BASE_URL}/${model}:generateContent?key=${encodeURIComponent(apiKey)}`;
-        const payload = {
-            contents: [
-                {
-                    role: 'user',
-                    parts: [{ text: prompt }]
-                }
-            ],
-            generationConfig: {
-                // Every prompt in this app asks for a JSON object back; forcing JSON
-                // mode eliminates the whole class of parse failures caused by markdown
-                // fences or conversational wrapping around the JSON. maxOutputTokens is
-                // set generously (explanations return many fields, incl. a visualSpec)
-                // since a model's default budget can otherwise cut a response short —
-                // observed in production as an intermittent "could not parse" 500.
-                responseMimeType: 'application/json',
-                maxOutputTokens: 8192
+    const candidate = response.data
+        && Array.isArray(response.data.candidates)
+        && response.data.candidates[0];
+
+    if (candidate && candidate.finishReason === 'MAX_TOKENS') {
+        const truncated = new Error(`Gemini response from "${model}" was truncated (MAX_TOKENS).`);
+        truncated.isTruncated = true;
+        throw truncated;
+    }
+
+    const text = candidate
+        && candidate.content
+        && Array.isArray(candidate.content.parts)
+        && candidate.content.parts.map(part => part.text || '').join('');
+
+    if (!text || !text.trim()) {
+        throw new Error('Unexpected response format from Gemini.');
+    }
+
+    return text.trim();
+}
+
+/**
+ * Sends a prompt to Gemini, walking the free-tier model fallback list
+ * (modelManager) if the current model's daily quota is exhausted. Never
+ * selects a paid model — every candidate comes from the same free-tier list.
+ *
+ * The candidate-walking index is kept local to this single call (not shared mutable
+ * state on a singleton, per the modelManager.js port note) so concurrent requests in
+ * the same Worker isolate can never stomp on each other's model selection.
+ * @param {Object} env
+ * @param {string} prompt
+ * @returns {Promise<string>}
+ */
+async function generateResponse(env, prompt) {
+    const apiKey = modelManager.getGeminiApiKey(env);
+    if (!apiKey) {
+        throw new Error('Gemini API key is not configured.');
+    }
+
+    const candidates = modelManager.getGeminiCandidates(env);
+    let modelIndex = 0;
+    let triedTruncatedRetry = false;
+
+    for (;;) {
+        const model = candidates[modelIndex] || candidates[0];
+        try {
+            return await callModel(model, apiKey, prompt);
+        } catch (error) {
+            if (error.isTruncated && !triedTruncatedRetry) {
+                // Sampling is stochastic — an immediate retry of the same model
+                // often just doesn't truncate the second time. One retry only;
+                // if it happens again, surface the failure rather than loop.
+                triedTruncatedRetry = true;
+                console.warn(`Gemini response from "${model}" was truncated (MAX_TOKENS); retrying once.`);
+                continue;
             }
-        };
 
-        let response;
-        let budgetMs = MAX_BACKOFF_BUDGET_MS;
+            if (!error.isRateLimit) throw error;
 
-        for (let attempt = 0; ; attempt++) {
-            try {
-                response = await axios.post(url, payload, {
-                    headers: { 'Content-Type': 'application/json' },
-                    timeout: 120000
-                });
-                break;
-            } catch (error) {
-                // Never surface the request URL: it carries the API key as a query param.
-                const status = error.response ? error.response.status : null;
-                const data = error.response && error.response.data;
-                const apiMessage = data && data.error
-                    ? data.error.message
-                    : error.code || 'network error';
+            if (modelIndex >= candidates.length - 1) throw error; // every free-tier candidate exhausted
+            modelIndex += 1;
 
-                if (status === 429 && attempt < MAX_RETRIES) {
-                    const delayMs = parseRetryDelayMs(data);
-                    // Only wait when the server's own delay fits the budget; a longer
-                    // delay means the quota window will not reopen in time to be worth
-                    // holding the request open.
-                    if (delayMs !== null && delayMs <= budgetMs) {
-                        console.warn(`Gemini rate limited; retrying in ${Math.round(delayMs / 1000)}s.`);
-                        await sleep(delayMs);
-                        budgetMs -= delayMs;
-                        continue;
-                    }
-                }
-
-                const failure = new Error(
-                    `Gemini request failed${status ? ` (HTTP ${status})` : ''}: ${apiMessage}`);
-                failure.isRateLimit = status === 429;
-                throw failure;
-            }
+            console.warn(`Gemini model "${model}" is out of free-tier quota today; switching to "${candidates[modelIndex]}".`);
         }
-
-        const candidate = response.data
-            && Array.isArray(response.data.candidates)
-            && response.data.candidates[0];
-
-        if (candidate && candidate.finishReason === 'MAX_TOKENS') {
-            const truncated = new Error(`Gemini response from "${model}" was truncated (MAX_TOKENS).`);
-            truncated.isTruncated = true;
-            throw truncated;
-        }
-
-        const text = candidate
-            && candidate.content
-            && Array.isArray(candidate.content.parts)
-            && candidate.content.parts.map(part => part.text || '').join('');
-
-        if (!text || !text.trim()) {
-            throw new Error('Unexpected response format from Gemini.');
-        }
-
-        return text.trim();
     }
 }
 
-module.exports = new GeminiService();
+export { isAvailable, generateResponse };

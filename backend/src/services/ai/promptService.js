@@ -1,4 +1,4 @@
-const { supportedLanguages } = require('../../../../shared/supportedLanguages.json');
+import { supportedLanguages } from '../../../../shared/supportedLanguages.json';
 
 const CONTEXT_CHAR_LIMIT = 4000;
 
@@ -131,4 +131,4 @@ ${contextText}
     }
 }
 
-module.exports = PromptService;
+export default PromptService;

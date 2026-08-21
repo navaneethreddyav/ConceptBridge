@@ -3,7 +3,7 @@
  */
 class ConceptParser {
     /**
-     * Parses the raw text output from Ollama into a JSON object.
+     * Parses the raw text output from the AI model into a JSON object.
      * @param {string} rawResponse - The AI's raw response
      * @returns {Object} - Parsed JSON containing { concepts: [] }
      */
@@ -19,7 +19,7 @@ class ConceptParser {
             // Slower path: Try to extract JSON using regex (often models wrap JSON in markdown blocks)
             const jsonRegex = /```(?:json)?\s*([\s\S]*?)\s*```/i;
             const match = rawResponse.match(jsonRegex);
-            
+
             if (match && match[1]) {
                 try {
                     return JSON.parse(match[1]);
@@ -31,7 +31,7 @@ class ConceptParser {
             // Brute force: Find the first '{' and last '}'
             const start = rawResponse.indexOf('{');
             const end = rawResponse.lastIndexOf('}');
-            
+
             if (start !== -1 && end !== -1 && end > start) {
                 try {
                     const extractedJsonString = rawResponse.slice(start, end + 1);
@@ -40,10 +40,10 @@ class ConceptParser {
                     throw new Error("Could not parse the AI response as valid JSON.");
                 }
             }
-            
+
             throw new Error("AI response did not contain JSON structure.");
         }
     }
 }
 
-module.exports = ConceptParser;
+export default ConceptParser;

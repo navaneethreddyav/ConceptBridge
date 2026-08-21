@@ -1,35 +1,24 @@
-const express = require('express');
-const multer = require('multer');
-const {
+import { Hono } from 'hono';
+import {
     handleUpload,
     getDocumentFile,
     getDocumentPages,
     listDocuments,
     getUsage,
     deleteDocument
-} = require('../controllers/uploadController');
-const { MAX_FILE_SIZE } = require('../services/fileValidationService');
+} from '../controllers/uploadController.js';
 
-const router = express.Router();
+// Per-file size limit (50MB) is enforced by fileValidationService, called from
+// handleUpload — there is no Multer-level limit to configure separately anymore
+// (Hono/Workers has no streaming multipart size cap short of a manual Content-Length
+// check), so validation staying in fileValidationService is the single source of truth.
+const uploadRoute = new Hono();
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage, limits: { fileSize: MAX_FILE_SIZE } });
+uploadRoute.get('/', listDocuments);
+uploadRoute.get('/usage', getUsage);
+uploadRoute.post('/', handleUpload);
+uploadRoute.get('/:id/file', getDocumentFile);
+uploadRoute.get('/:id/pages', getDocumentPages);
+uploadRoute.delete('/:id', deleteDocument);
 
-const handleMulterError = (err, req, res, next) => {
-    if (err instanceof multer.MulterError) {
-        const message = err.code === 'LIMIT_FILE_SIZE'
-            ? 'The PDF is too large.'
-            : `Upload the PDF as a single "pdf" form field. (${err.code})`;
-        return res.status(400).json({ success: false, error: message });
-    }
-    return next(err);
-};
-
-router.get('/', listDocuments);
-router.get('/usage', getUsage);
-router.post('/', upload.single('pdf'), handleMulterError, handleUpload);
-router.get('/:id/file', getDocumentFile);
-router.get('/:id/pages', getDocumentPages);
-router.delete('/:id', deleteDocument);
-
-module.exports = router;
+export default uploadRoute;

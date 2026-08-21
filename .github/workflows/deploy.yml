@@ -1,0 +1,78 @@
+# ConceptBridge deploy workflow — Cloudflare Workers (API) + Cloudflare Pages (frontend).
+#
+# REQUIRED SETUP BEFORE THIS WORKFLOW WILL SUCCEED:
+#
+# 1. Repo secrets (Settings -> Secrets and variables -> Actions -> Secrets):
+#      - CLOUDFLARE_API_TOKEN   Cloudflare API token with Workers + Pages deploy permissions.
+#      - CLOUDFLARE_ACCOUNT_ID  Cloudflare account ID.
+#    Until both are set, the wrangler-action steps below will fail authentication.
+#
+# 2. Repo variable (Settings -> Secrets and variables -> Actions -> Variables):
+#      - VITE_API_BASE_URL      The deployed Worker's URL, e.g.
+#                                https://conceptbridge-api.<subdomain>.workers.dev
+#    This is a public URL, not a secret, so it is a "variable" (vars.*) rather than a
+#    "secret". It is NOT known until after the first manual `wrangler deploy` of the
+#    Worker reveals its *.workers.dev URL, so it can't be set before that first deploy.
+#    Until VITE_API_BASE_URL is set, the frontend build below falls back to the
+#    frontend's own built-in fallback (see frontend/src/config/api.js), which resolves
+#    to an empty string ('') in production builds. That fallback is fine for a
+#    same-origin deployment (frontend and backend served from one origin), but in THIS
+#    split-deployment architecture the frontend (Cloudflare Pages) and backend
+#    (Cloudflare Workers) are always two different origins — so, unlike the frontend
+#    code's own more lenient fallback, VITE_API_BASE_URL is NOT optional here. Without
+#    it, the deployed frontend will be built pointing at relative paths on its own
+#    Pages origin, which has no API behind it, and every API call will fail.
+#
+# Until both the secrets and the variable are set, this workflow is expected to either
+# fail outright or produce a frontend build that cannot reach the backend.
+
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        env:
+          # See top-of-file comment: this repo variable must be set after the first
+          # Worker deploy, or this build will fall back to a relative '' API base URL
+          # that cannot reach a cross-origin Worker.
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+        run: npm run build
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Deploy Worker API
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: backend
+          command: deploy
+
+      - name: Deploy frontend to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy frontend/dist --project-name=conceptbridge

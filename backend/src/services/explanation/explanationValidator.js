@@ -4,7 +4,7 @@
 class ExplanationValidator {
     /**
      * Validates and sanitizes the explanation object.
-     * @param {Object} data 
+     * @param {Object} data
      * @returns {Object}
      */
     static validate(data) {
@@ -30,4 +30,4 @@ class ExplanationValidator {
     }
 }
 
-module.exports = ExplanationValidator;
+export default ExplanationValidator;

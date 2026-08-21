@@ -1,8 +1,8 @@
-const express = require('express');
-const { detectConcepts } = require('../controllers/conceptController');
+import { Hono } from 'hono';
+import { detectConcepts } from '../controllers/conceptController.js';
 
-const router = express.Router();
+const conceptRoute = new Hono();
 
-router.post('/detect', detectConcepts);
+conceptRoute.post('/detect', detectConcepts);
 
-module.exports = router;
+export default conceptRoute;

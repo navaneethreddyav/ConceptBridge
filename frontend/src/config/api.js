@@ -1,9 +1,10 @@
 // Single source of truth for the backend base URL.
-// Configure via VITE_API_BASE_URL in frontend/.env (see frontend/.env.example) to point
-// at a separately-deployed backend. If unset: in dev (`vite dev`) falls back to the
-// backend's documented default dev port, since the two run as separate processes; in a
-// production build, falls back to '' (relative paths), which is correct when the
-// backend serves this same built frontend from one origin — no localhost URL is ever
-// baked into a production bundle.
+// Post-migration, frontend (Cloudflare Pages) and backend (Cloudflare Workers) are
+// always two separate origins — there is no single-service "same origin" deployment
+// anymore. Configure via VITE_API_BASE_URL in frontend/.env (see frontend/.env.example),
+// pointing at the deployed Worker URL in production. If unset: in dev (`vite dev`)
+// falls back to `wrangler dev`'s default local port (see backend's `npm run cf:dev`);
+// in a production build with no VITE_API_BASE_URL set, falls back to '' (relative
+// paths), which will 404 against Pages — set the env var before building for deploy.
 export const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:3001' : '');
+    import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? 'http://localhost:8787' : '');
