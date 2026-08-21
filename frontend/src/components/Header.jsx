@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, BookOpen } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 
 import { supportedLanguages } from '../../../shared/supportedLanguages.json';
 
-const Header = ({ onHome }) => {
+const Header = ({ onHome, onOpenGlossary }) => {
     const { settings, updateSettings } = useSettings();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -30,42 +30,53 @@ const Header = ({ onHome }) => {
                 </div>
             </button>
 
-            <div className="relative">
-                <button 
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-text-main transition-colors flex items-center gap-2"
+            <div className="flex items-center gap-2 shrink-0">
+                <button
+                    type="button"
+                    onClick={onOpenGlossary}
+                    className="p-2 sm:px-3 rounded-full bg-white/5 hover:bg-white/10 text-text-main transition-colors flex items-center gap-2 text-sm"
+                    title="Technical Terms glossary"
                 >
-                    <Settings className="w-5 h-5" />
+                    <BookOpen className="w-5 h-5" />
+                    <span className="hidden sm:inline">Technical Terms</span>
                 </button>
+                <div className="relative">
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-text-main transition-colors flex items-center gap-2"
+                    >
+                        <Settings className="w-5 h-5" />
+                    </button>
 
-                {isOpen && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white/5 border border-white/10 rounded-xl shadow-2xl p-4 animate-in slide-in-from-top-2">
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-text-muted mb-1">Language</label>
-                            <select 
-                                className="w-full bg-background border border-white/10 text-text-main rounded-lg p-2 focus:outline-none focus:border-primary"
-                                value={settings.language}
-                                onChange={(e) => updateSettings({ language: e.target.value })}
-                            >
-                                {languages.map(lang => (
-                                    <option key={lang} value={lang}>{lang}</option>
-                                ))}
-                            </select>
+                    {isOpen && (
+                        <div className="absolute right-0 mt-2 w-64 bg-white/5 border border-white/10 rounded-xl shadow-2xl p-4 animate-in slide-in-from-top-2">
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-text-muted mb-1">Language</label>
+                                <select
+                                    className="w-full bg-background border border-white/10 text-text-main rounded-lg p-2 focus:outline-none focus:border-primary"
+                                    value={settings.language}
+                                    onChange={(e) => updateSettings({ language: e.target.value })}
+                                >
+                                    {languages.map(lang => (
+                                        <option key={lang} value={lang}>{lang}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-text-muted mb-1">Difficulty</label>
+                                <select
+                                    className="w-full bg-background border border-white/10 text-text-main rounded-lg p-2 focus:outline-none focus:border-primary"
+                                    value={settings.difficulty}
+                                    onChange={(e) => updateSettings({ difficulty: e.target.value })}
+                                >
+                                    {difficulties.map(level => (
+                                        <option key={level} value={level}>{level}</option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-text-muted mb-1">Difficulty</label>
-                            <select 
-                                className="w-full bg-background border border-white/10 text-text-main rounded-lg p-2 focus:outline-none focus:border-primary"
-                                value={settings.difficulty}
-                                onChange={(e) => updateSettings({ difficulty: e.target.value })}
-                            >
-                                {difficulties.map(level => (
-                                    <option key={level} value={level}>{level}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </header>
     );

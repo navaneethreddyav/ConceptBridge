@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { X, Loader2, AlertCircle, Zap, Layers, AlertTriangle, PlayCircle } from 'lucide-react';
+import { X, Loader2, AlertCircle, Zap, Layers, AlertTriangle, PlayCircle, BadgeCheck } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 import VoicePlayer from './VoicePlayer';
 import { API_BASE_URL } from '../config/api';
 import { supportedLanguages } from '../../../shared/supportedLanguages.json';
+import { lookupGlossaryTerm } from '../utils/glossaryLookup';
 
 const formatDuration = (totalSeconds) => {
     if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return null;
@@ -87,6 +88,7 @@ const ConceptSidebar = ({ selection, documentId, onClose }) => {
     const [videos, setVideos] = useState(null);
     const [mediaLoading, setMediaLoading] = useState(true);
     const [mediaFailed, setMediaFailed] = useState(false);
+    const [glossaryMatch, setGlossaryMatch] = useState(null);
 
     const explanationRequestRef = useRef({ key: null, promise: null });
     const mediaRequestRef = useRef({ key: null, promise: null });
@@ -95,6 +97,24 @@ const ConceptSidebar = ({ selection, documentId, onClose }) => {
     const contextBefore = selection?.contextBefore || '';
     const contextAfter = selection?.contextAfter || '';
     const { language, difficulty } = settings;
+
+    // Purely informational cross-reference into the Technical Terms glossary — never
+    // blocks or affects the explanation flow below, and a lookup miss (not a
+    // first-year term, or the glossary fails to load) just leaves this null.
+    useEffect(() => {
+        if (!concept) {
+            setGlossaryMatch(null);
+            return undefined;
+        }
+        let cancelled = false;
+        setGlossaryMatch(null);
+        lookupGlossaryTerm(concept).then((match) => {
+            if (!cancelled) setGlossaryMatch(match);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, [concept]);
 
     useEffect(() => {
         if (!concept) return undefined;
@@ -168,6 +188,12 @@ const ConceptSidebar = ({ selection, documentId, onClose }) => {
                     <h2 className="text-lg font-bold text-text-main break-words">
                         {explanation?.title || concept}
                     </h2>
+                    {glossaryMatch && (
+                        <p className="mt-1 flex items-center gap-1 text-[11px] text-primary">
+                            <BadgeCheck className="w-3 h-3 shrink-0" />
+                            Recognized first-year engineering term
+                        </p>
+                    )}
                 </div>
                 <button
                     onClick={onClose}

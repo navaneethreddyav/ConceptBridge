@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import FileUpload from './components/FileUpload';
 import ReaderLayout from './components/ReaderLayout';
 import Header from './components/Header';
 import BrandingFooter from './components/BrandingFooter';
 import StorageQuota from './components/StorageQuota';
+import { Loader2 } from 'lucide-react';
+
+// Lazy-loaded: the glossary's ~250KB term dataset and its own JS should never be
+// part of the initial bundle a student pays for just to upload and read a PDF.
+const TechnicalTerms = lazy(() => import('./components/TechnicalTerms'));
 
 function App() {
   const [document, setDocument] = useState(null);
   const [storageRefreshKey, setStorageRefreshKey] = useState(0);
+  const [showGlossary, setShowGlossary] = useState(false);
 
   return (
     <div className="h-dvh bg-background text-text-main font-sans flex flex-col overflow-hidden">
-      <Header onHome={() => setDocument(null)} />
+      <Header
+        onHome={() => {
+          setDocument(null);
+          setShowGlossary(false);
+        }}
+        onOpenGlossary={() => setShowGlossary(true)}
+      />
 
-      {!document ? (
+      {showGlossary ? (
+        <Suspense
+          fallback={
+            <div className="flex-1 flex items-center justify-center gap-2 text-sm text-text-muted">
+              <Loader2 className="w-4 h-4 text-primary animate-spin" />
+              Loading glossary...
+            </div>
+          }
+        >
+          <TechnicalTerms onClose={() => setShowGlossary(false)} />
+        </Suspense>
+      ) : !document ? (
         // Hero and footer share one scroll region so the footer isn't a permanently
         // reserved slice of the viewport — on short mobile screens it flows below the
         // upload area instead of squeezing it.
