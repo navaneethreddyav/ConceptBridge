@@ -62,8 +62,27 @@ jobs:
         working-directory: backend
         run: npm ci
 
+      # Diagnostic only — confirms the token/account actually authenticate inside this
+      # exact CI runner before the real deploy runs. `wrangler whoami` never prints the
+      # token itself (only account name/id + permission group labels), so this is safe
+      # to leave in CI logs.
+      - name: Verify Cloudflare authentication
+        working-directory: backend
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler whoami
+
+      # Pinned to v4, not v3: v3's action.yml declares `using: "node20"`, but GitHub
+      # Actions force-runs it on Node 24 anyway now that Node 20 is deprecated on
+      # hosted runners — an untested combination that was the actual root cause of a
+      # persistent Cloudflare API error 7003 on the pre-deploy Worker-existence check,
+      # reproduced identically across three separately-scoped tokens (ruling out token
+      # permissions/account/IP-filtering as the cause). v4.0.0 declares `using: "node24"`,
+      # matching what the runner actually executes it on, with the same apiToken/
+      # accountId/workingDirectory/command inputs.
       - name: Deploy Worker API
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -71,7 +90,7 @@ jobs:
           command: deploy
 
       - name: Deploy frontend to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
