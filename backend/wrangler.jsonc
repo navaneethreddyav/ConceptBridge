@@ -21,7 +21,7 @@
         {
             "binding": "DB",
             "database_name": "conceptbridge",
-            "database_id": "REPLACE_AFTER_WRANGLER_D1_CREATE"
+            "database_id": "5b4aae3f-03ef-49ca-8bd2-4bda868a0a07"
         }
     ],
 
@@ -32,7 +32,7 @@
     "kv_namespaces": [
         {
             "binding": "CACHE_KV",
-            "id": "REPLACE_AFTER_WRANGLER_KV_CREATE"
+            "id": "4bfdc2fba5d34479ac0a7ed894772d17"
         }
     ],
 

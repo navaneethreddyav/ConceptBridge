@@ -25,6 +25,16 @@ const parseCookie = (header, name) => {
  * global, not Node's `crypto` module. `secure` is derived from the actual request
  * protocol (Workers is always HTTPS in production; `wrangler dev` serves plain HTTP
  * locally) rather than an env flag, since the protocol is always known per-request.
+ *
+ * SameSite: production Pages (pages.dev) and Worker (workers.dev) are different
+ * registrable domains, i.e. genuinely cross-site — a `Lax` cookie is never attached to
+ * a cross-site `fetch()`, only to top-level navigations, so it would never round-trip
+ * back to the API and every request would mint a fresh identity. `None` (requires
+ * `Secure`, hence HTTPS-only) is needed for it to actually ride along, matching the
+ * cross-origin `credentials: true` CORS config in worker.js. Local dev keeps `Lax`
+ * because Vite (:5173) and `wrangler dev` (:8787) are same-site (same scheme + host,
+ * only the port differs), where `None` isn't needed and isn't available anyway (no
+ * HTTPS locally).
  */
 const userIdentity = async (c, next) => {
     const existing = parseCookie(c.req.header('Cookie'), COOKIE_NAME);
@@ -34,8 +44,9 @@ const userIdentity = async (c, next) => {
 
     if (userId !== existing) {
         const isHttps = new URL(c.req.url).protocol === 'https:';
-        const attributes = ['Path=/', 'HttpOnly', 'SameSite=Lax', `Max-Age=${COOKIE_MAX_AGE_SECONDS}`];
-        if (isHttps) attributes.push('Secure');
+        const attributes = ['Path=/', 'HttpOnly', `Max-Age=${COOKIE_MAX_AGE_SECONDS}`];
+        if (isHttps) attributes.push('SameSite=None', 'Secure');
+        else attributes.push('SameSite=Lax');
         c.header('Set-Cookie', `${COOKIE_NAME}=${userId}; ${attributes.join('; ')}`, { append: true });
     }
 
