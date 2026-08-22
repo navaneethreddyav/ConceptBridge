@@ -53,7 +53,13 @@ const extractPdfData = async (buffer, { first } = {}) => {
         };
     } catch (error) {
         console.error('Error parsing PDF:', error);
-        throw new Error('Failed to parse PDF. The file might be corrupted or a scanned image.');
+        // error.message here is pdf.js's own parse-failure reason (e.g. "Invalid PDF
+        // structure", a PasswordException) — never server internals/paths/secrets, so
+        // it's safe to surface as-is. `userFacing` makes sendError() (errorResponse.js /
+        // uploadController.js) use this message instead of a generic fallback string.
+        const wrapped = new Error(`Failed to parse PDF: ${error.message}`);
+        wrapped.userFacing = true;
+        throw wrapped;
     } finally {
         // PDFDocumentProxy (what getDocumentProxy resolves to) exposes `cleanup()`, not
         // `destroy()` — `destroy()` lives on the loading task, one layer up.
@@ -86,7 +92,13 @@ const extractPageRange = async (buffer, first, last) => {
         return { pages, total: totalPages };
     } catch (error) {
         console.error('Error parsing PDF page range:', error);
-        throw new Error('Failed to extract the requested pages.');
+        // Same rationale as extractPdfData's catch above: pdf.js's own message is safe
+        // to surface and is exactly what a caller needs to tell "genuinely no text on
+        // this page" apart from "the parser failed" — see DocumentReader.jsx's pages
+        // fetch, which previously treated both identically.
+        const wrapped = new Error(`Failed to extract the requested pages: ${error.message}`);
+        wrapped.userFacing = true;
+        throw wrapped;
     } finally {
         if (pdf) {
             await pdf.cleanup().catch(() => {});

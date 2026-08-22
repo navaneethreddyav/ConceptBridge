@@ -263,6 +263,7 @@ const DocumentReader = ({ document: doc, onSelect }) => {
     const [concepts, setConcepts] = useState([]);
     const [pageText, setPageText] = useState('');
     const [pageTextLoading, setPageTextLoading] = useState(false);
+    const [pageTextError, setPageTextError] = useState(null);
 
     // Object form (not a bare URL string) so pdf.js's own fetch sends the identity
     // cookie the ownership-checked file route now requires.
@@ -368,14 +369,33 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         fetch(`${API_BASE_URL}/api/upload/${doc.id}/pages?first=${currentPage}&last=${currentPage}`, {
             credentials: 'include'
         })
-            .then((res) => res.json())
+            .then(async (res) => {
+                const data = await res.json().catch(() => null);
+                // A non-2xx status or an explicit success:false both mean the backend
+                // failed to extract text — genuinely-empty text is success:true with an
+                // empty string. Previously both cases fell through to the same falsy
+                // `data?.pages?.[0]?.text || ''` and were indistinguishable in the UI.
+                if (!res.ok || !data?.success) {
+                    const reason = data?.error || `HTTP ${res.status}`;
+                    // documentId/page only — never cookies, tokens, or PDF contents.
+                    console.error('[PDF_PAGES_ERROR]', { documentId: doc.id, page: currentPage, reason });
+                    throw new Error(reason);
+                }
+                return data;
+            })
             .then((data) => {
                 const text = data?.pages?.[0]?.text || '';
                 cache.set(currentPage, text);
-                if (!cancelled) setPageText(text);
+                if (!cancelled) {
+                    setPageText(text);
+                    setPageTextError(null);
+                }
             })
-            .catch(() => {
-                if (!cancelled) setPageText('');
+            .catch((error) => {
+                if (!cancelled) {
+                    setPageText('');
+                    setPageTextError(error.message || 'Failed to load page text.');
+                }
             })
             .finally(() => {
                 if (!cancelled) setPageTextLoading(false);
@@ -562,6 +582,10 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                                 className="whitespace-pre-wrap leading-relaxed text-text-main text-[15px] selection:bg-primary/40"
                                 dangerouslySetInnerHTML={{ __html: markUpTerms(pageText, termRegex) }}
                             />
+                        ) : pageTextError ? (
+                            <p className="py-12 text-sm text-text-muted">
+                                Could not load page {currentPage}: {pageTextError}
+                            </p>
                         ) : (
                             <p className="py-12 text-sm text-text-muted">
                                 No text could be extracted from page {currentPage}.
@@ -572,8 +596,15 @@ const DocumentReader = ({ document: doc, onSelect }) => {
                     <Document
                         file={fileSource}
                         onLoadSuccess={({ numPages: total }) => setNumPages(total)}
-                        onLoadError={() => setPdfFailed(true)}
-                        onSourceError={() => setPdfFailed(true)}
+                        onLoadError={(error) => {
+                            // documentId only — never cookies, tokens, or PDF contents.
+                            console.error('[PDF_RENDER_ERROR]', { documentId: doc.id, reason: error?.message || String(error) });
+                            setPdfFailed(true);
+                        }}
+                        onSourceError={(error) => {
+                            console.error('[PDF_RENDER_ERROR]', { documentId: doc.id, reason: error?.message || String(error) });
+                            setPdfFailed(true);
+                        }}
                         loading={
                             <div className="flex flex-col items-center justify-center py-24 gap-4">
                                 <Loader2 className="w-8 h-8 text-primary animate-spin" />
