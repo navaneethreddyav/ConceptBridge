@@ -73,6 +73,22 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler whoami
 
+      # Narrower than the whoami check above: hits the exact route wrangler's
+      # pre-deploy existence check calls (GET /accounts/{id}/workers/services/{name}),
+      # via curl instead of wrangler, printing only the HTTP status code — never the
+      # token, never the response body. Isolates whether this specific legacy route
+      # itself rejects token auth even though whoami (a different, broader endpoint)
+      # succeeds with the same token in the same job.
+      - name: Probe Worker-existence-check route directly
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          curl -s -o /tmp/probe_body.json -w "HTTP %{http_code}\n" \
+            "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/workers/services/conceptbridge-api" \
+            -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}"
+          cat /tmp/probe_body.json
+
       # Pinned to v4, not v3: v3's action.yml declares `using: "node20"`, but GitHub
       # Actions force-runs it on Node 24 anyway now that Node 20 is deprecated on
       # hosted runners — an untested combination that was the actual root cause of a
