@@ -191,7 +191,7 @@ const ConceptSidebar = ({ selection, documentId, onClose }) => {
                     {glossaryMatch && (
                         <p className="mt-1 flex items-center gap-1 text-[11px] text-primary">
                             <BadgeCheck className="w-3 h-3 shrink-0" />
-                            Recognized first-year engineering term
+                            Recognized engineering term
                         </p>
                     )}
                 </div>

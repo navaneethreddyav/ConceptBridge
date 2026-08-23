@@ -13,24 +13,31 @@ const MAX_UNPROMPTED_RESULTS = 120;
 const normalize = (value) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
 
 // The dataset (and this whole component) are loaded on demand via React.lazy +
-// dynamic import — a first-year student who never opens the glossary shouldn't pay
-// for its ~250KB of JSON in their initial page load.
-const loadDataset = () => import('../../../shared/firstYearTerminology.json');
+// dynamic import — a student who never opens the glossary shouldn't pay for its
+// JSON in their initial page load.
+const loadDataset = () => import('../../../shared/engineeringTerminology.json');
+
+const ALL_DISCIPLINES = 'All Disciplines';
+const ALL_SUBJECTS = 'All Subjects';
 
 const TechnicalTerms = ({ onClose }) => {
     const [terms, setTerms] = useState(null);
+    const [disciplines, setDisciplines] = useState([]);
     const [error, setError] = useState(false);
     const [query, setQuery] = useState('');
     const [activeLetter, setActiveLetter] = useState(null);
-    const [semesterFilter, setSemesterFilter] = useState('All');
-    const [subjectFilter, setSubjectFilter] = useState('All');
+    const [disciplineFilter, setDisciplineFilter] = useState(ALL_DISCIPLINES);
+    const [subjectFilter, setSubjectFilter] = useState(ALL_SUBJECTS);
     const [selectedTerm, setSelectedTerm] = useState(null);
 
     useEffect(() => {
         let cancelled = false;
         loadDataset()
             .then((mod) => {
-                if (!cancelled) setTerms(mod.default.terms);
+                if (!cancelled) {
+                    setTerms(mod.default.terms);
+                    setDisciplines(mod.default.disciplines || []);
+                }
             })
             .catch(() => {
                 if (!cancelled) setError(true);
@@ -40,10 +47,21 @@ const TechnicalTerms = ({ onClose }) => {
         };
     }, []);
 
+    // Subject options narrow to the selected discipline — with 170+ subjects across
+    // 16 disciplines, an unscoped subject dropdown would be as unusable as the
+    // original flat list this whole redesign replaces.
     const subjects = useMemo(() => {
         if (!terms) return [];
-        return [...new Set(terms.map((t) => t.subject))].sort((a, b) => a.localeCompare(b));
-    }, [terms]);
+        const pool = disciplineFilter === ALL_DISCIPLINES ? terms : terms.filter((t) => t.discipline === disciplineFilter);
+        return [...new Set(pool.map((t) => t.subject))].sort((a, b) => a.localeCompare(b));
+    }, [terms, disciplineFilter]);
+
+    // Switching discipline invalidates a subject filter that no longer applies.
+    useEffect(() => {
+        if (subjectFilter !== ALL_SUBJECTS && !subjects.includes(subjectFilter)) {
+            setSubjectFilter(ALL_SUBJECTS);
+        }
+    }, [subjects, subjectFilter]);
 
     const availableLetters = useMemo(() => {
         if (!terms) return new Set();
@@ -59,23 +77,23 @@ const TechnicalTerms = ({ onClose }) => {
         if (!terms) return [];
         const q = normalize(query);
         return terms.filter((t) => {
-            if (semesterFilter !== 'All' && t.semester !== semesterFilter) return false;
-            if (subjectFilter !== 'All' && t.subject !== subjectFilter) return false;
+            if (disciplineFilter !== ALL_DISCIPLINES && t.discipline !== disciplineFilter) return false;
+            if (subjectFilter !== ALL_SUBJECTS && t.subject !== subjectFilter) return false;
             if (activeLetter && t.term[0].toUpperCase() !== activeLetter) return false;
-            if (q && !t.normalizedTerm.includes(q)) return false;
+            if (q && !t.normalizedTerm.includes(q) && !(t.aliases || []).some((a) => normalize(a).includes(q))) return false;
             return true;
         });
-    }, [terms, query, activeLetter, semesterFilter, subjectFilter]);
+    }, [terms, query, activeLetter, disciplineFilter, subjectFilter]);
 
-    const hasActiveNarrowing = query.trim() || activeLetter || semesterFilter !== 'All' || subjectFilter !== 'All';
+    const hasActiveNarrowing = query.trim() || activeLetter || disciplineFilter !== ALL_DISCIPLINES || subjectFilter !== ALL_SUBJECTS;
     const visible = hasActiveNarrowing ? filtered : filtered.slice(0, MAX_UNPROMPTED_RESULTS);
     const truncated = !hasActiveNarrowing && filtered.length > MAX_UNPROMPTED_RESULTS;
 
     const clearFilters = useCallback(() => {
         setQuery('');
         setActiveLetter(null);
-        setSemesterFilter('All');
-        setSubjectFilter('All');
+        setDisciplineFilter(ALL_DISCIPLINES);
+        setSubjectFilter(ALL_SUBJECTS);
     }, []);
 
     const openRelated = useCallback(
@@ -108,8 +126,9 @@ const TechnicalTerms = ({ onClose }) => {
             <div className="flex-1 min-h-0 overflow-y-auto">
                 <div className="max-w-4xl mx-auto px-4 py-4 space-y-4">
                     <p className="text-xs text-text-muted">
-                        A searchable glossary of first-year Osmania University engineering terms — a second way to
-                        look things up alongside selecting words directly in a PDF.
+                        A searchable engineering knowledge base spanning Computer Science and every major
+                        engineering discipline — a second way to look things up alongside selecting words directly
+                        in a PDF.
                     </p>
 
                     <div className="relative">
@@ -125,20 +144,23 @@ const TechnicalTerms = ({ onClose }) => {
 
                     <div className="flex flex-wrap items-center gap-2">
                         <select
-                            value={semesterFilter}
-                            onChange={(e) => setSemesterFilter(e.target.value)}
-                            className="bg-white/5 border border-white/10 text-text-main text-xs rounded-lg px-2.5 py-2 focus:outline-none focus:border-primary"
+                            value={disciplineFilter}
+                            onChange={(e) => setDisciplineFilter(e.target.value)}
+                            className="bg-white/5 border border-white/10 text-text-main text-xs rounded-lg px-2.5 py-2 max-w-[60vw] sm:max-w-none focus:outline-none focus:border-primary"
                         >
-                            <option value="All">All Semesters</option>
-                            <option value="I">Semester I</option>
-                            <option value="II">Semester II</option>
+                            <option value={ALL_DISCIPLINES}>{ALL_DISCIPLINES}</option>
+                            {disciplines.map((d) => (
+                                <option key={d} value={d}>
+                                    {d}
+                                </option>
+                            ))}
                         </select>
                         <select
                             value={subjectFilter}
                             onChange={(e) => setSubjectFilter(e.target.value)}
                             className="bg-white/5 border border-white/10 text-text-main text-xs rounded-lg px-2.5 py-2 max-w-[60vw] sm:max-w-none focus:outline-none focus:border-primary"
                         >
-                            <option value="All">All Subjects</option>
+                            <option value={ALL_SUBJECTS}>{ALL_SUBJECTS}</option>
                             {subjects.map((s) => (
                                 <option key={s} value={s}>
                                     {s}
@@ -211,7 +233,8 @@ const TechnicalTerms = ({ onClose }) => {
                                         >
                                             <p className="text-sm font-medium text-text-main truncate">{t.term}</p>
                                             <p className="text-[11px] text-text-muted truncate">
-                                                {t.subject} &middot; Sem {t.semester}
+                                                {t.subject}
+                                                {t.semester ? ` · Sem ${t.semester}` : ''}
                                             </p>
                                         </button>
                                     </li>

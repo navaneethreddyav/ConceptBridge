@@ -45,13 +45,26 @@ const TermDetailModal = ({ term, onClose, onSelectRelated }) => {
 
                 <div className="p-5 space-y-5">
                     <div className="flex flex-wrap gap-2 text-xs">
+                        {term.discipline && (
+                            <span className="px-2.5 py-1 rounded-full border border-primary/30 text-primary">
+                                {term.discipline}
+                            </span>
+                        )}
                         <span className="px-2.5 py-1 rounded-full border border-white/10 text-text-muted">
                             Subject: {term.subject}
                         </span>
-                        <span className="px-2.5 py-1 rounded-full border border-white/10 text-text-muted">
-                            Semester {term.semester}
-                        </span>
+                        {term.semester && (
+                            <span className="px-2.5 py-1 rounded-full border border-white/10 text-text-muted">
+                                Semester {term.semester}
+                            </span>
+                        )}
                     </div>
+
+                    {term.aliases?.length > 0 && (
+                        <p className="text-xs text-text-muted">
+                            Also known as: {term.aliases.join(', ')}
+                        </p>
+                    )}
 
                     <section>
                         <h3 className="text-[10px] font-semibold uppercase tracking-wider text-primary mb-1.5">

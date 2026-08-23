@@ -6,7 +6,7 @@ import ConceptNormalizationService from './conceptNormalizationService.js';
 import * as terminologyMatcher from './terminology/terminologyMatcher.js';
 
 // Below this many dataset-matched terms, the sample isn't considered well covered by
-// the local dataset (shared/terminologyDataset.json) and Gemini detection still runs,
+// the local dataset (shared/engineeringTerminology.json) and Gemini detection still runs,
 // with dataset matches merged into its result afterward. At or above it, local
 // coverage is treated as good enough on its own and the Gemini call — and the
 // free-tier quota it costs — is skipped entirely for this document.
