@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Settings, BookOpen } from 'lucide-react';
 import { useSettings } from '../context/SettingsContext';
 
@@ -7,9 +7,32 @@ import { supportedLanguages } from '../../../shared/supportedLanguages.json';
 const Header = ({ onHome, onOpenGlossary }) => {
     const { settings, updateSettings } = useSettings();
     const [isOpen, setIsOpen] = useState(false);
+    const panelRef = useRef(null);
 
     const languages = supportedLanguages;
     const difficulties = ['Beginner', 'Intermediate', 'Advanced'];
+
+    // The only way this panel used to close was clicking the gear icon again —
+    // choosing a language/difficulty left it open indefinitely, permanently covering
+    // whatever was behind it (e.g. the ConceptBridge explanation sidebar on desktop,
+    // where the sidebar is docked beside the reader rather than a full-screen overlay).
+    // Standard dropdown behavior: clicking anywhere outside dismisses it.
+    useEffect(() => {
+        if (!isOpen) return undefined;
+
+        const handleOutsideClick = (event) => {
+            if (panelRef.current && !panelRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleOutsideClick);
+        document.addEventListener('touchstart', handleOutsideClick);
+        return () => {
+            document.removeEventListener('mousedown', handleOutsideClick);
+            document.removeEventListener('touchstart', handleOutsideClick);
+        };
+    }, [isOpen]);
 
     return (
         <header className="w-full px-6 py-3 border-b border-white/10 bg-background flex justify-between items-center relative z-40">
@@ -40,7 +63,7 @@ const Header = ({ onHome, onOpenGlossary }) => {
                     <BookOpen className="w-5 h-5" />
                     <span className="hidden sm:inline">Technical Terms</span>
                 </button>
-                <div className="relative">
+                <div className="relative" ref={panelRef}>
                     <button
                         onClick={() => setIsOpen(!isOpen)}
                         className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-text-main transition-colors flex items-center gap-2"

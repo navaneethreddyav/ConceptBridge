@@ -10,6 +10,14 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 
 const CONTEXT_CHARS = 800;
 const MAX_HIGHLIGHTED_TERMS = 40;
+// A deliberate "explain this word/phrase" selection is never this long. This is a
+// backstop against the browser's own native auto-scroll-while-selecting: dragging
+// near the scrollable reader's edge can make the native Selection API extend far
+// beyond the user's intended endpoint (reproduced directly — a drag toward the
+// viewport's bottom edge ballooned window.getSelection() to the entire page's text,
+// well before this app's own word-boundary refinement even runs). Rather than send
+// that blob to the explanation API as "the concept", it's rejected outright.
+const MAX_SELECTION_CHARS = 300;
 const CONTEXT_ROOT_SELECTOR = '.react-pdf__Page__textContent, [data-context-root]';
 
 // Touch selection has no "release" event of its own — the user keeps nudging the OS
@@ -412,6 +420,13 @@ const DocumentReader = ({ document: doc, onSelect }) => {
         (text, contextBefore, contextAfter) => {
             const cleaned = text.replace(/\s+/g, ' ').trim();
             if (!cleaned) return;
+            if (cleaned.length > MAX_SELECTION_CHARS) {
+                // Almost certainly a runaway native selection (see MAX_SELECTION_CHARS),
+                // not a deliberate phrase pick — clear the on-screen selection rather
+                // than leave the whole page visibly highlighted with nothing happening.
+                window.getSelection()?.removeAllRanges();
+                return;
+            }
             onSelect({ text: cleaned, contextBefore, contextAfter });
         },
         [onSelect]
