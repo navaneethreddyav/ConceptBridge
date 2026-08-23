@@ -6,7 +6,9 @@
     "Tamil",
     "Gujarati",
     "Marathi",
-    "Bengali"
+    "Bengali",
+    "Malayalam",
+    "Kannada"
   ],
   "languageLocaleMap": {
     "English": "en",
@@ -15,6 +17,8 @@
     "Tamil": "ta",
     "Gujarati": "gu",
     "Marathi": "mr",
-    "Bengali": "bn"
+    "Bengali": "bn",
+    "Malayalam": "ml",
+    "Kannada": "kn"
   }
 }
