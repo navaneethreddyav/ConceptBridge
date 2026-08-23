@@ -26,15 +26,20 @@ const parseCookie = (header, name) => {
  * protocol (Workers is always HTTPS in production; `wrangler dev` serves plain HTTP
  * locally) rather than an env flag, since the protocol is always known per-request.
  *
- * SameSite: production Pages (pages.dev) and Worker (workers.dev) are different
- * registrable domains, i.e. genuinely cross-site — a `Lax` cookie is never attached to
- * a cross-site `fetch()`, only to top-level navigations, so it would never round-trip
- * back to the API and every request would mint a fresh identity. `None` (requires
- * `Secure`, hence HTTPS-only) is needed for it to actually ride along, matching the
- * cross-origin `credentials: true` CORS config in worker.js. Local dev keeps `Lax`
- * because Vite (:5173) and `wrangler dev` (:8787) are same-site (same scheme + host,
- * only the port differs), where `None` isn't needed and isn't available anyway (no
- * HTTPS locally).
+ * SameSite: the browser only ever talks to the Pages origin (conceptbridge-cbv.pages.dev)
+ * — frontend/functions/api/[[path]].js proxies /api/* to this Worker over a service
+ * binding (Cloudflare-internal, not a public fetch), so from the browser's perspective
+ * this cookie is an ordinary same-site, first-party cookie throughout. `Lax` is
+ * therefore correct (and strictly tighter than the `None` this used to need) for both
+ * production and local dev (Vite :5173 / `wrangler dev` :8787 are already same-site —
+ * same scheme + host, only the port differs). `None` was a prior workaround for calling
+ * the Worker's public workers.dev URL directly from the browser, which made the cookie
+ * genuinely cross-site — Safari/WebKit's Intelligent Tracking Prevention silently
+ * refused to persist it under those conditions even with `None; Secure` set (confirmed
+ * by direct reproduction), which is what made the proxy necessary in the first place.
+ * The Worker's public URL still works standalone (e.g. direct API testing) — a caller
+ * hitting it directly rather than through the proxy just won't get a persisted identity
+ * across requests, same as any other genuinely cross-site caller.
  */
 const userIdentity = async (c, next) => {
     const existing = parseCookie(c.req.header('Cookie'), COOKIE_NAME);
@@ -44,9 +49,8 @@ const userIdentity = async (c, next) => {
 
     if (userId !== existing) {
         const isHttps = new URL(c.req.url).protocol === 'https:';
-        const attributes = ['Path=/', 'HttpOnly', `Max-Age=${COOKIE_MAX_AGE_SECONDS}`];
-        if (isHttps) attributes.push('SameSite=None', 'Secure');
-        else attributes.push('SameSite=Lax');
+        const attributes = ['Path=/', 'HttpOnly', 'SameSite=Lax', `Max-Age=${COOKIE_MAX_AGE_SECONDS}`];
+        if (isHttps) attributes.push('Secure');
         c.header('Set-Cookie', `${COOKIE_NAME}=${userId}; ${attributes.join('; ')}`, { append: true });
     }
 

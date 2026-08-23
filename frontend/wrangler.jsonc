@@ -1,0 +1,19 @@
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "conceptbridge",
+    "pages_build_output_dir": "dist",
+    "compatibility_date": "2024-11-01",
+
+    // Lets functions/api/[[path]].js reach the existing conceptbridge-api Worker over
+    // Cloudflare's internal network (a real bound RPC call, not a public HTTP round
+    // trip) — this is what makes /api/* on this Pages origin same-origin from the
+    // browser's point of view while still hitting the unmodified backend Worker.
+    // `service` is the target Worker's script name (backend/wrangler.jsonc's `name`),
+    // resolved within this same Cloudflare account; nothing new is provisioned here.
+    "services": [
+        {
+            "binding": "API",
+            "service": "conceptbridge-api"
+        }
+    ]
+}
