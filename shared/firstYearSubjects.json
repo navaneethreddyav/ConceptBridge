@@ -6,13 +6,14 @@
       "name": "Engineering Mathematics",
       "shortDescription": "Matrices, differential and vector calculus, differential equations, and Laplace transforms — the mathematical toolkit behind every engineering discipline.",
       "termSubjects": [
-        "Matrices & Differential Calculus",
+        "Differential Equations",
         "Differential Equations & Numerical Methods",
         "Graph Theory (Mathematics)",
-        "Differential Equations",
+        "Linear Algebra",
+        "Matrices & Differential Calculus",
         "Numerical Methods",
-        "Probability and Statistics",
-        "Optimization"
+        "Optimization",
+        "Probability and Statistics"
       ],
       "units": [
         {
@@ -33,7 +34,10 @@
                 "Quadratic Form",
                 "Linear Transformation",
                 "Orthogonal Transformation",
-                "Linear Independence"
+                "Linear Independence",
+                "Determinant",
+                "Matrix",
+                "Vector Space"
               ]
             }
           ]
@@ -269,44 +273,100 @@
     {
       "id": "engineering-physics",
       "name": "Engineering Physics",
-      "shortDescription": "Crystal structures, lasers and optical fibers, quantum mechanics, semiconductors, and magnetic materials that explain how modern devices work.",
+      "shortDescription": "Quantum mechanics, lasers and fiber optics, crystal structures, semiconductor and magnetic materials, superconductivity, and nanotechnology — the physics behind modern engineering devices.",
       "termSubjects": [
         "Engineering Physics",
         "Engineering Physics Lab",
+        "Nanotechnology",
+        "Optics",
+        "Quantum Mechanics",
         "Semiconductor Physics",
-        "Nanotechnology"
+        "Solid State Physics"
       ],
       "units": [
         {
-          "id": "crystallography",
-          "name": "Unit 1: Crystal Structures & X-ray Diffraction",
+          "id": "quantum-mechanics-unit",
+          "name": "Unit 1: Quantum Mechanics",
           "topics": [
             {
-              "id": "crystal-structure",
+              "id": "qm-core",
+              "name": "Quantum Mechanics",
+              "description": "The experiments and equations that established matter's wave nature and how quantum systems evolve.",
+              "terms": [
+                "Photoelectric Effect",
+                "Compton Effect",
+                "De Broglie Wavelength",
+                "Wave-Particle Duality",
+                "Davisson-Germer Experiment",
+                "Uncertainty Principle",
+                "Schrodinger Equation",
+                "Wave Function",
+                "Wave Function Normalization",
+                "Particle in a Box",
+                "Kronig-Penney Model",
+                "Quantum Tunneling"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lasers-fiber-optics-unit",
+          "name": "Unit 2: Lasers & Fiber Optics",
+          "topics": [
+            {
+              "id": "lasers-fiber-core",
+              "name": "Lasers & Fiber Optics",
+              "description": "How stimulated emission produces coherent light, and how optical fibers guide that light over long distances.",
+              "terms": [
+                "Interference",
+                "Refraction",
+                "Coherence (Optical)",
+                "Spontaneous Emission",
+                "Stimulated Emission",
+                "Population Inversion",
+                "Einstein Coefficients",
+                "Laser",
+                "Ruby Laser",
+                "Helium-Neon Laser",
+                "Semiconductor Laser",
+                "Optical Fiber",
+                "Numerical Aperture",
+                "Acceptance Angle",
+                "Step Index Fiber",
+                "Graded Index Fiber",
+                "Attenuation (Optical Fiber)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "crystallography-unit",
+          "name": "Unit 3: Crystal Structures & X-ray Diffraction",
+          "topics": [
+            {
+              "id": "crystal-structure-2",
               "name": "Crystal Structure",
-              "description": "How atoms arrange themselves in repeating patterns, and how those patterns are classified.",
+              "description": "How atoms pack into a repeating unit cell, and how that structure is classified and measured.",
               "terms": [
                 "Crystallography",
+                "Unit Cell",
+                "Lattice Parameter",
                 "Crystal System",
                 "Bravais Lattice",
                 "Miller Indices",
-                "Interplanar Spacing"
+                "Interplanar Spacing",
+                "Coordination Number",
+                "Packing Fraction",
+                "Crystal Lattice"
               ]
             },
             {
-              "id": "xray-diffraction",
-              "name": "X-ray Diffraction",
-              "description": "Using X-rays to determine crystal structure from diffraction patterns.",
+              "id": "xray-diffraction-2",
+              "name": "X-ray Diffraction & Crystal Defects",
+              "description": "Using X-rays to probe crystal structure, and the imperfections real crystals contain.",
               "terms": [
                 "Bragg's Law",
-                "Powder Diffraction Method"
-              ]
-            },
-            {
-              "id": "crystal-defects",
-              "name": "Crystal Defects",
-              "description": "Imperfections in an otherwise regular crystal lattice, and how they affect material properties.",
-              "terms": [
+                "Powder Diffraction Method",
                 "Point Defect",
                 "Frenkel Defect",
                 "Schottky Defect",
@@ -317,67 +377,30 @@
           ]
         },
         {
-          "id": "lasers-fiber-optics",
-          "name": "Unit 2: Lasers & Fiber Optics",
-          "topics": [
-            {
-              "id": "lasers",
-              "name": "Lasers",
-              "description": "How stimulated emission produces a coherent beam of light, and the common laser types.",
-              "terms": [
-                "Laser",
-                "Population Inversion",
-                "Stimulated Emission",
-                "Ruby Laser",
-                "Helium-Neon Laser",
-                "Semiconductor Laser"
-              ]
-            },
-            {
-              "id": "fiber-optics",
-              "name": "Fiber Optics",
-              "description": "How optical fibers guide light over long distances using total internal reflection.",
-              "terms": [
-                "Optical Fiber",
-                "Numerical Aperture",
-                "Acceptance Angle"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "quantum-mechanics",
-          "name": "Unit 3: Quantum Mechanics",
-          "topics": [
-            {
-              "id": "wave-mechanics",
-              "name": "Wave Mechanics",
-              "description": "The wave nature of matter and the Schrödinger equation that governs it.",
-              "terms": [
-                "De Broglie Wavelength",
-                "Schrodinger Equation",
-                "Wave Function",
-                "Particle in a Box",
-                "Kronig-Penney Model"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "semiconductor-physics",
+          "id": "semiconductor-physics-unit",
           "name": "Unit 4: Semiconductor Physics",
           "topics": [
             {
-              "id": "semiconductors",
-              "name": "Semiconductors",
-              "description": "Band theory and how doping creates the semiconductors used in every electronic device.",
+              "id": "semiconductors-2",
+              "name": "Semiconductor Physics",
+              "description": "How doping and band structure determine a semiconductor's electrical behavior.",
               "terms": [
-                "Energy Band",
+                "Semiconductor",
                 "Intrinsic Semiconductor",
                 "Extrinsic Semiconductor",
+                "Doping",
+                "Fermi Level",
+                "Energy Band",
+                "Direct Bandgap Semiconductor",
+                "Indirect Bandgap Semiconductor",
                 "Carrier Concentration",
+                "Mobility (Semiconductor)",
+                "Drift Velocity",
+                "Drift Current",
+                "Diffusion Current",
                 "Hole",
                 "Hall Effect",
+                "P-N Junction",
                 "P-N Junction Diode",
                 "Thermistor",
                 "Free Electron Theory"
@@ -386,30 +409,34 @@
           ]
         },
         {
-          "id": "magnetic-dielectric-materials",
+          "id": "magnetic-dielectric-materials-unit",
           "name": "Unit 5: Magnetic & Dielectric Materials",
           "topics": [
             {
-              "id": "magnetic-materials",
+              "id": "magnetic-materials-2",
               "name": "Magnetic Materials",
-              "description": "How materials respond to magnetic fields, from weakly diamagnetic to strongly ferromagnetic.",
+              "description": "How different classes of material respond to a magnetic field, and what happens as they're heated.",
               "terms": [
                 "Diamagnetic Material",
+                "Paramagnetic Material",
                 "Ferromagnetic Material",
                 "Ferrite",
                 "Hysteresis (Magnetic)",
+                "Hysteresis Loop",
                 "Coercivity",
                 "Retentivity",
+                "Curie Temperature",
                 "Hard Magnetic Material",
                 "Soft Magnetic Material"
               ]
             },
             {
-              "id": "dielectric-materials",
+              "id": "dielectric-materials-2",
               "name": "Dielectric Materials",
               "description": "Insulating materials that polarize under an electric field, including ferroelectrics.",
               "terms": [
                 "Dielectric",
+                "Dielectric Constant",
                 "Polarization (Dielectric)",
                 "Ferroelectricity",
                 "Barium Titanate"
@@ -418,15 +445,17 @@
           ]
         },
         {
-          "id": "superconductivity-em-theory",
-          "name": "Unit 6: Superconductivity & Electromagnetic Theory",
+          "id": "superconductivity-em-nano-unit",
+          "name": "Unit 6: Superconductivity, Electromagnetic Theory & Nanotechnology",
           "topics": [
             {
-              "id": "superconductivity",
+              "id": "superconductivity-2",
               "name": "Superconductivity",
-              "description": "Materials that lose all electrical resistance below a critical temperature.",
+              "description": "Materials that lose all electrical resistance below a critical temperature and field.",
               "terms": [
                 "Superconductivity",
+                "Critical Temperature (Superconductivity)",
+                "Critical Magnetic Field",
                 "BCS Theory",
                 "Meissner Effect",
                 "Type I Superconductor",
@@ -434,7 +463,7 @@
               ]
             },
             {
-              "id": "em-theory",
+              "id": "em-theory-2",
               "name": "Electromagnetic Theory",
               "description": "Maxwell's equations and the theoretical foundation of electromagnetic waves.",
               "terms": [
@@ -442,54 +471,32 @@
                 "Displacement Current",
                 "Poynting Theorem"
               ]
+            },
+            {
+              "id": "nanotechnology-2",
+              "name": "Nanotechnology",
+              "description": "Materials engineered at the nanometer scale, where quantum effects change their properties.",
+              "terms": [
+                "Nanomaterial",
+                "Nanoparticle",
+                "Quantum Confinement",
+                "Carbon Nanotube"
+              ]
             }
           ]
         },
         {
-          "id": "engineering-physics-lab",
+          "id": "physics-lab-unit",
           "name": "Unit 7: Engineering Physics Lab",
           "topics": [
             {
-              "id": "physics-lab-core",
-              "name": "Physics Lab Measurements",
-              "description": "Quantities measured in the first-year physics lab to characterize dielectric, magnetic, and mechanical properties.",
+              "id": "physics-lab-2",
+              "name": "Physics Lab Techniques",
+              "description": "Practical measurement techniques used to characterize mechanical, electrical, and magnetic properties in the first-year physics lab.",
               "terms": [
-                "Dielectric Constant",
-                "Fill Factor",
-                "Hysteresis Loop",
+                "Torsion Pendulum",
                 "I-V Characteristics",
-                "Torsion Pendulum"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "semiconductor-physics-general",
-          "name": "Unit 8: Semiconductor Physics",
-          "topics": [
-            {
-              "id": "semiconductor-physics-core",
-              "name": "Semiconductor Physics",
-              "description": "How doping a semiconductor crystal creates the P-N junction at the heart of modern electronics.",
-              "terms": [
-                "Doping",
-                "P-N Junction",
-                "Semiconductor"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "nanotechnology",
-          "name": "Unit 9: Nanotechnology",
-          "topics": [
-            {
-              "id": "nanotechnology-core",
-              "name": "Nanotechnology",
-              "description": "Materials engineered at the nanometer scale, where properties differ from their bulk form.",
-              "terms": [
-                "Nanomaterial",
-                "Nanoparticle"
+                "Fill Factor"
               ]
             }
           ]
@@ -500,16 +507,72 @@
     {
       "id": "engineering-chemistry",
       "name": "Engineering Chemistry",
-      "shortDescription": "Water treatment, batteries and corrosion, fuels, polymers, and green chemistry — the chemistry behind materials and energy systems.",
+      "shortDescription": "Atomic structure, bonding, chemical thermodynamics, water treatment, electrochemistry and corrosion, fuels, polymers, and green chemistry — the chemistry behind materials and energy systems.",
       "termSubjects": [
+        "Electrochemistry",
         "Engineering Chemistry",
         "Engineering Chemistry Lab",
+        "Green Chemistry",
         "Materials Chemistry"
       ],
       "units": [
         {
+          "id": "atomic-structure-unit",
+          "name": "Unit 1: Atomic Structure",
+          "topics": [
+            {
+              "id": "atomic-structure-core",
+              "name": "Atomic Structure",
+              "description": "The quantum-mechanical rules that determine how electrons fill an atom's orbitals.",
+              "terms": [
+                "Quantum Numbers",
+                "Aufbau Principle",
+                "Pauli Exclusion Principle",
+                "Hund's Rule",
+                "Electronic Configuration"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chemical-bonding-unit",
+          "name": "Unit 2: Chemical Bonding",
+          "topics": [
+            {
+              "id": "chemical-bonding-core",
+              "name": "Chemical Bonding",
+              "description": "The main ways atoms bond together, and the models used to predict a molecule's shape.",
+              "terms": [
+                "Ionic Bond",
+                "Covalent Bond",
+                "Metallic Bond",
+                "Hydrogen Bond",
+                "VSEPR Theory",
+                "Molecular Orbital Theory"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "chemical-thermodynamics-unit",
+          "name": "Unit 3: Chemical Thermodynamics",
+          "topics": [
+            {
+              "id": "chemical-thermodynamics-core",
+              "name": "Chemical Thermodynamics",
+              "description": "The energy changes that accompany a chemical reaction, and what determines whether it happens spontaneously.",
+              "terms": [
+                "Gibbs Free Energy",
+                "Enthalpy of Reaction",
+                "Hess's Law",
+                "Spontaneity of Reaction"
+              ]
+            }
+          ]
+        },
+        {
           "id": "water-chemistry",
-          "name": "Unit 1: Water Chemistry & Treatment",
+          "name": "Unit 4: Water Chemistry & Treatment",
           "topics": [
             {
               "id": "water-treatment",
@@ -528,7 +591,7 @@
         },
         {
           "id": "electrochemistry-batteries",
-          "name": "Unit 2: Electrochemistry & Batteries",
+          "name": "Unit 5: Electrochemistry & Batteries",
           "topics": [
             {
               "id": "electrochemical-cells",
@@ -541,7 +604,8 @@
                 "Electrode Potential",
                 "Nernst Equation",
                 "Calomel Electrode",
-                "Quinhydrone Electrode"
+                "Quinhydrone Electrode",
+                "Electrolysis"
               ]
             },
             {
@@ -554,14 +618,15 @@
                 "Lead-Acid Battery",
                 "Lithium-Ion Battery",
                 "Zn-Carbon Battery",
-                "Fuel Cell"
+                "Fuel Cell",
+                "Battery"
               ]
             }
           ]
         },
         {
           "id": "corrosion",
-          "name": "Unit 3: Corrosion & Its Control",
+          "name": "Unit 6: Corrosion & Its Control",
           "topics": [
             {
               "id": "corrosion-control",
@@ -579,7 +644,7 @@
         },
         {
           "id": "fuels-combustion",
-          "name": "Unit 4: Fuels & Combustion",
+          "name": "Unit 7: Fuels & Combustion",
           "topics": [
             {
               "id": "fuel-quality",
@@ -610,7 +675,7 @@
         },
         {
           "id": "polymers",
-          "name": "Unit 5: Polymers",
+          "name": "Unit 8: Polymers",
           "topics": [
             {
               "id": "polymer-formation",
@@ -645,7 +710,7 @@
         },
         {
           "id": "green-chemistry",
-          "name": "Unit 6: Green Chemistry & Engineering Materials",
+          "name": "Unit 9: Green Chemistry & Engineering Materials",
           "topics": [
             {
               "id": "green-chemistry-materials",
@@ -653,16 +718,19 @@
               "description": "Designing chemical processes and materials with reduced environmental impact.",
               "terms": [
                 "Green Chemistry",
+                "Biodegradable Material",
                 "Atom Economy",
                 "Catalysis",
-                "Composite Material"
+                "Composite Material",
+                "Alloy",
+                "Ceramic"
               ]
             }
           ]
         },
         {
           "id": "engineering-chemistry-lab",
-          "name": "Unit 7: Engineering Chemistry Lab",
+          "name": "Unit 10: Engineering Chemistry Lab",
           "topics": [
             {
               "id": "chemistry-lab-core",
@@ -675,21 +743,6 @@
                 "Rate Constant",
                 "Standard Solution",
                 "Titration"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "materials-chemistry-general",
-          "name": "Unit 8: Materials Chemistry",
-          "topics": [
-            {
-              "id": "materials-chemistry-core",
-              "name": "Materials Chemistry",
-              "description": "The chemistry behind common engineering materials — metal alloys and ceramics.",
-              "terms": [
-                "Alloy",
-                "Ceramic"
               ]
             }
           ]
@@ -1312,196 +1365,9 @@
       "discipline": "Computer Science"
     },
     {
-      "id": "linear-algebra",
-      "name": "Linear Algebra",
-      "shortDescription": "Vectors, matrices, determinants, and eigenvalues as a general algebraic framework.",
-      "termSubjects": [
-        "Linear Algebra"
-      ],
-      "units": [
-        {
-          "id": "linear-algebra-unit",
-          "name": "Unit 1: Linear Algebra",
-          "topics": [
-            {
-              "id": "linear-algebra-core",
-              "name": "Linear Algebra Fundamentals",
-              "description": "The core objects of linear algebra and the special values that describe a matrix's behavior.",
-              "terms": [
-                "Determinant",
-                "Eigenvalue",
-                "Matrix",
-                "Vector Space"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Engineering Mathematics"
-    },
-    {
-      "id": "optics",
-      "name": "Optics",
-      "shortDescription": "How light interferes, refracts, and is amplified — the basis of lasers and optical instruments.",
-      "termSubjects": [
-        "Optics"
-      ],
-      "units": [
-        {
-          "id": "optics-unit",
-          "name": "Unit 1: Optics",
-          "topics": [
-            {
-              "id": "optics-core",
-              "name": "Optics Fundamentals",
-              "description": "How light waves interact with each other and with matter, and how a laser amplifies light.",
-              "terms": [
-                "Interference",
-                "Laser",
-                "Refraction"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Engineering Physics"
-    },
-    {
-      "id": "quantum-mechanics-general",
-      "name": "Quantum Mechanics",
-      "shortDescription": "The wave-particle nature of matter and the fundamental limits on measuring it precisely.",
-      "termSubjects": [
-        "Quantum Mechanics"
-      ],
-      "units": [
-        {
-          "id": "quantum-mechanics-general-unit",
-          "name": "Unit 1: Quantum Mechanics",
-          "topics": [
-            {
-              "id": "quantum-mechanics-general-core",
-              "name": "Quantum Mechanics Fundamentals",
-              "description": "The wave-particle duality of matter, its governing equation, and the fundamental limit on measuring it precisely.",
-              "terms": [
-                "Schrodinger Equation",
-                "Uncertainty Principle",
-                "Wave-Particle Duality"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Engineering Physics"
-    },
-    {
-      "id": "solid-state-physics",
-      "name": "Solid State Physics",
-      "shortDescription": "The atomic-scale structure of crystals and the energy bands that determine a material's electrical behavior.",
-      "termSubjects": [
-        "Solid State Physics"
-      ],
-      "units": [
-        {
-          "id": "solid-state-physics-unit",
-          "name": "Unit 1: Solid State Physics",
-          "topics": [
-            {
-              "id": "solid-state-physics-core",
-              "name": "Crystal Structure & Energy Bands",
-              "description": "How atoms arrange into a crystal lattice, and the energy bands that determine whether a solid conducts electricity.",
-              "terms": [
-                "Crystal Lattice",
-                "Energy Band"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Engineering Physics"
-    },
-    {
-      "id": "electrochemistry",
-      "name": "Electrochemistry",
-      "shortDescription": "How electrochemical reactions store energy in batteries and cause metal corrosion.",
-      "termSubjects": [
-        "Electrochemistry"
-      ],
-      "units": [
-        {
-          "id": "electrochemistry-unit",
-          "name": "Unit 1: Electrochemistry",
-          "topics": [
-            {
-              "id": "electrochemistry-core",
-              "name": "Batteries, Electrolysis & Corrosion",
-              "description": "How electrochemical reactions store or release energy, and why they cause metals to corrode.",
-              "terms": [
-                "Battery",
-                "Corrosion",
-                "Electrolysis"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Engineering Chemistry"
-    },
-    {
-      "id": "green-chemistry-standalone",
-      "name": "Green Chemistry",
-      "shortDescription": "Designing chemical processes and materials with reduced environmental impact.",
-      "termSubjects": [
-        "Green Chemistry"
-      ],
-      "units": [
-        {
-          "id": "green-chemistry-standalone-unit",
-          "name": "Unit 1: Green Chemistry",
-          "topics": [
-            {
-              "id": "green-chemistry-standalone-core",
-              "name": "Sustainable Chemistry",
-              "description": "Chemistry practices and materials designed to minimize environmental harm.",
-              "terms": [
-                "Green Chemistry",
-                "Biodegradable Material"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Engineering Chemistry"
-    },
-    {
-      "id": "polymer-chemistry",
-      "name": "Polymer Chemistry",
-      "shortDescription": "How a polymer's molecular structure determines whether it softens or hardens permanently under heat.",
-      "termSubjects": [
-        "Polymer Chemistry"
-      ],
-      "units": [
-        {
-          "id": "polymer-chemistry-unit",
-          "name": "Unit 1: Polymer Chemistry",
-          "topics": [
-            {
-              "id": "polymer-chemistry-core",
-              "name": "Thermoplastics & Thermosets",
-              "description": "The two broad polymer categories, distinguished by how they behave when heated.",
-              "terms": [
-                "Thermoplastic",
-                "Thermosetting Polymer"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Engineering Chemistry"
-    },
-    {
       "id": "operating-systems",
       "name": "Operating Systems",
-      "shortDescription": "Processes, scheduling, memory management, and concurrency — how an OS manages a computer's resources.",
+      "shortDescription": "Process and memory management, CPU scheduling, synchronization and deadlocks, and file systems — a full first course in how an operating system manages a computer's resources.",
       "termSubjects": [
         "Operating Systems"
       ],
@@ -1513,66 +1379,134 @@
             {
               "id": "os-fundamentals-core",
               "name": "Operating System Fundamentals",
-              "description": "The kernel and the core abstractions — processes, threads, and system calls — an OS provides to programs.",
+              "description": "What an OS is, the kernel that runs it, and the historical evolution from batch processing to time-sharing.",
               "terms": [
                 "Operating System",
                 "Kernel",
                 "System Call",
-                "Process",
-                "Thread",
-                "File System"
+                "Batch Operating System",
+                "Multiprogramming",
+                "Time-Sharing System",
+                "Dual Mode Operation"
               ]
             }
           ]
         },
         {
-          "id": "process-scheduling",
-          "name": "Unit 2: Process Scheduling",
+          "id": "process-management",
+          "name": "Unit 2: Process Management",
           "topics": [
             {
-              "id": "cpu-scheduling",
-              "name": "CPU & Process Scheduling",
-              "description": "How the OS decides which process runs next, and the overhead of switching between them.",
+              "id": "process-management-core",
+              "name": "Process & Thread Management",
+              "description": "The process abstraction the OS manages, and how threads and inter-process communication let programs cooperate.",
+              "terms": [
+                "Process",
+                "Process Control Block",
+                "Process State",
+                "Thread",
+                "Multithreading",
+                "Inter-Process Communication"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cpu-scheduling",
+          "name": "Unit 3: CPU Scheduling",
+          "topics": [
+            {
+              "id": "cpu-scheduling-core",
+              "name": "CPU Scheduling Algorithms",
+              "description": "How the OS decides which ready process runs next, and the classic algorithms used to make that decision.",
               "terms": [
                 "CPU Scheduling",
                 "Process Scheduling",
                 "Scheduling",
-                "Context Switch"
+                "Context Switch",
+                "FCFS Scheduling",
+                "SJF Scheduling",
+                "Round Robin Scheduling",
+                "Priority Scheduling",
+                "Turnaround Time"
               ]
             }
           ]
         },
         {
-          "id": "concurrency",
-          "name": "Unit 3: Concurrency & Synchronization",
+          "id": "synchronization-deadlocks",
+          "name": "Unit 4: Synchronization & Deadlocks",
           "topics": [
             {
-              "id": "process-synchronization",
+              "id": "synchronization-core",
               "name": "Process Synchronization",
-              "description": "Coordinating concurrent processes safely, and the classic problems (deadlock, race conditions) that arise when this goes wrong.",
+              "description": "Coordinating concurrent processes safely using locks, and the classic problems used to illustrate synchronization.",
               "terms": [
                 "Critical Section",
                 "Mutex",
                 "Semaphore",
                 "Race Condition",
-                "Deadlock"
+                "Producer-Consumer Problem",
+                "Dining Philosophers Problem"
+              ]
+            },
+            {
+              "id": "deadlocks-core",
+              "name": "Deadlocks",
+              "description": "How deadlocks arise, and the three broad strategies — prevent, avoid, or detect — used to handle them.",
+              "terms": [
+                "Deadlock",
+                "Deadlock Prevention",
+                "Deadlock Avoidance",
+                "Banker's Algorithm",
+                "Deadlock Detection"
               ]
             }
           ]
         },
         {
           "id": "memory-management",
-          "name": "Unit 4: Memory Management",
+          "name": "Unit 5: Memory Management",
           "topics": [
             {
               "id": "virtual-memory-paging",
               "name": "Virtual Memory & Paging",
-              "description": "How an OS gives each process the illusion of more memory than physically exists.",
+              "description": "How an OS gives each process the illusion of more memory than physically exists, and what happens when that illusion breaks down.",
               "terms": [
                 "Virtual Memory",
                 "Paging",
                 "Page Fault",
-                "Segmentation"
+                "Segmentation",
+                "Demand Paging",
+                "Thrashing"
+              ]
+            },
+            {
+              "id": "page-replacement",
+              "name": "Page Replacement",
+              "description": "Algorithms for choosing which page to evict from memory, and a famous counterexample to 'more memory is always better'.",
+              "terms": [
+                "Page Replacement Algorithm",
+                "LRU Page Replacement",
+                "FIFO Page Replacement",
+                "Belady's Anomaly"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "file-systems-storage",
+          "name": "Unit 6: File Systems & Storage",
+          "topics": [
+            {
+              "id": "file-systems-core",
+              "name": "File Systems & Disk Scheduling",
+              "description": "How files are organized and stored on disk, and how the OS orders competing disk requests efficiently.",
+              "terms": [
+                "File System",
+                "File Allocation Method",
+                "Directory Structure",
+                "Disk Scheduling Algorithm"
               ]
             }
           ]
@@ -1583,77 +1517,131 @@
     {
       "id": "database-management-systems",
       "name": "Database Management Systems",
-      "shortDescription": "Relational databases, SQL, normalization, and transactions — how structured data is stored and queried reliably.",
+      "shortDescription": "Database fundamentals, the relational model, SQL, normalization, transactions and concurrency control, and indexing/query processing — a full first course in databases.",
       "termSubjects": [
         "Database Management Systems"
       ],
       "units": [
         {
           "id": "dbms-fundamentals",
-          "name": "Unit 1: DBMS Fundamentals",
+          "name": "Unit 1: Database Fundamentals",
           "topics": [
             {
               "id": "dbms-fundamentals-core",
               "name": "Database Fundamentals",
-              "description": "The core building blocks of a relational database system and its data model.",
+              "description": "The core building blocks of a database system and the layered architecture that gives it data independence.",
               "terms": [
                 "Database",
                 "Database Management System",
-                "Relational Database",
-                "Schema",
-                "Entity-Relationship Model"
+                "Data Independence",
+                "Three-Schema Architecture",
+                "Database Administrator"
               ]
             }
           ]
         },
         {
-          "id": "sql-querying",
-          "name": "Unit 2: SQL & Querying",
+          "id": "relational-model",
+          "name": "Unit 2: The Relational Model",
           "topics": [
             {
-              "id": "sql-querying-core",
-              "name": "SQL & Querying",
-              "description": "Writing structured queries and linking tables together using keys.",
+              "id": "relational-model-core",
+              "name": "The Relational Model",
+              "description": "How data is structured as relations (tables), modeled with entities and relationships, and formally queried.",
+              "terms": [
+                "Relational Database",
+                "Schema",
+                "Entity-Relationship Model",
+                "Cardinality (ER Model)",
+                "Relational Algebra",
+                "Primary Key",
+                "Foreign Key",
+                "Candidate Key",
+                "Super Key"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sql-unit",
+          "name": "Unit 3: SQL",
+          "topics": [
+            {
+              "id": "sql-core",
+              "name": "SQL",
+              "description": "The standard language for defining, manipulating, controlling, and querying relational data.",
               "terms": [
                 "SQL",
                 "SQL Query",
+                "DDL",
+                "DML",
+                "DCL",
                 "Join",
-                "Primary Key",
-                "Foreign Key"
+                "Aggregate Function",
+                "GROUP BY Clause",
+                "Nested Subquery",
+                "View (Database)"
               ]
             }
           ]
         },
         {
-          "id": "design-optimization",
-          "name": "Unit 3: Design & Optimization",
+          "id": "normalization-unit",
+          "name": "Unit 4: Normalization",
           "topics": [
             {
-              "id": "design-optimization-core",
-              "name": "Schema Design & Optimization",
-              "description": "Structuring a database to avoid redundancy and speeding up queries with indexes.",
+              "id": "normalization-core",
+              "name": "Normalization",
+              "description": "The step-by-step process of organizing a schema to eliminate redundancy and update anomalies.",
               "terms": [
                 "Normalization",
-                "Index",
-                "Indexing",
-                "B-Tree",
-                "Query Optimization"
+                "Functional Dependency",
+                "First Normal Form",
+                "Second Normal Form",
+                "Third Normal Form",
+                "BCNF",
+                "Denormalization"
               ]
             }
           ]
         },
         {
-          "id": "transactions-nosql",
-          "name": "Unit 4: Transactions & NoSQL",
+          "id": "transactions-concurrency",
+          "name": "Unit 5: Transactions & Concurrency Control",
           "topics": [
             {
-              "id": "transactions-nosql-core",
-              "name": "Transactions & NoSQL",
-              "description": "Guaranteeing correctness under concurrent access, and non-relational alternatives to SQL.",
+              "id": "transactions-concurrency-core",
+              "name": "Transactions & Concurrency Control",
+              "description": "How a DBMS guarantees correctness when many transactions run at the same time.",
               "terms": [
                 "Transaction",
                 "ACID Properties",
                 "Concurrency Control",
+                "Two-Phase Locking",
+                "Serializability",
+                "Deadlock (DBMS)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "indexing-query-processing",
+          "name": "Unit 6: Indexing & Query Processing",
+          "topics": [
+            {
+              "id": "indexing-query-processing-core",
+              "name": "Indexing & Query Processing",
+              "description": "How a DBMS speeds up data retrieval with indexes, and how it turns a query into an efficient execution plan.",
+              "terms": [
+                "Index",
+                "Indexing",
+                "B-Tree",
+                "Clustered Index",
+                "Non-Clustered Index",
+                "Hashing (Database Indexing)",
+                "Query Optimization",
+                "Query Processing",
+                "Query Execution Plan",
                 "NoSQL Database"
               ]
             }
@@ -1665,41 +1653,76 @@
     {
       "id": "computer-networks",
       "name": "Computer Networks",
-      "shortDescription": "How computers communicate — addressing, routing, and the protocols that move data across the internet.",
+      "shortDescription": "Network fundamentals, the data link and network layers, the transport layer, the application layer, and network security — a full first course in computer networks.",
       "termSubjects": [
         "Computer Networks"
       ],
       "units": [
         {
-          "id": "networking-fundamentals",
-          "name": "Unit 1: Networking Fundamentals",
+          "id": "network-fundamentals",
+          "name": "Unit 1: Network Fundamentals",
           "topics": [
             {
-              "id": "networking-fundamentals-core",
-              "name": "Networking Fundamentals",
-              "description": "The layered reference model used to describe how network communication is organized.",
+              "id": "network-fundamentals-core",
+              "name": "Network Fundamentals",
+              "description": "The basic vocabulary and reference model used to describe how any computer network is organized.",
               "terms": [
                 "Computer Network",
                 "OSI Model",
                 "Network Topology",
-                "TCP/IP"
+                "Protocol",
+                "Bandwidth",
+                "Latency"
               ]
             }
           ]
         },
         {
-          "id": "addressing-routing",
-          "name": "Unit 2: Addressing & Routing",
+          "id": "data-link-layer",
+          "name": "Unit 2: Data Link Layer",
           "topics": [
             {
-              "id": "addressing-routing-core",
-              "name": "Addressing & Routing",
-              "description": "How data finds its way from a sender to a receiver across interconnected networks.",
+              "id": "data-link-layer-core",
+              "name": "Data Link Layer",
+              "description": "How devices on the same local network address each other and share the physical medium.",
               "terms": [
+                "Data Link Layer",
+                "Ethernet",
+                "MAC Address",
+                "Frame",
+                "CSMA/CD",
+                "ARP"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "network-layer",
+          "name": "Unit 3: Network Layer",
+          "topics": [
+            {
+              "id": "addressing-core",
+              "name": "IP Addressing",
+              "description": "How devices are addressed and grouped into networks at the network layer.",
+              "terms": [
+                "Network Layer",
                 "IP Address",
                 "Subnetting",
+                "Classful Addressing",
+                "CIDR",
+                "Network Address Translation"
+              ]
+            },
+            {
+              "id": "routing-core",
+              "name": "Routing",
+              "description": "How routers determine the best path to forward a packet toward its destination.",
+              "terms": [
                 "Router",
                 "Routing",
+                "Static Routing",
+                "Dynamic Routing",
+                "Routing Protocol",
                 "Switch",
                 "Switching"
               ]
@@ -1707,21 +1730,60 @@
           ]
         },
         {
-          "id": "transport-application",
-          "name": "Unit 3: Transport & Application Layer",
+          "id": "transport-layer",
+          "name": "Unit 4: Transport Layer",
           "topics": [
             {
-              "id": "transport-application-core",
-              "name": "Transport & Application Layer",
-              "description": "The protocols that provide reliable/unreliable data delivery and power everyday internet applications.",
+              "id": "transport-layer-core",
+              "name": "TCP & UDP",
+              "description": "The two transport-layer protocols, and the mechanisms TCP uses to guarantee reliable, ordered, flow-controlled delivery.",
               "terms": [
+                "Transport Layer",
                 "TCP",
                 "UDP",
-                "Congestion Control",
+                "Socket",
+                "Port Number",
+                "Three-Way Handshake",
+                "Sequence Number",
+                "Acknowledgment (TCP)",
+                "Flow Control",
+                "Sliding Window (Networking)",
+                "Congestion Control"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "application-layer",
+          "name": "Unit 5: Application Layer",
+          "topics": [
+            {
+              "id": "application-layer-core",
+              "name": "Application-Layer Protocols",
+              "description": "The protocols end-user applications rely on to browse the web, resolve names, and get configured automatically.",
+              "terms": [
+                "Application Layer",
                 "HTTP",
                 "HTTP Protocol",
                 "DNS",
-                "Firewall"
+                "DHCP",
+                "TCP/IP"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "network-security",
+          "name": "Unit 6: Network Security",
+          "topics": [
+            {
+              "id": "network-security-core",
+              "name": "Network Security",
+              "description": "Protecting data as it moves across a network, from filtering traffic to encrypting it end-to-end.",
+              "terms": [
+                "Network Security",
+                "Firewall",
+                "VPN"
               ]
             }
           ]
@@ -1848,58 +1910,127 @@
     {
       "id": "algorithms",
       "name": "Algorithms",
-      "shortDescription": "Analyzing algorithm efficiency and the core design techniques used to build fast, correct algorithms.",
+      "shortDescription": "Complexity analysis, divide and conquer, greedy algorithms, dynamic programming, graph algorithms, and NP-completeness — a full first course in algorithm design and analysis.",
       "termSubjects": [
-        "Algorithms"
+        "Algorithms",
+        "Design and Analysis of Algorithms"
       ],
       "units": [
         {
-          "id": "complexity-analysis",
-          "name": "Unit 1: Complexity Analysis",
+          "id": "complexity-analysis-unit",
+          "name": "Unit 1: Analysis of Algorithms",
           "topics": [
             {
               "id": "complexity-analysis-core",
-              "name": "Complexity Analysis",
-              "description": "Measuring how an algorithm's running time and memory use grow with input size.",
+              "name": "Asymptotic Analysis",
+              "description": "The notations used to describe an algorithm's best, worst, and tight-bound growth rate, and how to analyze recursive algorithms.",
               "terms": [
                 "Big O Notation",
+                "Omega Notation",
+                "Theta Notation",
                 "Time Complexity",
-                "Space Complexity"
+                "Space Complexity",
+                "Asymptotic Analysis",
+                "Recurrence Relation (Algorithms)",
+                "Master Theorem"
               ]
             }
           ]
         },
         {
-          "id": "design-techniques",
-          "name": "Unit 2: Algorithm Design Techniques",
+          "id": "divide-and-conquer-unit",
+          "name": "Unit 2: Divide and Conquer",
           "topics": [
             {
-              "id": "design-techniques-core",
-              "name": "Algorithm Design Techniques",
-              "description": "General strategies — breaking a problem down, remembering past results, or making locally-optimal choices — for designing efficient algorithms.",
+              "id": "divide-and-conquer-core",
+              "name": "Divide and Conquer",
+              "description": "Solving a problem by breaking it into smaller subproblems, solving each, and combining the results.",
               "terms": [
                 "Divide and Conquer",
-                "Dynamic Programming",
-                "Greedy Algorithm",
-                "Backtracking"
+                "Merge Sort",
+                "Quicksort",
+                "Binary Search Algorithm",
+                "Strassen's Matrix Multiplication",
+                "Searching",
+                "Sorting",
+                "Sorting Algorithm"
               ]
             }
           ]
         },
         {
-          "id": "searching-sorting-algo",
-          "name": "Unit 3: Searching & Sorting",
+          "id": "greedy-algorithms-unit",
+          "name": "Unit 3: Greedy Algorithms",
           "topics": [
             {
-              "id": "searching-sorting-algo-core",
-              "name": "Searching & Sorting",
-              "description": "Fundamental algorithms for finding and ordering data efficiently.",
+              "id": "greedy-algorithms-core",
+              "name": "Greedy Algorithms",
+              "description": "Making the locally-optimal choice at each step, and the classic problems where this strategy provably works.",
               "terms": [
-                "Searching",
-                "Sorting",
-                "Sorting Algorithm",
-                "Merge Sort",
-                "Quicksort"
+                "Greedy Algorithm",
+                "Activity Selection Problem",
+                "Fractional Knapsack Problem",
+                "Huffman Coding",
+                "Minimum Spanning Tree",
+                "Kruskal's Algorithm",
+                "Prim's Algorithm"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dynamic-programming-unit",
+          "name": "Unit 4: Dynamic Programming",
+          "topics": [
+            {
+              "id": "dynamic-programming-core",
+              "name": "Dynamic Programming",
+              "description": "Solving a problem by breaking it into overlapping subproblems and storing their solutions to avoid recomputation.",
+              "terms": [
+                "Dynamic Programming",
+                "0/1 Knapsack Problem",
+                "Longest Common Subsequence",
+                "Matrix Chain Multiplication",
+                "Floyd-Warshall Algorithm"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "graph-algorithms-unit",
+          "name": "Unit 5: Graph Algorithms",
+          "topics": [
+            {
+              "id": "graph-algorithms-core",
+              "name": "Graph Algorithms",
+              "description": "Finding shortest paths and valid orderings in graphs — foundational algorithms behind navigation and scheduling.",
+              "terms": [
+                "Dijkstra's Algorithm",
+                "Bellman-Ford Algorithm",
+                "Topological Sort"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "np-completeness-unit",
+          "name": "Unit 6: NP-Completeness & Advanced Topics",
+          "topics": [
+            {
+              "id": "np-completeness-core",
+              "name": "NP-Completeness",
+              "description": "The theory of computational hardness, and how to cope with problems believed too hard to solve exactly and efficiently.",
+              "terms": [
+                "Backtracking",
+                "NP-Hard",
+                "P vs NP Problem",
+                "NP-Complete",
+                "Vertex Cover Problem",
+                "Approximation Algorithm",
+                "Approximation Ratio",
+                "Amortized Analysis",
+                "Memoization",
+                "Optimal Substructure"
               ]
             }
           ]
@@ -2215,43 +2346,133 @@
     {
       "id": "data-structures",
       "name": "Data Structures",
-      "shortDescription": "How data is organized in memory — from simple lists to trees, graphs, and hash tables.",
+      "shortDescription": "Linear structures, stacks and queues, linked lists, trees, graphs, and hashing — a full first course in organizing data in memory.",
       "termSubjects": [
         "Data Structures"
       ],
       "units": [
         {
-          "id": "linear-structures",
-          "name": "Unit 1: Linear Data Structures",
+          "id": "complexity-linear-structures",
+          "name": "Unit 1: Complexity & Linear Structures",
           "topics": [
             {
-              "id": "linear-structures-core",
-              "name": "Linear Data Structures",
-              "description": "Data structures where elements are arranged sequentially.",
+              "id": "complexity-linear-core",
+              "name": "Data Structure Fundamentals",
+              "description": "The abstract-data-type idea, and the basic array-based structure every other data structure builds on.",
               "terms": [
                 "Data Structure",
+                "Abstract Data Type",
                 "Array",
-                "Linked List",
-                "Stack",
-                "Queue"
+                "Sparse Matrix"
               ]
             }
           ]
         },
         {
-          "id": "trees-graphs-hashing",
-          "name": "Unit 2: Trees, Graphs & Hashing",
+          "id": "stacks-queues",
+          "name": "Unit 2: Stacks & Queues",
           "topics": [
             {
-              "id": "trees-graphs-hashing-core",
-              "name": "Trees, Graphs & Hashing",
-              "description": "Non-linear data structures used for hierarchical, networked, and fast-lookup data.",
+              "id": "stacks-queues-core",
+              "name": "Stacks & Queues",
+              "description": "Last-in-first-out and first-in-first-out access patterns, and their common variants.",
               "terms": [
+                "Stack",
+                "Queue",
+                "Circular Queue",
+                "Deque",
+                "Priority Queue",
+                "Postfix Expression",
+                "Infix to Postfix Conversion"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "linked-lists",
+          "name": "Unit 3: Linked Lists",
+          "topics": [
+            {
+              "id": "linked-lists-core",
+              "name": "Linked Lists",
+              "description": "Storing a sequence using nodes connected by pointers instead of contiguous memory.",
+              "terms": [
+                "Linked List",
+                "Circular Linked List",
+                "Doubly Linked List"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "trees-unit",
+          "name": "Unit 4: Trees",
+          "topics": [
+            {
+              "id": "trees-core",
+              "name": "Trees & Traversal",
+              "description": "Hierarchical data structures and the standard orders used to visit every node exactly once.",
+              "terms": [
+                "Binary Tree",
                 "Binary Search Tree",
+                "Tree Traversal",
+                "Inorder Traversal",
+                "Preorder Traversal",
+                "Postorder Traversal",
+                "Threaded Binary Tree"
+              ]
+            },
+            {
+              "id": "balanced-trees-core",
+              "name": "Balanced & Multiway Trees",
+              "description": "Self-balancing trees that guarantee efficient operations even in the worst case.",
+              "terms": [
                 "AVL Tree",
-                "Heap",
+                "Red-Black Tree",
+                "B-Tree (Data Structure)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "graphs-unit",
+          "name": "Unit 5: Graphs",
+          "topics": [
+            {
+              "id": "graphs-core",
+              "name": "Graph Representation & Traversal",
+              "description": "How graphs are stored in memory, and the two fundamental ways to visit every vertex.",
+              "terms": [
+                "Adjacency Matrix",
+                "Adjacency List",
                 "Graph Traversal",
-                "Hash Table"
+                "Breadth-First Search",
+                "Depth-First Search"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "hashing-advanced",
+          "name": "Unit 6: Hashing & Advanced Structures",
+          "topics": [
+            {
+              "id": "hashing-core",
+              "name": "Hashing",
+              "description": "Using a hash function for near-constant-time lookup, and the strategies used when two keys collide.",
+              "terms": [
+                "Hash Table",
+                "Collision Resolution",
+                "Chaining (Hashing)",
+                "Open Addressing"
+              ]
+            },
+            {
+              "id": "heap-core",
+              "name": "Heaps",
+              "description": "A tree-based structure that keeps the minimum or maximum element quickly accessible at the root.",
+              "terms": [
+                "Heap"
               ]
             }
           ]
@@ -2268,21 +2489,34 @@
       ],
       "units": [
         {
-          "id": "discrete-math-core",
-          "name": "Unit 1: Discrete Mathematics",
+          "id": "discrete-mathematics-unit-1",
+          "name": "Unit 1: Logic & Set Theory",
           "topics": [
             {
-              "id": "discrete-math-core-core",
-              "name": "Discrete Mathematics Foundations",
-              "description": "The logical and combinatorial tools computer science is built on.",
+              "id": "discrete-mathematics-logic-and-set-theory",
+              "name": "Logic & Set Theory",
+              "description": "The formal logical and set-theoretic foundations used throughout computer science.",
+              "terms": [
+                "Propositional Logic",
+                "Set Theory",
+                "Mathematical Induction"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "discrete-mathematics-unit-2",
+          "name": "Unit 2: Combinatorics & Graph Theory",
+          "topics": [
+            {
+              "id": "discrete-mathematics-combinatorics-and-graph-theory",
+              "name": "Combinatorics & Graph Theory",
+              "description": "Counting techniques and modeling relationships as graphs.",
               "terms": [
                 "Combination",
-                "Graph Theory",
-                "Mathematical Induction",
                 "Permutation",
-                "Propositional Logic",
                 "Recurrence Relation",
-                "Set Theory"
+                "Graph Theory"
               ]
             }
           ]
@@ -2299,21 +2533,34 @@
       ],
       "units": [
         {
-          "id": "toc-core",
-          "name": "Unit 1: Automata & Computability",
+          "id": "theory-of-computation-unit-1",
+          "name": "Unit 1: Automata Theory",
           "topics": [
             {
-              "id": "toc-core-core",
-              "name": "Automata & Computability",
-              "description": "Abstract computing machines of increasing power, and the limits of what any computer can decide.",
+              "id": "theory-of-computation-automata-theory",
+              "name": "Automata Theory",
+              "description": "Abstract machines of increasing power used to recognize formal languages.",
               "terms": [
-                "Context-Free Grammar",
-                "Decidability",
                 "Finite Automaton",
-                "NP-Completeness",
                 "Pushdown Automaton",
                 "Regular Expression",
-                "Turing Machine"
+                "Context-Free Grammar"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "theory-of-computation-unit-2",
+          "name": "Unit 2: Computability & Complexity",
+          "topics": [
+            {
+              "id": "theory-of-computation-computability-and-complexity",
+              "name": "Computability & Complexity",
+              "description": "The fundamental limits of what any computer can decide, and how hard a decidable problem is.",
+              "terms": [
+                "Turing Machine",
+                "Decidability",
+                "NP-Completeness"
               ]
             }
           ]
@@ -2390,8 +2637,8 @@
       ],
       "units": [
         {
-          "id": "cybersecurity-core",
-          "name": "Unit 1: Threats & Defenses",
+          "id": "cybersecurity-unit-1",
+          "name": "Unit 1: Common Threats",
           "topics": [
             {
               "id": "cybersecurity-threats",
@@ -2404,7 +2651,13 @@
                 "Cross-Site Scripting",
                 "Zero-Day Vulnerability"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "cybersecurity-unit-2",
+          "name": "Unit 2: Defense Mechanisms",
+          "topics": [
             {
               "id": "cybersecurity-defenses",
               "name": "Defense Mechanisms",
@@ -2430,8 +2683,8 @@
       ],
       "units": [
         {
-          "id": "information-security-core",
-          "name": "Unit 1: Cryptography & Security Practices",
+          "id": "information-security-unit-1",
+          "name": "Unit 1: Cryptography Basics",
           "topics": [
             {
               "id": "cryptography-basics",
@@ -2445,7 +2698,13 @@
                 "Public Key Cryptography",
                 "Digital Signature"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "information-security-unit-2",
+          "name": "Unit 2: Security Practices",
+          "topics": [
             {
               "id": "security-practices",
               "name": "Security Practices",
@@ -2470,8 +2729,8 @@
       ],
       "units": [
         {
-          "id": "ml-core",
-          "name": "Unit 1: Machine Learning Fundamentals",
+          "id": "machine-learning-unit-1",
+          "name": "Unit 1: Model Training",
           "topics": [
             {
               "id": "ml-training",
@@ -2484,7 +2743,13 @@
                 "Cross Validation",
                 "Feature Engineering"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "machine-learning-unit-2",
+          "name": "Unit 2: Learning Paradigms",
+          "topics": [
             {
               "id": "ml-paradigms",
               "name": "Learning Paradigms",
@@ -2510,22 +2775,35 @@
       ],
       "units": [
         {
-          "id": "deep-learning-core",
-          "name": "Unit 1: Neural Networks",
+          "id": "deep-learning-unit-1",
+          "name": "Unit 1: Neural Network Fundamentals",
           "topics": [
             {
-              "id": "deep-learning-core-core",
-              "name": "Neural Network Architectures",
-              "description": "The building blocks of neural networks and the specialized architectures built from them.",
+              "id": "deep-learning-neural-network-fundamentals",
+              "name": "Neural Network Fundamentals",
+              "description": "The basic building block of deep learning and the techniques used to prevent it from memorizing training data.",
               "terms": [
                 "Neural Network",
                 "Activation Function",
-                "Convolutional Neural Network",
-                "Recurrent Neural Network",
-                "Generative Adversarial Network",
-                "Deep Learning",
                 "Overfitting",
                 "Regularization"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "deep-learning-unit-2",
+          "name": "Unit 2: Deep Learning Architectures",
+          "topics": [
+            {
+              "id": "deep-learning-deep-learning-architectures",
+              "name": "Deep Learning Architectures",
+              "description": "Specialized neural network architectures built for images, sequences, and generating new data.",
+              "terms": [
+                "Deep Learning",
+                "Convolutional Neural Network",
+                "Recurrent Neural Network",
+                "Generative Adversarial Network"
               ]
             }
           ]
@@ -2689,19 +2967,32 @@
       ],
       "units": [
         {
-          "id": "distributed-systems-core",
-          "name": "Unit 1: Distributed Systems Fundamentals",
+          "id": "distributed-systems-unit-1",
+          "name": "Unit 1: Distributed System Fundamentals",
           "topics": [
             {
-              "id": "distributed-systems-core-core",
-              "name": "Coordination & Fault Tolerance",
-              "description": "The trade-offs and techniques distributed systems use to stay correct and available despite failures.",
+              "id": "distributed-systems-distributed-system-fundamentals",
+              "name": "Distributed System Fundamentals",
+              "description": "The trade-offs a distributed system must make between consistency, availability, and partition tolerance.",
               "terms": [
                 "Distributed System",
-                "CAP Theorem",
+                "Consistency Model",
+                "CAP Theorem"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "distributed-systems-unit-2",
+          "name": "Unit 2: Consensus & Fault Tolerance",
+          "topics": [
+            {
+              "id": "distributed-systems-consensus-and-fault-tolerance",
+              "name": "Consensus & Fault Tolerance",
+              "description": "How independent nodes agree on a value and keep working despite failures.",
+              "terms": [
                 "Consensus Algorithm",
                 "Distributed Consensus",
-                "Consistency Model",
                 "Fault Tolerance",
                 "Load Balancing"
               ]
@@ -2748,19 +3039,32 @@
       ],
       "units": [
         {
-          "id": "devops-core",
-          "name": "Unit 1: DevOps Fundamentals",
+          "id": "devops-unit-1",
+          "name": "Unit 1: Containerization",
           "topics": [
             {
-              "id": "devops-core-core",
-              "name": "DevOps Fundamentals",
-              "description": "Tools and practices for automating deployment and treating infrastructure as code.",
+              "id": "devops-containerization",
+              "name": "Containerization",
+              "description": "Packaging an application with its dependencies so it runs consistently anywhere.",
+              "terms": [
+                "Container",
+                "Docker",
+                "Kubernetes"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "devops-unit-2",
+          "name": "Unit 2: CI/CD & Infrastructure Automation",
+          "topics": [
+            {
+              "id": "devops-ci/cd-and-infrastructure-automation",
+              "name": "CI/CD & Infrastructure Automation",
+              "description": "Automating how code is integrated, deployed, and how infrastructure itself is provisioned.",
               "terms": [
                 "DevOps",
                 "CI/CD Pipeline",
-                "Container",
-                "Docker",
-                "Kubernetes",
                 "Infrastructure as Code",
                 "Serverless Computing"
               ]
@@ -2779,19 +3083,32 @@
       ],
       "units": [
         {
-          "id": "advanced-databases-core",
-          "name": "Unit 1: Scaling Databases",
+          "id": "advanced-databases-unit-1",
+          "name": "Unit 1: Data Warehousing",
           "topics": [
             {
-              "id": "advanced-databases-core-core",
-              "name": "Scaling Databases",
-              "description": "Techniques for storing and querying data across many machines, and for large-scale analytics.",
+              "id": "advanced-databases-data-warehousing",
+              "name": "Data Warehousing",
+              "description": "Consolidating data for large-scale analytics, including non-relational storage.",
               "terms": [
                 "Data Warehouse",
                 "Data Warehousing",
+                "NoSQL"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "advanced-databases-unit-2",
+          "name": "Unit 2: Distributed Databases",
+          "topics": [
+            {
+              "id": "advanced-databases-distributed-databases",
+              "name": "Distributed Databases",
+              "description": "Spreading a database across multiple machines for scale and availability.",
+              "terms": [
                 "Distributed Database",
                 "Eventual Consistency",
-                "NoSQL",
                 "Replication",
                 "Sharding"
               ]
@@ -2898,21 +3215,34 @@
       ],
       "units": [
         {
-          "id": "web-development-core",
-          "name": "Unit 1: Web Development Fundamentals",
+          "id": "web-development-unit-1",
+          "name": "Unit 1: Front-End Development",
           "topics": [
             {
-              "id": "web-development-core-core",
-              "name": "Front-End & Back-End Basics",
-              "description": "The layers of a web application, from markup and styling to server-side logic.",
+              "id": "web-development-front-end-development",
+              "name": "Front-End Development",
+              "description": "The technologies that build what a user sees and interacts with in a browser.",
               "terms": [
                 "HTML",
                 "CSS",
                 "Frontend Development",
+                "Responsive Web Design"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "web-development-unit-2",
+          "name": "Unit 2: Back-End & Full-Stack Development",
+          "topics": [
+            {
+              "id": "web-development-back-end-and-full-stack-development",
+              "name": "Back-End & Full-Stack Development",
+              "description": "The server-side logic behind a web application, and building both halves together.",
+              "terms": [
                 "Backend Development",
                 "Full Stack Development",
-                "Client-Server Model",
-                "Responsive Web Design"
+                "Client-Server Model"
               ]
             }
           ]
@@ -3149,35 +3479,6 @@
       "discipline": "Computer Science"
     },
     {
-      "id": "design-and-analysis-of-algorithms",
-      "name": "Design and Analysis of Algorithms",
-      "shortDescription": "Deeper algorithmic analysis techniques beyond introductory complexity theory.",
-      "termSubjects": [
-        "Design and Analysis of Algorithms"
-      ],
-      "units": [
-        {
-          "id": "daa-core",
-          "name": "Unit 1: Advanced Algorithm Analysis",
-          "topics": [
-            {
-              "id": "daa-core-core",
-              "name": "Advanced Algorithm Analysis",
-              "description": "Techniques for analyzing and classifying the difficulty of algorithmic problems.",
-              "terms": [
-                "Amortized Analysis",
-                "Approximation Algorithm",
-                "Memoization",
-                "NP-Hard",
-                "Optimal Substructure"
-              ]
-            }
-          ]
-        }
-      ],
-      "discipline": "Computer Science"
-    },
-    {
       "id": "programming-fundamentals",
       "name": "Programming Fundamentals",
       "shortDescription": "The universal building blocks of programming, independent of any one language.",
@@ -3186,17 +3487,30 @@
       ],
       "units": [
         {
-          "id": "programming-fundamentals-core",
-          "name": "Unit 1: Universal Programming Concepts",
+          "id": "programming-fundamentals-unit-1",
+          "name": "Unit 1: Algorithmic Thinking",
           "topics": [
             {
-              "id": "programming-fundamentals-core-core",
-              "name": "Universal Programming Concepts",
-              "description": "Concepts every programmer needs regardless of language — from algorithms to object-oriented design.",
+              "id": "programming-fundamentals-algorithmic-thinking",
+              "name": "Algorithmic Thinking",
+              "description": "Solving a problem systematically, including a function that calls itself.",
               "terms": [
                 "System",
                 "Algorithm",
-                "Recursion",
+                "Recursion"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "programming-fundamentals-unit-2",
+          "name": "Unit 2: Object-Oriented Fundamentals",
+          "topics": [
+            {
+              "id": "programming-fundamentals-object-oriented-fundamentals",
+              "name": "Object-Oriented Fundamentals",
+              "description": "The four pillars of object-oriented programming, language-independent.",
+              "terms": [
                 "Abstraction",
                 "Encapsulation",
                 "Inheritance",
@@ -3286,8 +3600,8 @@
       ],
       "units": [
         {
-          "id": "control-systems-core",
-          "name": "Unit 1: Feedback Control",
+          "id": "control-systems-unit-1",
+          "name": "Unit 1: Control System Fundamentals",
           "topics": [
             {
               "id": "control-fundamentals",
@@ -3301,7 +3615,13 @@
                 "Transfer Function",
                 "State Space Model"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "control-systems-unit-2",
+          "name": "Unit 2: Stability Analysis",
+          "topics": [
             {
               "id": "stability-analysis",
               "name": "Stability Analysis",
@@ -3328,23 +3648,36 @@
       ],
       "units": [
         {
-          "id": "electrical-machines-core",
-          "name": "Unit 1: Motors & Generators",
+          "id": "electrical-machines-unit-1",
+          "name": "Unit 1: DC Machines",
           "topics": [
             {
-              "id": "electrical-machines-core-core",
-              "name": "Motors, Generators & Transformers",
-              "description": "Rotating machines and transformers that convert between electrical and mechanical energy.",
+              "id": "electrical-machines-dc-machines",
+              "name": "DC Machines",
+              "description": "DC generators and motors, and the electromagnetic effects unique to them.",
               "terms": [
-                "Electrical Machines",
                 "DC Generator",
                 "DC Motor",
                 "Generator",
+                "Armature Reaction",
+                "Back EMF"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "electrical-machines-unit-2",
+          "name": "Unit 2: AC Machines & Transformers",
+          "topics": [
+            {
+              "id": "electrical-machines-ac-machines-and-transformers",
+              "name": "AC Machines & Transformers",
+              "description": "Alternators, synchronous and induction motors, and the transformer that links AC systems together.",
+              "terms": [
+                "Electrical Machines",
                 "Alternator",
                 "Synchronous Motor",
                 "Induction Motor",
-                "Armature Reaction",
-                "Back EMF",
                 "Slip",
                 "Transformer"
               ]
@@ -3363,8 +3696,8 @@
       ],
       "units": [
         {
-          "id": "power-systems-core",
-          "name": "Unit 1: Generation, Transmission & Protection",
+          "id": "power-systems-unit-1",
+          "name": "Unit 1: Generation & Transmission",
           "topics": [
             {
               "id": "power-generation-transmission",
@@ -3379,7 +3712,13 @@
                 "Per Unit System",
                 "Power Factor"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "power-systems-unit-2",
+          "name": "Unit 2: Fault Analysis & Protection",
+          "topics": [
             {
               "id": "power-protection",
               "name": "Fault Analysis & Protection",
@@ -3405,18 +3744,31 @@
       ],
       "units": [
         {
-          "id": "power-electronics-core",
+          "id": "power-electronics-unit-1",
           "name": "Unit 1: Power Semiconductor Devices",
           "topics": [
             {
-              "id": "power-electronics-core-core",
-              "name": "Power Semiconductor Devices & Converters",
-              "description": "Devices and circuits used to convert electrical power between AC and DC and to control its magnitude.",
+              "id": "power-electronics-power-semiconductor-devices",
+              "name": "Power Semiconductor Devices",
+              "description": "The switching devices used to control large amounts of electrical power.",
               "terms": [
                 "Power Electronics",
                 "Thyristor",
                 "MOSFET",
-                "IGBT",
+                "IGBT"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "power-electronics-unit-2",
+          "name": "Unit 2: Power Converters",
+          "topics": [
+            {
+              "id": "power-electronics-power-converters",
+              "name": "Power Converters",
+              "description": "Circuits built from power devices to convert AC/DC power and regulate voltage.",
+              "terms": [
                 "Rectifier",
                 "Inverter",
                 "Chopper",
@@ -3438,18 +3790,31 @@
       ],
       "units": [
         {
-          "id": "electrical-measurements-core",
-          "name": "Unit 1: Measuring Instruments",
+          "id": "electrical-measurements-unit-1",
+          "name": "Unit 1: Basic Measuring Instruments",
           "topics": [
             {
-              "id": "electrical-measurements-core-core",
-              "name": "Measuring Instruments",
-              "description": "The instruments used to measure current, voltage, resistance, and power, and how they're calibrated.",
+              "id": "electrical-measurements-basic-measuring-instruments",
+              "name": "Basic Measuring Instruments",
+              "description": "The everyday instruments used to measure current, voltage, and resistance.",
               "terms": [
                 "Ammeter",
                 "Voltmeter",
                 "Multimeter",
-                "Oscilloscope",
+                "Oscilloscope"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "electrical-measurements-unit-2",
+          "name": "Unit 2: Power Measurement & Calibration",
+          "topics": [
+            {
+              "id": "electrical-measurements-power-measurement-and-calibration",
+              "name": "Power Measurement & Calibration",
+              "description": "Measuring electrical power and ensuring an instrument's readings stay accurate.",
+              "terms": [
                 "Wattmeter",
                 "Wheatstone Bridge",
                 "Calibration"
@@ -3498,19 +3863,32 @@
       ],
       "units": [
         {
-          "id": "renewable-energy-core",
-          "name": "Unit 1: Solar & Wind Energy",
+          "id": "renewable-non-conventional-energy-unit-1",
+          "name": "Unit 1: Solar Energy Systems",
           "topics": [
             {
-              "id": "renewable-energy-core-core",
-              "name": "Solar & Wind Energy Systems",
-              "description": "How solar and wind energy are captured, converted to electricity, and connected to the power grid.",
+              "id": "renewable-non-conventional-energy-solar-energy-systems",
+              "name": "Solar Energy Systems",
+              "description": "How sunlight is converted directly into electricity using photovoltaic cells.",
+              "terms": [
+                "Solar Energy",
+                "Solar Photovoltaic System",
+                "Photovoltaic Cell"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "renewable-non-conventional-energy-unit-2",
+          "name": "Unit 2: Wind Energy & Grid Integration",
+          "topics": [
+            {
+              "id": "renewable-non-conventional-energy-wind-energy-and-grid-integration",
+              "name": "Wind Energy & Grid Integration",
+              "description": "How wind is converted to electricity and connected to the power grid.",
               "terms": [
                 "Renewable Energy",
                 "Non-Conventional Energy Sources",
-                "Solar Energy",
-                "Solar Photovoltaic System",
-                "Photovoltaic Cell",
                 "Wind Energy",
                 "Wind Energy Conversion",
                 "Wind Turbine",
@@ -3610,21 +3988,34 @@
       ],
       "units": [
         {
-          "id": "electronic-devices-core",
-          "name": "Unit 1: Diodes & Transistors",
+          "id": "electronic-devices-unit-1",
+          "name": "Unit 1: Diodes",
           "topics": [
             {
-              "id": "electronic-devices-core-core",
-              "name": "Diodes & Transistors",
-              "description": "The core two- and three-terminal semiconductor devices used to build electronic circuits.",
+              "id": "electronic-devices-diodes",
+              "name": "Diodes",
+              "description": "Two-terminal semiconductor devices that conduct current in only one direction.",
               "terms": [
                 "Diode",
                 "Zener Diode",
+                "Rectifier Circuit"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "electronic-devices-unit-2",
+          "name": "Unit 2: Transistors & Amplifiers",
+          "topics": [
+            {
+              "id": "electronic-devices-transistors-and-amplifiers",
+              "name": "Transistors & Amplifiers",
+              "description": "Three-terminal devices used to switch or amplify an electronic signal.",
+              "terms": [
                 "Transistor",
                 "Bipolar Junction Transistor",
                 "Field Effect Transistor",
-                "Amplifier",
-                "Rectifier Circuit"
+                "Amplifier"
               ]
             }
           ]
@@ -3699,22 +4090,35 @@
       ],
       "units": [
         {
-          "id": "signals-systems-core",
-          "name": "Unit 1: Signal Analysis",
+          "id": "signals-and-systems-unit-1",
+          "name": "Unit 1: Signals & LTI Systems",
           "topics": [
             {
-              "id": "signals-systems-core-core",
-              "name": "Signal Analysis",
-              "description": "Transforms used to move between the time and frequency representations of a signal, and the systems that process them.",
+              "id": "signals-and-systems-signals-and-lti-systems",
+              "name": "Signals & LTI Systems",
+              "description": "Classifying signals and the linear time-invariant systems that process them.",
               "terms": [
                 "Signal",
                 "Linear Time-Invariant System",
                 "Convolution",
-                "Fourier Transform",
-                "Laplace Transform",
-                "Z-Transform",
                 "Sampling Theorem",
                 "Aliasing"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "signals-and-systems-unit-2",
+          "name": "Unit 2: Transform Techniques",
+          "topics": [
+            {
+              "id": "signals-and-systems-transform-techniques",
+              "name": "Transform Techniques",
+              "description": "Moving a signal between the time and frequency domains for easier analysis.",
+              "terms": [
+                "Fourier Transform",
+                "Laplace Transform",
+                "Z-Transform"
               ]
             }
           ]
@@ -3791,21 +4195,34 @@
       ],
       "units": [
         {
-          "id": "digital-comm-core",
-          "name": "Unit 1: Digital Transmission",
+          "id": "digital-communication-unit-1",
+          "name": "Unit 1: Digital Modulation",
           "topics": [
             {
-              "id": "digital-comm-core-core",
-              "name": "Digital Transmission",
-              "description": "How digital data is modulated, coded against errors, and limited by channel capacity.",
+              "id": "digital-communication-digital-modulation",
+              "name": "Digital Modulation",
+              "description": "Encoding digital data onto a carrier and representing analog signals digitally.",
               "terms": [
                 "Digital Modulation",
                 "Pulse Code Modulation",
+                "Quantization"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "digital-communication-unit-2",
+          "name": "Unit 2: Channel Capacity & Error Control",
+          "topics": [
+            {
+              "id": "digital-communication-channel-capacity-and-error-control",
+              "name": "Channel Capacity & Error Control",
+              "description": "The theoretical limit on a channel's data rate, and detecting/correcting transmission errors.",
+              "terms": [
                 "Channel Capacity",
                 "Shannon's Theorem",
                 "Bit Error Rate",
-                "Error Correction Code",
-                "Quantization"
+                "Error Correction Code"
               ]
             }
           ]
@@ -3822,18 +4239,31 @@
       ],
       "units": [
         {
-          "id": "wireless-comm-core",
-          "name": "Unit 1: Wireless Networks",
+          "id": "wireless-communication-unit-1",
+          "name": "Unit 1: Cellular & Mobile Networks",
           "topics": [
             {
-              "id": "wireless-comm-core-core",
-              "name": "Wireless & Cellular Networks",
-              "description": "The generations of cellular technology and short-range wireless standards that connect mobile devices.",
+              "id": "wireless-communication-cellular-and-mobile-networks",
+              "name": "Cellular & Mobile Networks",
+              "description": "How mobile devices connect through generations of cellular network technology.",
               "terms": [
                 "Wireless Communication",
                 "Mobile Communication",
                 "Cellular Network",
-                "5G",
+                "5G"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "wireless-communication-unit-2",
+          "name": "Unit 2: Wireless Access Technologies",
+          "topics": [
+            {
+              "id": "wireless-communication-wireless-access-technologies",
+              "name": "Wireless Access Technologies",
+              "description": "Short-range wireless standards and how multiple devices share the same channel.",
+              "terms": [
                 "Bluetooth",
                 "Multiple Access",
                 "Multiple Access Technique"
@@ -4011,29 +4441,100 @@
     {
       "id": "engineering-mechanics",
       "name": "Engineering Mechanics",
-      "shortDescription": "The statics and dynamics of forces acting on rigid bodies.",
+      "shortDescription": "Force systems, equilibrium, friction, centroids and moments of inertia, kinematics and kinetics, and work-energy principles — the mechanics behind every structure and machine.",
       "termSubjects": [
         "Engineering Mechanics"
       ],
       "units": [
         {
-          "id": "engineering-mechanics-core",
-          "name": "Unit 1: Statics & Dynamics",
+          "id": "force-systems-unit",
+          "name": "Unit 1: Force Systems",
           "topics": [
             {
-              "id": "engineering-mechanics-core-core",
-              "name": "Forces, Equilibrium & Motion",
-              "description": "How forces combine, keep a body in equilibrium, and cause motion.",
+              "id": "force-systems-core",
+              "name": "Force Systems",
+              "description": "How multiple forces acting on a body combine into a single resultant, and the theorems used to analyze them.",
               "terms": [
                 "Force",
+                "Coplanar Force System",
+                "Concurrent Force System",
+                "Resultant Force",
                 "Moment",
-                "Moment of Inertia",
                 "Torque",
+                "Lami's Theorem",
+                "Varignon's Theorem"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "equilibrium-friction-unit",
+          "name": "Unit 2: Equilibrium & Friction",
+          "topics": [
+            {
+              "id": "equilibrium-friction-core",
+              "name": "Equilibrium & Friction",
+              "description": "The conditions for a body to be at rest, and the resistive force that opposes relative sliding between surfaces.",
+              "terms": [
                 "Equilibrium",
-                "Center of Gravity",
                 "Free Body Diagram",
                 "Friction",
-                "Dynamics"
+                "Coefficient of Friction",
+                "Angle of Friction",
+                "Angle of Repose"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "centroid-moi-unit",
+          "name": "Unit 3: Centroid & Moment of Inertia",
+          "topics": [
+            {
+              "id": "centroid-moi-core",
+              "name": "Centroid & Moment of Inertia",
+              "description": "The geometric center of a shape, and the theorems used to calculate how mass or area is distributed around an axis.",
+              "terms": [
+                "Center of Gravity",
+                "Centroid",
+                "Moment of Inertia",
+                "Radius of Gyration",
+                "Parallel Axis Theorem",
+                "Perpendicular Axis Theorem"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "kinematics-kinetics-unit",
+          "name": "Unit 4: Kinematics & Kinetics",
+          "topics": [
+            {
+              "id": "kinematics-kinetics-core",
+              "name": "Kinematics & Kinetics",
+              "description": "Describing motion itself, then relating that motion to the forces that cause it.",
+              "terms": [
+                "Dynamics",
+                "Kinematics of a Particle",
+                "Kinetics of a Particle",
+                "Newton's Second Law of Motion",
+                "Impulse-Momentum Principle"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "work-energy-unit",
+          "name": "Unit 5: Work, Energy & Virtual Work",
+          "topics": [
+            {
+              "id": "work-energy-core",
+              "name": "Work, Energy & Virtual Work",
+              "description": "Relating force and motion through energy, and an alternative equilibrium method based on imaginary displacements.",
+              "terms": [
+                "Work-Energy Principle",
+                "Law of Conservation of Energy",
+                "Principle of Virtual Work"
               ]
             }
           ]
@@ -4099,7 +4600,7 @@
       ],
       "units": [
         {
-          "id": "thermodynamics-core",
+          "id": "thermodynamics-unit-1",
           "name": "Unit 1: Laws of Thermodynamics",
           "topics": [
             {
@@ -4113,7 +4614,13 @@
                 "Enthalpy",
                 "Entropy"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "thermodynamics-unit-2",
+          "name": "Unit 2: Thermodynamic Cycles",
+          "topics": [
             {
               "id": "thermodynamic-cycles",
               "name": "Thermodynamic Cycles",
@@ -4138,8 +4645,8 @@
       ],
       "units": [
         {
-          "id": "thermal-engineering-core",
-          "name": "Unit 1: Heat Transfer & Power Machinery",
+          "id": "thermal-engineering-unit-1",
+          "name": "Unit 1: Heat Transfer",
           "topics": [
             {
               "id": "heat-transfer",
@@ -4152,7 +4659,13 @@
                 "Radiation",
                 "Heat Exchanger"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "thermal-engineering-unit-2",
+          "name": "Unit 2: Power-Generating Machinery",
+          "topics": [
             {
               "id": "power-machinery",
               "name": "Power-Generating Machinery",
@@ -4235,8 +4748,8 @@
       ],
       "units": [
         {
-          "id": "theory-of-machines-core",
-          "name": "Unit 1: Mechanisms & Machine Dynamics",
+          "id": "theory-of-machines-unit-1",
+          "name": "Unit 1: Mechanisms",
           "topics": [
             {
               "id": "mechanisms",
@@ -4249,7 +4762,13 @@
                 "Gear",
                 "Gear Train"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "theory-of-machines-unit-2",
+          "name": "Unit 2: Kinematics, Kinetics & Machine Dynamics",
+          "topics": [
             {
               "id": "machine-dynamics",
               "name": "Kinematics, Kinetics & Machine Dynamics",
@@ -4329,8 +4848,8 @@
       ],
       "units": [
         {
-          "id": "manufacturing-processes",
-          "name": "Unit 1: Manufacturing Processes",
+          "id": "manufacturing-technology-unit-1",
+          "name": "Unit 1: Casting & Forming",
           "topics": [
             {
               "id": "casting-forming",
@@ -4341,7 +4860,13 @@
                 "Casting Process",
                 "Forming Process"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "manufacturing-technology-unit-2",
+          "name": "Unit 2: Machining, Welding & CNC",
+          "topics": [
             {
               "id": "machining-welding",
               "name": "Machining, Welding & CNC",
@@ -4582,8 +5107,8 @@
       ],
       "units": [
         {
-          "id": "geotechnical-core",
-          "name": "Unit 1: Soil Mechanics & Foundations",
+          "id": "geotechnical-engineering-unit-1",
+          "name": "Unit 1: Soil Mechanics",
           "topics": [
             {
               "id": "soil-mechanics",
@@ -4597,7 +5122,13 @@
                 "Settlement",
                 "Settlement of Foundation"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "geotechnical-engineering-unit-2",
+          "name": "Unit 2: Foundation Engineering",
+          "topics": [
             {
               "id": "foundations",
               "name": "Foundation Engineering",
@@ -4623,19 +5154,32 @@
       ],
       "units": [
         {
-          "id": "structural-analysis-core",
-          "name": "Unit 1: Analyzing Structures",
+          "id": "structural-analysis-unit-1",
+          "name": "Unit 1: Beams & Trusses",
           "topics": [
             {
-              "id": "structural-analysis-core-core",
-              "name": "Analyzing Beams, Trusses & Frames",
-              "description": "Techniques for finding internal forces and deflections in structural members.",
+              "id": "structural-analysis-beams-and-trusses",
+              "name": "Beams & Trusses",
+              "description": "Finding deflections and internal forces in statically determinate beams and trusses.",
+              "terms": [
+                "Beam Deflection",
+                "Truss",
+                "Truss Analysis"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "structural-analysis-unit-2",
+          "name": "Unit 2: Indeterminate Structures",
+          "topics": [
+            {
+              "id": "structural-analysis-indeterminate-structures",
+              "name": "Indeterminate Structures",
+              "description": "Analyzing structures with more unknowns than equilibrium equations can solve directly.",
               "terms": [
                 "Structural Analysis",
-                "Beam Deflection",
                 "Column",
-                "Truss",
-                "Truss Analysis",
                 "Indeterminate Structure",
                 "Influence Line Diagram"
               ]
@@ -4770,8 +5314,8 @@
       ],
       "units": [
         {
-          "id": "transportation-core",
-          "name": "Unit 1: Highway & Traffic Engineering",
+          "id": "transportation-engineering-unit-1",
+          "name": "Unit 1: Pavement Design",
           "topics": [
             {
               "id": "pavement-design",
@@ -4784,7 +5328,13 @@
                 "Flexible Pavement",
                 "Rigid Pavement"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "transportation-engineering-unit-2",
+          "name": "Unit 2: Traffic Engineering",
+          "topics": [
             {
               "id": "traffic-engineering",
               "name": "Traffic Engineering",
@@ -5829,8 +6379,8 @@
       ],
       "units": [
         {
-          "id": "indian-constitution-core",
-          "name": "Unit 1: Constitutional Structure",
+          "id": "indian-constitution-unit-1",
+          "name": "Unit 1: How the Constitution Was Made",
           "topics": [
             {
               "id": "constitution-structure",
@@ -5842,7 +6392,13 @@
                 "Fundamental Duties",
                 "Directive Principles of State Policy"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "indian-constitution-unit-2",
+          "name": "Unit 2: Government Structure",
+          "topics": [
             {
               "id": "government-structure",
               "name": "Government Structure",

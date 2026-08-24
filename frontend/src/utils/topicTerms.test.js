@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import firstYearSubjects from '../../../shared/firstYearSubjects.json';
 import engineeringTerminology from '../../../shared/engineeringTerminology.json';
-import { getSubjects, getDisciplines, getSubjectsByDiscipline, getSubject, getUnit, getTopic, getTopicTerms } from './topicTerms.js';
+import { getSubjects, getDisciplines, getSubjectsByDiscipline, getSubject, getUnit, getTopic, getSubjectStats, getTopicTerms } from './topicTerms.js';
 
 describe('firstYearSubjects.json data integrity (anti-fabrication guard)', () => {
     const allRealTerms = new Set(engineeringTerminology.terms.map((t) => t.term));
@@ -131,7 +131,7 @@ describe('firstYearSubjects.json data integrity (anti-fabrication guard)', () =>
             }
         }
         expect(placedCount).toBe(engineeringTerminology.terms.length);
-        expect(placedCount).toBe(1146);
+        expect(placedCount).toBe(1332);
     });
 });
 
@@ -178,17 +178,17 @@ describe('topicTerms lookup helpers', () => {
     });
 
     it('getUnit finds a unit within a subject', () => {
-        expect(getUnit('engineering-physics', 'lasers-fiber-optics')?.name).toContain('Lasers & Fiber Optics');
+        expect(getUnit('engineering-physics', 'lasers-fiber-optics-unit')?.name).toContain('Lasers & Fiber Optics');
     });
 
     it('getTopic finds a topic within a unit', () => {
-        expect(getTopic('engineering-physics', 'lasers-fiber-optics', 'fiber-optics')?.name).toBe('Fiber Optics');
+        expect(getTopic('engineering-physics', 'superconductivity-em-nano-unit', 'nanotechnology-2')?.name).toBe('Nanotechnology');
     });
 
     it('getTopicTerms returns only the terms for that specific topic, not the whole subject', async () => {
-        const terms = await getTopicTerms('engineering-physics', 'lasers-fiber-optics', 'fiber-optics');
+        const terms = await getTopicTerms('engineering-physics', 'superconductivity-em-nano-unit', 'nanotechnology-2');
         const names = terms.map((t) => t.term);
-        expect(names).toEqual(['Acceptance Angle', 'Numerical Aperture', 'Optical Fiber']);
+        expect(names).toEqual(['Carbon Nanotube', 'Nanomaterial', 'Nanoparticle', 'Quantum Confinement']);
         // A term from a different topic in the same subject must not leak in.
         expect(names).not.toContain('Bragg\'s Law');
     });
@@ -211,7 +211,7 @@ describe('topicTerms lookup helpers', () => {
     });
 
     it('getTopicTerms returns an empty array for an unknown topic', async () => {
-        expect(await getTopicTerms('engineering-physics', 'lasers-fiber-optics', 'not-a-topic')).toEqual([]);
+        expect(await getTopicTerms('engineering-physics', 'lasers-fiber-optics-unit', 'not-a-topic')).toEqual([]);
     });
 
     it('getTopicTerms does not require loading the terminology dataset for subject/unit/topic navigation alone', () => {
@@ -221,6 +221,34 @@ describe('topicTerms lookup helpers', () => {
         // (see topicTerms.js). This just documents that contract stays intact.
         expect(getSubjects().length).toBeGreaterThan(0);
         expect(typeof getTopicTerms).toBe('function');
-        expect(getTopicTerms('engineering-physics', 'lasers-fiber-optics', 'fiber-optics')).toBeInstanceOf(Promise);
+        expect(getTopicTerms('engineering-physics', 'lasers-fiber-optics-unit', 'lasers-fiber-core')).toBeInstanceOf(Promise);
+    });
+});
+
+describe('getSubjectStats (unit/topic/term counts shown on subject cards)', () => {
+    it('computes correct counts for a flagship multi-unit subject (Operating Systems)', () => {
+        const stats = getSubjectStats('operating-systems');
+        expect(stats.units).toBe(6);
+        expect(stats.topics).toBeGreaterThanOrEqual(6);
+        expect(stats.terms).toBeGreaterThan(40);
+    });
+
+    it('computes correct counts for a still-small, legitimately single-unit subject', () => {
+        const stats = getSubjectStats('mechatronics');
+        expect(stats.units).toBe(1);
+        expect(stats.terms).toBe(1);
+    });
+
+    it('returns all zeros for an unknown subject rather than throwing', () => {
+        expect(getSubjectStats('not-a-real-subject')).toEqual({ units: 0, topics: 0, terms: 0 });
+    });
+
+    it('stats sum matches the subject\'s actual placed term count exactly', () => {
+        for (const subjectId of ['operating-systems', 'engineering-physics', 'algorithms', 'engineering-mechanics']) {
+            const stats = getSubjectStats(subjectId);
+            const subject = getSubject(subjectId);
+            const actualTerms = subject.units.reduce((sum, u) => sum + u.topics.reduce((s, t) => s + t.terms.length, 0), 0);
+            expect(stats.terms).toBe(actualTerms);
+        }
     });
 });

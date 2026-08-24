@@ -19,6 +19,25 @@ const getUnit = (subjectId, unitId) =>
 const getTopic = (subjectId, unitId, topicId) =>
     getUnit(subjectId, unitId)?.topics.find((t) => t.id === topicId) || null;
 
+/**
+ * Unit/topic/term counts for a subject card, e.g. "6 Units, 8 Topics, 47 Terms" — a
+ * topic's `terms` array in firstYearSubjects.json already holds the exact term names,
+ * so this is a synchronous count over that data alone, no need to await the large
+ * engineeringTerminology.json just to show a number on a card.
+ * @returns {{units: number, topics: number, terms: number}}
+ */
+const getSubjectStats = (subjectId) => {
+    const subject = getSubject(subjectId);
+    if (!subject) return { units: 0, topics: 0, terms: 0 };
+    const units = subject.units.length;
+    const topics = subject.units.reduce((sum, u) => sum + u.topics.length, 0);
+    const terms = subject.units.reduce(
+        (sum, u) => sum + u.topics.reduce((s, t) => s + t.terms.length, 0),
+        0
+    );
+    return { units, topics, terms };
+};
+
 // engineeringTerminology.json is ~700KB uncompressed and, like the glossary itself (see
 // glossaryLookup.js), must stay out of the initial bundle — a student browsing the home
 // screen's subject cards (getSubjects/getSubject/getUnit/getTopic above, all backed only
@@ -81,4 +100,4 @@ const getTopicTerms = async (subjectId, unitId, topicId) => {
         .sort((a, b) => a.term.localeCompare(b.term));
 };
 
-export { getSubjects, getDisciplines, getSubjectsByDiscipline, getSubject, getUnit, getTopic, getTopicTerms };
+export { getSubjects, getDisciplines, getSubjectsByDiscipline, getSubject, getUnit, getTopic, getSubjectStats, getTopicTerms };
