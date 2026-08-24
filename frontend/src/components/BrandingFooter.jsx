@@ -44,13 +44,13 @@ const BrandingFooter = () => {
                     <div className="shrink-0 flex flex-row items-center gap-1.5 md:w-full md:flex-1 md:flex-col md:justify-center md:text-center md:gap-2 md:px-6">
                         <img
                             src="/assets/branding/otbi-logo.png"
-                            alt="Osmania Technology Business Incubator — OU Idea Labs Foundation"
+                            alt="Osmania Technology Business Incubator (OTBI)"
                             className={LOGO_BOX}
                         />
                         <div className="leading-tight">
-                            <p className="text-[10px] md:hidden font-semibold text-text-main whitespace-nowrap">OU Idea Labs</p>
+                            <p className="text-[10px] md:hidden font-semibold text-text-main whitespace-nowrap">OTBI</p>
                             <p className="hidden md:block text-xs text-text-muted">Osmania Technology Business Incubator</p>
-                            <p className="hidden md:block text-xs text-text-muted">OU Idea Labs Foundation</p>
+                            <p className="hidden md:block text-xs text-text-muted">OTBI</p>
                         </div>
                     </div>
 

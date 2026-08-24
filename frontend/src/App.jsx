@@ -4,7 +4,11 @@ import ReaderLayout from './components/ReaderLayout';
 import Header from './components/Header';
 import BrandingFooter from './components/BrandingFooter';
 import StorageQuota from './components/StorageQuota';
-import { Loader2 } from 'lucide-react';
+import DisciplineCatalogue from './components/DisciplineCatalogue';
+import SubjectCatalogue from './components/SubjectCatalogue';
+import SubjectView from './components/SubjectView';
+import TopicView from './components/TopicView';
+import { BookOpen, Loader2 } from 'lucide-react';
 
 // Lazy-loaded: the glossary's ~250KB term dataset and its own JS should never be
 // part of the initial bundle a student pays for just to upload and read a PDF.
@@ -14,16 +18,36 @@ function App() {
   const [document, setDocument] = useState(null);
   const [storageRefreshKey, setStorageRefreshKey] = useState(0);
   const [showGlossary, setShowGlossary] = useState(false);
+  // 'landing' | 'discipline' | 'subject' | 'topic' — catalogue browsing, layered
+  // alongside the existing document/glossary states rather than replacing them.
+  // Opening a document (from anywhere) still short-circuits straight to the reader
+  // via the `!document` check below, exactly as before this catalogue existed. The
+  // catalogue now spans 150+ subjects across 16 disciplines, so browsing is
+  // Discipline -> Subject -> Unit -> Topic rather than a flat subject list.
+  const [screen, setScreen] = useState('landing');
+  const [selectedDiscipline, setSelectedDiscipline] = useState(null);
+  const [selectedSubjectId, setSelectedSubjectId] = useState(null);
+  const [selectedUnitId, setSelectedUnitId] = useState(null);
+  const [selectedTopicId, setSelectedTopicId] = useState(null);
+
+  const goHome = () => {
+    setDocument(null);
+    setShowGlossary(false);
+    setScreen('landing');
+    setSelectedDiscipline(null);
+    setSelectedSubjectId(null);
+    setSelectedUnitId(null);
+    setSelectedTopicId(null);
+  };
+
+  const openDocument = (doc) => {
+    setDocument(doc);
+    setStorageRefreshKey((key) => key + 1);
+  };
 
   return (
     <div className="h-dvh bg-background text-text-main font-sans flex flex-col overflow-hidden">
-      <Header
-        onHome={() => {
-          setDocument(null);
-          setShowGlossary(false);
-        }}
-        onOpenGlossary={() => setShowGlossary(true)}
-      />
+      <Header onHome={goHome} onOpenGlossary={() => setShowGlossary(true)} />
 
       {showGlossary ? (
         <Suspense
@@ -36,7 +60,36 @@ function App() {
         >
           <TechnicalTerms onClose={() => setShowGlossary(false)} />
         </Suspense>
-      ) : !document ? (
+      ) : document ? (
+        <ReaderLayout document={document} />
+      ) : screen === 'discipline' ? (
+        <SubjectCatalogue
+          discipline={selectedDiscipline}
+          onBack={() => setScreen('landing')}
+          onSelectSubject={(subjectId) => {
+            setSelectedSubjectId(subjectId);
+            setScreen('subject');
+          }}
+        />
+      ) : screen === 'subject' ? (
+        <SubjectView
+          subjectId={selectedSubjectId}
+          onBack={() => setScreen('discipline')}
+          onSelectTopic={(unitId, topicId) => {
+            setSelectedUnitId(unitId);
+            setSelectedTopicId(topicId);
+            setScreen('topic');
+          }}
+        />
+      ) : screen === 'topic' ? (
+        <TopicView
+          subjectId={selectedSubjectId}
+          unitId={selectedUnitId}
+          topicId={selectedTopicId}
+          onBack={() => setScreen('subject')}
+          onOpenDocument={openDocument}
+        />
+      ) : (
         // Hero and footer share one scroll region so the footer isn't a permanently
         // reserved slice of the viewport — on short mobile screens it flows below the
         // upload area instead of squeezing it.
@@ -47,9 +100,8 @@ function App() {
               alt="ConceptBridge logo"
               className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain rounded-2xl shadow-md mb-3 md:mb-6"
             />
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3 md:mb-6 tracking-tight">
-              Understand any concept, <br />
-              <span className="text-primary">instantly.</span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-2 md:mb-4 tracking-tight max-w-3xl">
+              Learn engineering concepts in the <span className="text-primary">language you understand.</span>
             </h2>
             {/* max-w/max-h (not fixed w) so a short viewport can shrink the image
                 proportionally via the height cap without distorting it — a fixed
@@ -61,24 +113,33 @@ function App() {
             <img
               src="/assets/branding/conceptbridge-hero.jpeg"
               alt="ConceptBridge engineering learning illustration"
-              className="w-auto h-auto max-w-56 sm:max-w-72 md:max-w-[420px] lg:max-w-[480px] lg:max-h-[34vh] rounded-2xl border border-white/10 shadow-lg mb-4 md:mb-6"
+              className="w-auto h-auto max-w-40 sm:max-w-56 md:max-w-72 lg:max-h-[22vh] rounded-2xl border border-white/10 shadow-lg mb-4 md:mb-8"
             />
-            <p className="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mb-6 md:mb-10">
-              Upload any educational PDF, read it here, and highlight anything you get stuck on for an
-              instant explanation in your language.
-            </p>
-            <FileUpload
-              onUploadSuccess={(doc) => {
-                setDocument(doc);
-                setStorageRefreshKey((key) => key + 1);
+
+            <DisciplineCatalogue
+              onSelectDiscipline={(discipline) => {
+                setSelectedDiscipline(discipline);
+                setScreen('discipline');
               }}
             />
-            <StorageQuota refreshKey={storageRefreshKey} onOpenDocument={setDocument} />
+
+            <div className="w-full max-w-xl border-t border-white/10 pt-6 md:pt-8">
+              <button
+                type="button"
+                onClick={() => setShowGlossary(true)}
+                className="w-full flex items-center justify-center gap-2 border border-white/10 rounded-xl px-4 py-3 text-sm font-semibold text-text-main hover:border-primary/50 transition-colors mb-4"
+              >
+                <BookOpen className="w-4 h-4 text-primary" />
+                Explore Technical Terms
+              </button>
+
+              <p className="text-xs uppercase tracking-wider text-text-muted mb-3">Or upload your own PDF</p>
+              <FileUpload onUploadSuccess={openDocument} />
+              <StorageQuota refreshKey={storageRefreshKey} onOpenDocument={openDocument} />
+            </div>
           </main>
           <BrandingFooter />
         </div>
-      ) : (
-        <ReaderLayout document={document} />
       )}
     </div>
   );

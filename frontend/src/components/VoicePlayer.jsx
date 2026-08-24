@@ -36,6 +36,15 @@ const VoicePlayer = ({ text, language }) => {
         return () => {
             mountedRef.current = false;
             sessionRef.current?.destroy();
+            // React 19 StrictMode (see main.jsx) mounts every effect twice in dev:
+            // mount -> cleanup -> mount. Without clearing the ref here, the destroyed
+            // session from the first mount survives into the second mount's
+            // `!sessionRef.current` check (still non-null), so a fresh session is never
+            // created and every future speak() call silently no-ops forever (TtsSession
+            // returns early on `this.destroyed`) — reproduced as permanently-stuck
+            // "loading" state with no error, in dev only (StrictMode doesn't
+            // double-invoke in production builds).
+            sessionRef.current = null;
         };
     }, [synth]);
 

@@ -140,3 +140,16 @@ describe('matchTerms — case-insensitive, empty, and unknown input', () => {
         expect(results).toEqual([]);
     });
 });
+
+describe('matchTerms — additional real-world sentence detection', () => {
+    it('"the transformer transfers electrical energy" -> Transformer', () => {
+        const results = matchTerms('The transformer transfers electrical energy from one circuit to another.');
+        const match = findByName(results, 'Transformer');
+        expect(match).toBeDefined();
+    });
+
+    it('"TCP provides reliable transmission" -> TCP', () => {
+        const results = matchTerms('TCP provides reliable transmission of data between hosts.');
+        expect(findByName(results, 'TCP')).toBeDefined();
+    });
+});

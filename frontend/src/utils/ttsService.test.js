@@ -19,7 +19,11 @@ describe('getTtsConfig', () => {
         ['Marathi', 'mr-IN'],
         ['Bengali', 'bn-IN'],
         ['Malayalam', 'ml-IN'],
-        ['Kannada', 'kn-IN']
+        ['Kannada', 'kn-IN'],
+        ['Punjabi', 'pa-IN'],
+        ['Odia', 'or-IN'],
+        ['Assamese', 'as-IN'],
+        ['Urdu', 'ur-IN']
     ])('%s maps to preferredLocale %s', (language, locale) => {
         expect(getTtsConfig(language).preferredLocale).toBe(locale);
     });
@@ -42,7 +46,7 @@ describe('findCompatibleVoice', () => {
         expect(match.lang).toBe('mr-XX');
     });
 
-    it.each(['Malayalam', 'Kannada', 'Telugu', 'Tamil', 'Hindi', 'Gujarati', 'Marathi'])(
+    it.each(['Malayalam', 'Kannada', 'Telugu', 'Tamil', 'Hindi', 'Gujarati', 'Marathi', 'Punjabi', 'Odia', 'Assamese', 'Urdu'])(
         '%s: never returns a voice for a different language',
         (language) => {
             const voices = [makeVoice('en-US'), makeVoice('fr-FR'), makeVoice('de-DE')];
@@ -57,6 +61,18 @@ describe('findCompatibleVoice', () => {
     it('is case-insensitive on locale tags', () => {
         const voices = [makeVoice('ML-in')];
         expect(findCompatibleVoice(voices, getTtsConfig('Malayalam')).lang).toBe('ML-in');
+    });
+
+    it('falls back to the same-language ur-PK voice for Urdu when ur-IN is not installed', () => {
+        const voices = [makeVoice('ur-PK'), makeVoice('en-US')];
+        const match = findCompatibleVoice(voices, getTtsConfig('Urdu'));
+        expect(match.lang).toBe('ur-PK');
+    });
+
+    it('falls back to the same-language pa-PK voice for Punjabi when pa-IN is not installed', () => {
+        const voices = [makeVoice('pa-PK'), makeVoice('en-US')];
+        const match = findCompatibleVoice(voices, getTtsConfig('Punjabi'));
+        expect(match.lang).toBe('pa-PK');
     });
 });
 
@@ -228,6 +244,19 @@ describe('TtsSession', () => {
         expect(synth.utterances).toHaveLength(3);
 
         synth.utterances[2].onend();
+        expect(onEnd).toHaveBeenCalledTimes(1);
+    });
+
+    it('chunks on the Urdu Arabic full stop (۔), not just Latin/Devanagari sentence punctuation', () => {
+        const long = `${'ا'.repeat(150)}۔ ${'ب'.repeat(150)}۔`;
+        const onEnd = vi.fn();
+        session.speak(long, { voice: null, locale: 'ur-IN' }, { onEnd });
+
+        expect(synth.utterances).toHaveLength(1);
+        synth.utterances[0].onstart();
+        synth.utterances[0].onend();
+        expect(synth.utterances).toHaveLength(2);
+        synth.utterances[1].onend();
         expect(onEnd).toHaveBeenCalledTimes(1);
     });
 

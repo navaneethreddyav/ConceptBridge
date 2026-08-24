@@ -8,7 +8,11 @@
     "Marathi",
     "Bengali",
     "Malayalam",
-    "Kannada"
+    "Kannada",
+    "Punjabi",
+    "Odia",
+    "Assamese",
+    "Urdu"
   ],
   "languageLocaleMap": {
     "English": "en",
@@ -19,6 +23,10 @@
     "Marathi": "mr",
     "Bengali": "bn",
     "Malayalam": "ml",
-    "Kannada": "kn"
+    "Kannada": "kn",
+    "Punjabi": "pa",
+    "Odia": "or",
+    "Assamese": "as",
+    "Urdu": "ur"
   }
 }

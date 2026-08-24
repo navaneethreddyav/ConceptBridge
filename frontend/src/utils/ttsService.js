@@ -20,7 +20,11 @@ export const TTS_LANGUAGE_CONFIG = {
     Marathi: { code: 'mr', preferredLocale: 'mr-IN', fallbackLocales: ['mr'] },
     Bengali: { code: 'bn', preferredLocale: 'bn-IN', fallbackLocales: ['bn-BD', 'bn'] },
     Malayalam: { code: 'ml', preferredLocale: 'ml-IN', fallbackLocales: ['ml'] },
-    Kannada: { code: 'kn', preferredLocale: 'kn-IN', fallbackLocales: ['kn'] }
+    Kannada: { code: 'kn', preferredLocale: 'kn-IN', fallbackLocales: ['kn'] },
+    Punjabi: { code: 'pa', preferredLocale: 'pa-IN', fallbackLocales: ['pa-PK', 'pa'] },
+    Odia: { code: 'or', preferredLocale: 'or-IN', fallbackLocales: ['or'] },
+    Assamese: { code: 'as', preferredLocale: 'as-IN', fallbackLocales: ['as'] },
+    Urdu: { code: 'ur', preferredLocale: 'ur-IN', fallbackLocales: ['ur-PK', 'ur'] }
 };
 
 const DEV = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV;
@@ -145,9 +149,10 @@ const MAX_CHUNK_CHARS = 200;
 const START_TIMEOUT_MS = 4000;
 
 const chunkText = (text) => {
-    // Split after sentence-ending punctuation (., !, ?, or the Devanagari danda used
-    // in Hindi/Marathi/Bengali) followed by whitespace, keeping the punctuation.
-    const sentences = text.split(/(?<=[.!?।])\s+/).filter(Boolean);
+    // Split after sentence-ending punctuation (., !, ?, the Devanagari danda used in
+    // Hindi/Marathi/Bengali/Odia/Assamese, or the Arabic full stop used in Urdu)
+    // followed by whitespace, keeping the punctuation.
+    const sentences = text.split(/(?<=[.!?।۔])\s+/).filter(Boolean);
     const chunks = [];
     let current = '';
 
