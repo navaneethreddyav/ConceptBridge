@@ -1,7 +1,24 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, beforeAll, vi } from 'vitest';
 import firstYearSubjects from '../../../shared/firstYearSubjects.json';
 import engineeringTerminology from '../../../shared/engineeringTerminology.json';
 import { getSubjects, getDisciplines, getSubjectsByDiscipline, getSubject, getUnit, getTopic, getSubjectStats, getTopicTerms } from './topicTerms.js';
+
+// topicTerms.js's getTopicTerms loads engineeringTerminology.json via a real fetch()
+// against a build-time asset URL (see topicTerms.js's `?url` import and the comment
+// explaining why — a plain fetch, unlike a dynamic import(), can genuinely be retried
+// after a transient failure, which a browser's ES module loader cannot). There's no
+// real HTTP server in this test environment, so fetch is stubbed here to serve the
+// SAME real, already-imported engineeringTerminology.json content — this preserves
+// every test below as a genuine check against real data, not a hand-rolled fixture.
+beforeAll(() => {
+    global.fetch = vi.fn(() =>
+        Promise.resolve({
+            ok: true,
+            status: 200,
+            json: () => Promise.resolve(engineeringTerminology)
+        })
+    );
+});
 
 describe('firstYearSubjects.json data integrity (anti-fabrication guard)', () => {
     const allRealTerms = new Set(engineeringTerminology.terms.map((t) => t.term));

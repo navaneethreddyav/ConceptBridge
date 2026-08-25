@@ -1,4 +1,14 @@
 import firstYearSubjects from '../../../shared/firstYearSubjects.json';
+// `?url` makes Vite emit engineeringTerminology.json as a plain static asset (still
+// hashed, still not part of the main bundle) and resolves this import to its built
+// URL string, rather than wrapping the JSON in a JS module the way a bare/dynamic
+// import would. That distinction matters: a browser's ES module loader treats a
+// failed `import()` of a given URL as permanently failed for the rest of the page's
+// lifetime — retrying the exact same import() later replays the cached failure
+// without ever issuing a new network request. A plain `fetch()` has no such
+// permanent-failure cache, so Retry (see TopicView.jsx) can genuinely re-attempt
+// the network request after a transient failure, not just replay a dead promise.
+import engineeringTerminologyUrl from '../../../shared/engineeringTerminology.json?url';
 
 const getSubjects = () => firstYearSubjects.subjects;
 
@@ -46,9 +56,22 @@ const getSubjectStats = (subjectId) => {
 // lazily imported and cached here.
 let termsIndexPromise = null;
 
+// Real browsers resolve a relative fetch() URL (e.g. "/assets/foo.json") against the
+// page's own origin automatically — no help needed. Node's fetch (undici, used by
+// Vitest's jsdom test environment) requires an absolute URL, so this resolves against
+// window.location when running under a DOM-like environment and is a no-op in a real
+// browser (window.location.href is always defined there).
+const resolvedTermsUrl =
+    typeof window !== 'undefined' && window.location
+        ? new URL(engineeringTerminologyUrl, window.location.href).href
+        : engineeringTerminologyUrl;
+
 const loadTermsIndex = () => {
     if (!termsIndexPromise) {
-        termsIndexPromise = import('../../../shared/engineeringTerminology.json').then((mod) => {
+        termsIndexPromise = fetch(resolvedTermsUrl).then((res) => {
+            if (!res.ok) throw new Error(`Failed to load technical terms (HTTP ${res.status})`);
+            return res.json();
+        }).then((data) => {
             // Keyed by "term::subject" rather than just the term name.
             // engineeringTerminology.json has ~66 cases of the identical term string
             // appearing under two different `subject` values for genuinely different
@@ -58,15 +81,14 @@ const loadTermsIndex = () => {
             // name-only index would silently resolve to whichever one happens to appear
             // last in the JSON array, which is not necessarily the first-year subject's
             // own version of that term.
-            const byNameAndSubject = new Map(mod.default.terms.map((t) => [`${t.term}::${t.subject}`, t]));
-            return byNameAndSubject;
+            return new Map(data.terms.map((t) => [`${t.term}::${t.subject}`, t]));
         });
-        // A transient failure (a single dropped chunk request, a cold-start CDN blip)
-        // must not permanently poison every future topic view for the rest of the page
-        // session — without this, one bad network moment left EVERY subsequent topic,
-        // including perfectly valid ones, stuck on "Loading terms..." forever, since
-        // the next call would just get handed back the same already-rejected promise.
-        // Clearing the cache here lets the next call genuinely retry the import.
+        // A transient failure (a dropped request, a cold-start CDN blip) must not
+        // permanently poison every future topic view for the rest of the page session
+        // — without this, one bad network moment left EVERY subsequent topic, including
+        // perfectly valid ones, stuck on "Loading terms..." forever, since the next call
+        // would just get handed back the same already-rejected promise. Clearing the
+        // cache here lets the next call genuinely retry the fetch.
         termsIndexPromise.catch(() => {
             termsIndexPromise = null;
         });

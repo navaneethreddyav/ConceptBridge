@@ -2,6 +2,7 @@ import { describe, expect, it, afterEach, beforeEach, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SettingsProvider } from './context/SettingsContext.jsx';
 import App from './App.jsx';
+import engineeringTerminology from '../../shared/engineeringTerminology.json';
 
 // react-pdf's <Document>/<Page> need real PDF-worker/canvas machinery unsuitable for a
 // unit test — App transitively renders ReaderLayout/DocumentReader once a document is
@@ -38,6 +39,11 @@ beforeEach(() => {
         }
         if (String(url).includes('/api/media')) {
             return jsonResponse({ success: true, videos: { short: null, long: null } });
+        }
+        if (String(url).includes('engineeringTerminology')) {
+            // TopicView's technical-terms list loads this via a real fetch() (see
+            // topicTerms.js) rather than a dynamic import, so it must be served here too.
+            return jsonResponse(engineeringTerminology);
         }
         return jsonResponse({ success: true });
     });
