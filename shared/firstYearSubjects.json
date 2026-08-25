@@ -4472,25 +4472,54 @@
     {
       "id": "digital-signal-processing",
       "name": "Digital Signal Processing",
-      "shortDescription": "Processing sampled digital signals — filtering and frequency-domain analysis.",
+      "shortDescription": "Digital filter types, transform techniques, and filter design — a full course in digital signal processing.",
       "termSubjects": [
         "Digital Signal Processing"
       ],
       "units": [
         {
-          "id": "dsp-core",
-          "name": "Unit 1: Digital Filtering",
+          "id": "dsp-filters",
+          "name": "Unit 1: Digital Filters",
           "topics": [
             {
-              "id": "dsp-core-core",
-              "name": "Digital Filters & Transforms",
-              "description": "Discrete-domain filters and the transforms used to analyze digital signals efficiently.",
+              "id": "dsp-filters-core",
+              "name": "Digital Filters",
+              "description": "The two fundamental digital filter architectures and how they're designed.",
               "terms": [
                 "Digital Filter",
                 "FIR Filter",
                 "IIR Filter",
+                "Filter Design (DSP)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dsp-transforms",
+          "name": "Unit 2: Transform Techniques",
+          "topics": [
+            {
+              "id": "dsp-transforms-core",
+              "name": "Transform Techniques",
+              "description": "Efficiently computing a signal's frequency content, and analyzing systems in the Z-domain.",
+              "terms": [
                 "Discrete Fourier Transform",
                 "Fast Fourier Transform",
+                "Z-Domain Analysis",
+                "Windowing"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dsp-quantization",
+          "name": "Unit 3: Quantization",
+          "topics": [
+            {
+              "id": "dsp-quantization-core",
+              "name": "Quantization",
+              "description": "The unavoidable rounding error introduced when a continuous signal is represented digitally.",
+              "terms": [
                 "Quantization"
               ]
             }
@@ -4502,24 +4531,53 @@
     {
       "id": "analog-communication",
       "name": "Analog Communication",
-      "shortDescription": "How information is carried on a continuous carrier wave via modulation.",
+      "shortDescription": "Carrier-based modulation techniques and receiver design — a full course in analog communication.",
       "termSubjects": [
         "Analog Communication"
       ],
       "units": [
         {
-          "id": "analog-comm-core",
-          "name": "Unit 1: Modulation Techniques",
+          "id": "ac-modulation-basics",
+          "name": "Unit 1: Modulation Fundamentals",
           "topics": [
             {
-              "id": "analog-comm-core-core",
-              "name": "Analog Modulation",
-              "description": "The techniques used to encode a signal onto a carrier wave, and how it's recovered at the receiver.",
+              "id": "ac-modulation-basics-core",
+              "name": "Modulation Fundamentals",
+              "description": "The carrier wave and the basic parameters used to describe how it's modulated.",
               "terms": [
                 "Modulation",
+                "Carrier Wave",
+                "Modulation Index",
+                "Sideband"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ac-modulation-types",
+          "name": "Unit 2: Modulation Techniques",
+          "topics": [
+            {
+              "id": "ac-modulation-types-core",
+              "name": "Amplitude, Frequency & Phase Modulation",
+              "description": "The three fundamental ways to impress information onto a carrier wave.",
+              "terms": [
                 "Amplitude Modulation",
                 "Frequency Modulation",
-                "Phase Modulation",
+                "Phase Modulation"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ac-receivers",
+          "name": "Unit 3: Demodulation & Receivers",
+          "topics": [
+            {
+              "id": "ac-receivers-core",
+              "name": "Demodulation & Receivers",
+              "description": "Recovering the original signal from a modulated carrier, and the dominant receiver architecture used to do it.",
+              "terms": [
                 "Demodulation",
                 "Superheterodyne Receiver"
               ]
@@ -4668,25 +4726,41 @@
     {
       "id": "antennas-and-wave-propagation",
       "name": "Antennas & Wave Propagation",
-      "shortDescription": "How antennas radiate electromagnetic waves and how those waves travel.",
+      "shortDescription": "Antenna characteristics and radio wave propagation modes — a full course in antennas and wave propagation.",
       "termSubjects": [
         "Antennas & Wave Propagation"
       ],
       "units": [
         {
-          "id": "antennas-core",
-          "name": "Unit 1: Antennas & Propagation",
+          "id": "awp-antennas",
+          "name": "Unit 1: Antenna Fundamentals",
           "topics": [
             {
-              "id": "antennas-core-core",
-              "name": "Antennas & Propagation",
-              "description": "How an antenna's design shapes its radiation, and how radio waves propagate through space.",
+              "id": "awp-antennas-core",
+              "name": "Antenna Fundamentals",
+              "description": "The key parameters used to characterize how an antenna radiates or receives energy.",
               "terms": [
                 "Antenna",
                 "Antenna Gain",
                 "Radiation Pattern",
+                "Antenna Polarization"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "awp-propagation",
+          "name": "Unit 2: Wave Propagation Modes",
+          "topics": [
+            {
+              "id": "awp-propagation-core",
+              "name": "Wave Propagation Modes",
+              "description": "The different physical paths a radio wave can take between transmitter and receiver.",
+              "terms": [
                 "Wave Propagation",
-                "Line of Sight Propagation"
+                "Line of Sight Propagation",
+                "Ground Wave Propagation",
+                "Sky Wave Propagation"
               ]
             }
           ]
@@ -4697,22 +4771,51 @@
     {
       "id": "electromagnetic-theory",
       "name": "Electromagnetic Theory",
-      "shortDescription": "Maxwell's equations and how electromagnetic energy is guided along transmission lines.",
+      "shortDescription": "Electric and magnetic fields, Maxwell's equations, and guided electromagnetic wave transmission — a full course in electromagnetic theory.",
       "termSubjects": [
         "Electromagnetic Theory"
       ],
       "units": [
         {
-          "id": "em-theory-ece-core",
-          "name": "Unit 1: Electromagnetic Waves & Guiding Structures",
+          "id": "emt-fields",
+          "name": "Unit 1: Electric & Magnetic Fields",
           "topics": [
             {
-              "id": "em-theory-ece-core-core",
-              "name": "Electromagnetic Waves & Guiding Structures",
-              "description": "The theoretical basis of electromagnetic waves and the structures used to guide them.",
+              "id": "emt-fields-core",
+              "name": "Electric & Magnetic Fields",
+              "description": "The two fundamental fields that Maxwell's equations unify into electromagnetism.",
               "terms": [
-                "Maxwell's Equations",
+                "Electric Field",
+                "Magnetic Field",
+                "Maxwell's Equations"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "emt-waves",
+          "name": "Unit 2: Electromagnetic Waves",
+          "topics": [
+            {
+              "id": "emt-waves-core",
+              "name": "Electromagnetic Waves",
+              "description": "How electromagnetic waves propagate freely through space.",
+              "terms": [
                 "Electromagnetic Wave",
+                "Skin Effect"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "emt-guided-waves",
+          "name": "Unit 3: Guided Wave Transmission",
+          "topics": [
+            {
+              "id": "emt-guided-waves-core",
+              "name": "Guided Wave Transmission",
+              "description": "Structures that confine and direct electromagnetic energy along a defined path.",
+              "terms": [
                 "Transmission Line",
                 "Waveguide"
               ]
@@ -4965,45 +5068,97 @@
     {
       "id": "strength-of-materials",
       "name": "Strength of Materials",
-      "shortDescription": "How materials deform and fail under load — shared foundational content for Mechanical and Civil engineering.",
+      "shortDescription": "Stress-strain fundamentals, bending and shear in beams, torsion, and column buckling — a full course in strength of materials.",
       "termSubjects": [
         "Strength of Materials"
       ],
       "units": [
         {
-          "id": "stress-strain",
-          "name": "Unit 1: Stress & Strain Fundamentals",
+          "id": "som-stress-strain",
+          "name": "Unit 1: Simple Stresses & Strains",
           "topics": [
             {
-              "id": "stress-strain-core",
-              "name": "Stress, Strain & Material Properties",
-              "description": "The fundamental relationship between applied load, deformation, and a material's stiffness and safety margin.",
+              "id": "som-stress-strain-core",
+              "name": "Simple Stresses & Strains",
+              "description": "The fundamental relationship between applied stress and a material's resulting deformation.",
               "terms": [
                 "Stress",
                 "Strain",
                 "Young's Modulus",
                 "Elastic Modulus",
-                "Factor of Safety",
-                "Fatigue Failure"
+                "Hooke's Law",
+                "Poisson's Ratio",
+                "Modulus of Rigidity",
+                "Bulk Modulus"
               ]
             }
           ]
         },
         {
-          "id": "beams",
-          "name": "Unit 2: Bending & Shear in Beams",
+          "id": "som-bending-shear-diagrams",
+          "name": "Unit 2: Bending Moment & Shear Force Diagrams",
           "topics": [
             {
-              "id": "beams-core",
-              "name": "Bending & Shear in Beams",
-              "description": "How beams resist bending and shear forces, and the diagrams engineers use to visualize them.",
+              "id": "som-bending-shear-diagrams-core",
+              "name": "Bending Moment & Shear Force Diagrams",
+              "description": "How internal bending moment and shear force vary along a loaded beam.",
               "terms": [
                 "Beam",
                 "Bending Moment",
                 "Bending Moment Diagram",
                 "Shear Force",
                 "Shear Force Diagram",
-                "Torsion"
+                "Point of Contraflexure"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "som-bending-shear-stresses",
+          "name": "Unit 3: Bending & Shear Stresses",
+          "topics": [
+            {
+              "id": "som-bending-shear-stresses-core",
+              "name": "Bending & Shear Stresses",
+              "description": "How internal bending moment and shear force actually translate into stress within a beam's cross-section.",
+              "terms": [
+                "Bending Stress",
+                "Shear Stress (Beam)",
+                "Section Modulus"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "som-torsion-springs",
+          "name": "Unit 4: Torsion & Springs",
+          "topics": [
+            {
+              "id": "som-torsion-springs-core",
+              "name": "Torsion & Springs",
+              "description": "How shafts resist twisting, and how springs store energy through elastic deformation.",
+              "terms": [
+                "Torsion",
+                "Torsional Rigidity",
+                "Helical Spring"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "som-columns-failure",
+          "name": "Unit 5: Columns & Theories of Failure",
+          "topics": [
+            {
+              "id": "som-columns-failure-core",
+              "name": "Columns & Theories of Failure",
+              "description": "Why slender columns fail by buckling rather than crushing, and how failure is predicted under combined stresses.",
+              "terms": [
+                "Factor of Safety",
+                "Fatigue Failure",
+                "Buckling of Columns",
+                "Euler's Formula (Buckling)",
+                "Theories of Failure"
               ]
             }
           ]
@@ -5014,41 +5169,75 @@
     {
       "id": "thermodynamics",
       "name": "Thermodynamics",
-      "shortDescription": "The laws governing heat, work, and energy conversion.",
+      "shortDescription": "Thermodynamic systems and processes, the first and second laws, and standard engine cycles — a full course in thermodynamics.",
       "termSubjects": [
         "Thermodynamics"
       ],
       "units": [
         {
-          "id": "thermodynamics-unit-1",
-          "name": "Unit 1: Laws of Thermodynamics",
+          "id": "thermo-basics",
+          "name": "Unit 1: Basic Concepts",
           "topics": [
             {
-              "id": "thermodynamics-laws",
-              "name": "Laws of Thermodynamics",
-              "description": "The fundamental laws governing energy conservation and the direction of natural processes.",
+              "id": "thermo-basics-core",
+              "name": "Basic Concepts",
+              "description": "How a thermodynamic system, its boundary, and its processes are defined for analysis.",
               "terms": [
                 "Thermodynamics",
-                "First Law of Thermodynamics",
-                "Second Law of Thermodynamics",
-                "Enthalpy",
-                "Entropy"
+                "Thermodynamic System",
+                "Thermodynamic Process"
               ]
             }
           ]
         },
         {
-          "id": "thermodynamics-unit-2",
-          "name": "Unit 2: Thermodynamic Cycles",
+          "id": "thermo-first-law",
+          "name": "Unit 2: First Law of Thermodynamics",
           "topics": [
             {
-              "id": "thermodynamic-cycles",
+              "id": "thermo-first-law-core",
+              "name": "First Law of Thermodynamics",
+              "description": "The conservation of energy applied to heat and work, and the properties used to track it.",
+              "terms": [
+                "First Law of Thermodynamics",
+                "Enthalpy",
+                "Internal Energy",
+                "Specific Heat",
+                "Specific Volume"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "thermo-second-law",
+          "name": "Unit 3: Second Law & Entropy",
+          "topics": [
+            {
+              "id": "thermo-second-law-core",
+              "name": "Second Law & Entropy",
+              "description": "Why some processes are impossible even though they'd conserve energy, and the property that quantifies that direction.",
+              "terms": [
+                "Second Law of Thermodynamics",
+                "Entropy",
+                "Reversible Process",
+                "Irreversible Process"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "thermo-cycles",
+          "name": "Unit 4: Thermodynamic Cycles",
+          "topics": [
+            {
+              "id": "thermo-cycles-core",
               "name": "Thermodynamic Cycles",
-              "description": "Idealized cycles used to model how engines convert heat into work.",
+              "description": "The idealized cycles used to model how real engines convert heat into work.",
               "terms": [
                 "Carnot Cycle",
                 "Otto Cycle",
-                "Diesel Cycle"
+                "Diesel Cycle",
+                "Dual Cycle"
               ]
             }
           ]
@@ -5059,42 +5248,75 @@
     {
       "id": "thermal-engineering",
       "name": "Thermal Engineering",
-      "shortDescription": "Practical heat-transfer devices and power-generating machinery.",
+      "shortDescription": "Heat transfer modes, heat exchangers, and power-generating machinery — a full course in thermal engineering.",
       "termSubjects": [
         "Thermal Engineering"
       ],
       "units": [
         {
-          "id": "thermal-engineering-unit-1",
-          "name": "Unit 1: Heat Transfer",
+          "id": "te-conduction-convection",
+          "name": "Unit 1: Conduction & Convection",
           "topics": [
             {
-              "id": "heat-transfer",
-              "name": "Heat Transfer",
-              "description": "The three fundamental modes by which heat moves from one place to another.",
+              "id": "te-conduction-convection-core",
+              "name": "Conduction & Convection",
+              "description": "How heat moves through solids, and how it transfers between a surface and a moving fluid.",
               "terms": [
                 "Heat Transfer",
                 "Conduction",
                 "Convection",
-                "Radiation",
-                "Heat Exchanger"
+                "Thermal Conductivity",
+                "Heat Transfer Coefficient"
               ]
             }
           ]
         },
         {
-          "id": "thermal-engineering-unit-2",
-          "name": "Unit 2: Power-Generating Machinery",
+          "id": "te-radiation-exchangers",
+          "name": "Unit 2: Radiation & Heat Exchangers",
           "topics": [
             {
-              "id": "power-machinery",
+              "id": "te-radiation-exchangers-core",
+              "name": "Radiation & Heat Exchangers",
+              "description": "Heat transfer by electromagnetic radiation, and the equipment engineered to exchange heat efficiently.",
+              "terms": [
+                "Radiation",
+                "Heat Exchanger",
+                "Overall Heat Transfer Coefficient",
+                "Fin (Heat Transfer)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "te-power-machinery",
+          "name": "Unit 3: Power-Generating Machinery",
+          "topics": [
+            {
+              "id": "te-power-machinery-core",
               "name": "Power-Generating Machinery",
-              "description": "Machines that convert thermal energy into mechanical work or refrigeration.",
+              "description": "The major equipment used to generate power from heat, and the reference data engineers rely on to design it.",
               "terms": [
                 "Boiler",
                 "Turbine",
-                "Internal Combustion Engine",
                 "Rankine Cycle",
+                "Steam Table",
+                "Cogeneration"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "te-ic-engines",
+          "name": "Unit 4: Internal Combustion Engines & Refrigeration",
+          "topics": [
+            {
+              "id": "te-ic-engines-core",
+              "name": "IC Engines & Refrigeration",
+              "description": "How internal combustion engines and refrigeration cycles apply thermodynamic principles in practice.",
+              "terms": [
+                "Internal Combustion Engine",
+                "Compression Ratio",
                 "Refrigeration Cycle"
               ]
             }
@@ -5196,21 +5418,23 @@
     {
       "id": "theory-of-machines",
       "name": "Theory of Machines",
-      "shortDescription": "The kinematics and dynamics of mechanisms — cams, gears, and rotating machinery.",
+      "shortDescription": "Mechanisms, kinematic analysis, machine dynamics, and balancing — a full course in theory of machines.",
       "termSubjects": [
         "Theory of Machines"
       ],
       "units": [
         {
-          "id": "theory-of-machines-unit-1",
+          "id": "tom-mechanisms",
           "name": "Unit 1: Mechanisms",
           "topics": [
             {
-              "id": "mechanisms",
+              "id": "tom-mechanisms-core",
               "name": "Mechanisms",
               "description": "Basic mechanical linkages that convert one type of motion into another.",
               "terms": [
                 "Mechanism",
+                "Four-Bar Linkage",
+                "Degrees of Freedom (Mechanism)",
                 "Cam",
                 "Cam and Follower",
                 "Gear",
@@ -5220,18 +5444,49 @@
           ]
         },
         {
-          "id": "theory-of-machines-unit-2",
-          "name": "Unit 2: Kinematics, Kinetics & Machine Dynamics",
+          "id": "tom-velocity-acceleration",
+          "name": "Unit 2: Velocity & Acceleration Analysis",
           "topics": [
             {
-              "id": "machine-dynamics",
-              "name": "Kinematics, Kinetics & Machine Dynamics",
-              "description": "The study of motion and forces in machines, and the components used to smooth or control that motion.",
+              "id": "tom-velocity-acceleration-core",
+              "name": "Velocity & Acceleration Analysis",
+              "description": "Graphical techniques for finding the velocity and acceleration of every point in a moving mechanism.",
+              "terms": [
+                "Velocity Diagram",
+                "Acceleration Diagram"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tom-dynamics",
+          "name": "Unit 3: Machine Dynamics",
+          "topics": [
+            {
+              "id": "tom-dynamics-core",
+              "name": "Machine Dynamics",
+              "description": "How motion and forces interact in machines, and the components that store or regulate that motion.",
               "terms": [
                 "Kinematics",
                 "Kinetics",
                 "Flywheel",
-                "Governor"
+                "Governor",
+                "Coupling (Mechanical)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "tom-balancing",
+          "name": "Unit 4: Balancing & Gyroscopic Effects",
+          "topics": [
+            {
+              "id": "tom-balancing-core",
+              "name": "Balancing & Gyroscopic Effects",
+              "description": "Eliminating unwanted vibration in rotating machinery, and the surprising behavior of spinning bodies.",
+              "terms": [
+                "Balancing of Rotating Masses",
+                "Gyroscopic Effect"
               ]
             }
           ]
@@ -5296,43 +5551,80 @@
     {
       "id": "manufacturing-technology",
       "name": "Manufacturing Technology",
-      "shortDescription": "How raw materials are shaped into finished parts — casting, machining, forming, and welding.",
+      "shortDescription": "Casting, forming, machining, and welding processes — a full course in manufacturing technology.",
       "termSubjects": [
         "Manufacturing Technology"
       ],
       "units": [
         {
-          "id": "manufacturing-technology-unit-1",
-          "name": "Unit 1: Casting & Forming",
+          "id": "mt-casting",
+          "name": "Unit 1: Casting",
           "topics": [
             {
-              "id": "casting-forming",
-              "name": "Casting & Forming",
-              "description": "Shaping metal by pouring it molten into a mold or by plastic deformation.",
+              "id": "mt-casting-core",
+              "name": "Casting Processes",
+              "description": "Shaping metal by pouring it molten into a mold, and the two dominant casting approaches.",
               "terms": [
                 "Casting",
                 "Casting Process",
-                "Forming Process"
+                "Pattern (Casting)",
+                "Sand Casting",
+                "Die Casting"
               ]
             }
           ]
         },
         {
-          "id": "manufacturing-technology-unit-2",
-          "name": "Unit 2: Machining, Welding & CNC",
+          "id": "mt-forming",
+          "name": "Unit 2: Metal Forming",
           "topics": [
             {
-              "id": "machining-welding",
-              "name": "Machining, Welding & CNC",
-              "description": "Removing material to shape a part, joining metal permanently, and automating both with computer control.",
+              "id": "mt-forming-core",
+              "name": "Metal Forming Processes",
+              "description": "Shaping metal through plastic deformation rather than melting or cutting it away.",
+              "terms": [
+                "Forming Process",
+                "Forging",
+                "Rolling (Metal Forming)",
+                "Extrusion"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mt-machining",
+          "name": "Unit 3: Machining",
+          "topics": [
+            {
+              "id": "mt-machining-core",
+              "name": "Machining Processes",
+              "description": "Removing material with a cutting tool to shape a part precisely.",
               "terms": [
                 "Machining",
                 "Machining Process",
+                "Turning (Machining)",
+                "Drilling",
                 "Milling Process",
                 "Lathe Machine",
                 "CNC Machining",
+                "Surface Roughness"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mt-welding",
+          "name": "Unit 4: Welding",
+          "topics": [
+            {
+              "id": "mt-welding-core",
+              "name": "Welding Processes",
+              "description": "Joining metal parts permanently by fusing them together.",
+              "terms": [
                 "Welding",
                 "Welding Process",
+                "TIG Welding",
+                "Arc Welding",
                 "Manufacturing Process"
               ]
             }
@@ -5555,24 +5847,41 @@
     {
       "id": "geotechnical-engineering",
       "name": "Geotechnical Engineering",
-      "shortDescription": "The engineering behavior of soil — classification, strength, and foundation design.",
+      "shortDescription": "Soil properties, consolidation and settlement, site investigation, and foundation types — a full course in geotechnical engineering.",
       "termSubjects": [
         "Geotechnical Engineering"
       ],
       "units": [
         {
-          "id": "geotechnical-engineering-unit-1",
-          "name": "Unit 1: Soil Mechanics",
+          "id": "geo-properties",
+          "name": "Unit 1: Soil Properties & Classification",
           "topics": [
             {
-              "id": "soil-mechanics",
-              "name": "Soil Mechanics",
-              "description": "How soil is classified and how it behaves mechanically under load.",
+              "id": "geo-properties-core",
+              "name": "Soil Properties & Classification",
+              "description": "The basic measurable properties used to classify and characterize soil.",
               "terms": [
                 "Soil Mechanics",
                 "Geotechnical Engineering",
                 "Soil Classification",
+                "Index Properties of Soil",
+                "Void Ratio",
+                "Permeability of Soil"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "geo-consolidation",
+          "name": "Unit 2: Shear Strength & Consolidation",
+          "topics": [
+            {
+              "id": "geo-consolidation-core",
+              "name": "Shear Strength & Consolidation",
+              "description": "How soil resists shearing forces, and how it gradually compresses under sustained load.",
+              "terms": [
                 "Shear Strength of Soil",
+                "Consolidation of Soil",
                 "Settlement",
                 "Settlement of Foundation"
               ]
@@ -5580,18 +5889,35 @@
           ]
         },
         {
-          "id": "geotechnical-engineering-unit-2",
-          "name": "Unit 2: Foundation Engineering",
+          "id": "geo-investigation",
+          "name": "Unit 3: Site Investigation",
           "topics": [
             {
-              "id": "foundations",
+              "id": "geo-investigation-core",
+              "name": "Site Investigation",
+              "description": "How a site's subsurface soil conditions are actually measured before design begins.",
+              "terms": [
+                "Standard Penetration Test"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "geo-foundations",
+          "name": "Unit 4: Foundation Engineering",
+          "topics": [
+            {
+              "id": "geo-foundations-core",
               "name": "Foundation Engineering",
-              "description": "How structures transfer their load safely into the ground.",
+              "description": "How a structure's load is safely transferred into the ground, shallow or deep.",
               "terms": [
                 "Foundation",
                 "Foundation Engineering",
                 "Bearing Capacity",
-                "Pile Foundation"
+                "Shallow Foundation",
+                "Deep Foundation",
+                "Pile Foundation",
+                "Retaining Wall"
               ]
             }
           ]
@@ -5602,39 +5928,72 @@
     {
       "id": "structural-analysis",
       "name": "Structural Analysis",
-      "shortDescription": "How loads move through a structure — analyzing beams, trusses, and indeterminate systems.",
+      "shortDescription": "Determinate and indeterminate structures, truss analysis methods, and classical indeterminate-analysis techniques — a full course in structural analysis.",
       "termSubjects": [
         "Structural Analysis"
       ],
       "units": [
         {
-          "id": "structural-analysis-unit-1",
-          "name": "Unit 1: Beams & Trusses",
+          "id": "sa-determinate",
+          "name": "Unit 1: Determinate Structures",
           "topics": [
             {
-              "id": "structural-analysis-beams-and-trusses",
-              "name": "Beams & Trusses",
-              "description": "Finding deflections and internal forces in statically determinate beams and trusses.",
+              "id": "sa-determinate-core",
+              "name": "Determinate Structures",
+              "description": "Structures simple enough to solve with statics alone.",
               "terms": [
+                "Determinate Structure",
                 "Beam Deflection",
-                "Truss",
-                "Truss Analysis"
+                "Deflection of Structures"
               ]
             }
           ]
         },
         {
-          "id": "structural-analysis-unit-2",
-          "name": "Unit 2: Indeterminate Structures",
+          "id": "sa-trusses",
+          "name": "Unit 2: Truss Analysis",
           "topics": [
             {
-              "id": "structural-analysis-indeterminate-structures",
+              "id": "sa-trusses-core",
+              "name": "Truss Analysis",
+              "description": "The two classical methods for finding the internal force in every member of a truss.",
+              "terms": [
+                "Truss",
+                "Truss Analysis",
+                "Method of Joints (Truss)",
+                "Method of Sections (Truss)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sa-indeterminate",
+          "name": "Unit 3: Indeterminate Structures",
+          "topics": [
+            {
+              "id": "sa-indeterminate-core",
               "name": "Indeterminate Structures",
-              "description": "Analyzing structures with more unknowns than equilibrium equations can solve directly.",
+              "description": "Structures that need more than statics alone to solve, and how to measure just how indeterminate one is.",
               "terms": [
                 "Structural Analysis",
-                "Column",
                 "Indeterminate Structure",
+                "Degree of Static Indeterminacy",
+                "Column"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sa-classical-methods",
+          "name": "Unit 4: Classical Analysis Methods",
+          "topics": [
+            {
+              "id": "sa-classical-methods-core",
+              "name": "Classical Analysis Methods",
+              "description": "Hand-calculation techniques developed for solving indeterminate beams and frames before computer analysis.",
+              "terms": [
+                "Slope-Deflection Method",
+                "Moment Distribution Method",
                 "Influence Line Diagram"
               ]
             }
@@ -5646,26 +6005,57 @@
     {
       "id": "concrete-technology",
       "name": "Concrete Technology",
-      "shortDescription": "The composition, properties, and workability of concrete as a building material.",
+      "shortDescription": "Cement and concrete constituents, mix properties, and quality testing — a full course in concrete technology.",
       "termSubjects": [
         "Concrete Technology"
       ],
       "units": [
         {
-          "id": "concrete-technology-core",
-          "name": "Unit 1: Concrete Fundamentals",
+          "id": "ct-constituents",
+          "name": "Unit 1: Cement & Aggregates",
           "topics": [
             {
-              "id": "concrete-technology-core-core",
-              "name": "Concrete Fundamentals",
-              "description": "How cement, aggregate, and water combine and cure into a durable, workable building material.",
+              "id": "ct-constituents-core",
+              "name": "Cement & Aggregates",
+              "description": "The two main raw materials that combine to form concrete.",
               "terms": [
                 "Cement",
+                "Aggregate (Concrete)",
+                "Admixture"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ct-mix-properties",
+          "name": "Unit 2: Concrete Mix Properties",
+          "topics": [
+            {
+              "id": "ct-mix-properties-core",
+              "name": "Concrete Mix Properties",
+              "description": "How the proportions of a concrete mix determine its workability and eventual strength.",
+              "terms": [
                 "Concrete",
+                "Water-Cement Ratio",
+                "Workability of Concrete",
+                "Curing"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ct-testing",
+          "name": "Unit 3: Testing & Reinforced Concrete",
+          "topics": [
+            {
+              "id": "ct-testing-core",
+              "name": "Testing & Reinforced Concrete",
+              "description": "Standard tests used for concrete quality control, and how steel reinforcement combines with concrete.",
+              "terms": [
+                "Slump Test",
+                "Compressive Strength of Concrete",
                 "Reinforced Concrete",
-                "Reinforced Cement Concrete",
-                "Curing",
-                "Workability of Concrete"
+                "Reinforced Cement Concrete"
               ]
             }
           ]
@@ -5676,26 +6066,56 @@
     {
       "id": "design-of-rcc-structures",
       "name": "Design of RCC Structures",
-      "shortDescription": "Designing reinforced concrete elements — slabs, columns, and footings.",
+      "shortDescription": "Design philosophy, reinforcement detailing, and element-level RCC design — a full course in the design of reinforced concrete structures.",
       "termSubjects": [
         "Design of RCC Structures"
       ],
       "units": [
         {
-          "id": "rcc-design-core",
-          "name": "Unit 1: RCC Element Design",
+          "id": "rcc-philosophy",
+          "name": "Unit 1: Design Philosophy",
           "topics": [
             {
-              "id": "rcc-design-core-core",
-              "name": "RCC Element Design",
-              "description": "Designing and detailing individual reinforced-concrete structural elements to safely carry load.",
+              "id": "rcc-philosophy-core",
+              "name": "Design Philosophy",
+              "description": "The two major approaches used to design reinforced concrete members safely.",
               "terms": [
                 "Reinforced Concrete Design",
                 "Limit State Design",
+                "Working Stress Method"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rcc-reinforcement",
+          "name": "Unit 2: Reinforcement Detailing",
+          "topics": [
+            {
+              "id": "rcc-reinforcement-core",
+              "name": "Reinforcement Detailing",
+              "description": "How reinforcing steel is detailed and anchored so it can actually transfer its full strength into the concrete.",
+              "terms": [
+                "Reinforcement Detailing",
+                "Development Length",
+                "Shear Reinforcement",
+                "Doubly Reinforced Beam"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rcc-elements",
+          "name": "Unit 3: Element Design",
+          "topics": [
+            {
+              "id": "rcc-elements-core",
+              "name": "RCC Element Design",
+              "description": "Designing individual reinforced-concrete structural elements to safely carry their load.",
+              "terms": [
                 "Slab Design",
                 "Column Design",
-                "Footing Design",
-                "Reinforcement Detailing"
+                "Footing Design"
               ]
             }
           ]
@@ -5762,41 +6182,60 @@
     {
       "id": "transportation-engineering",
       "name": "Transportation Engineering",
-      "shortDescription": "Designing roads and analyzing traffic flow.",
+      "shortDescription": "Highway geometric design, pavement design, and traffic engineering — a full course in transportation engineering.",
       "termSubjects": [
         "Transportation Engineering"
       ],
       "units": [
         {
-          "id": "transportation-engineering-unit-1",
-          "name": "Unit 1: Pavement Design",
+          "id": "trans-geometric-design",
+          "name": "Unit 1: Geometric Design",
           "topics": [
             {
-              "id": "pavement-design",
-              "name": "Pavement Design",
-              "description": "How flexible and rigid pavements are designed to carry traffic loads.",
+              "id": "trans-geometric-design-core",
+              "name": "Geometric Design of Highways",
+              "description": "How a road's physical shape — width, curvature, cross-slope — is designed for safety at a given speed.",
               "terms": [
                 "Highway Engineering",
-                "Pavement Design",
-                "Highway Pavement Design",
-                "Flexible Pavement",
-                "Rigid Pavement"
+                "Geometric Design of Highways",
+                "Camber (Road)",
+                "Superelevation",
+                "Sight Distance"
               ]
             }
           ]
         },
         {
-          "id": "transportation-engineering-unit-2",
-          "name": "Unit 2: Traffic Engineering",
+          "id": "trans-pavement-design",
+          "name": "Unit 2: Pavement Design",
           "topics": [
             {
-              "id": "traffic-engineering",
+              "id": "trans-pavement-design-core",
+              "name": "Pavement Design",
+              "description": "How flexible and rigid pavements are designed to carry traffic loads, based on subgrade soil strength.",
+              "terms": [
+                "Pavement Design",
+                "Highway Pavement Design",
+                "Flexible Pavement",
+                "Rigid Pavement",
+                "California Bearing Ratio"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "trans-traffic-engineering",
+          "name": "Unit 3: Traffic Engineering",
+          "topics": [
+            {
+              "id": "trans-traffic-engineering-core",
               "name": "Traffic Engineering",
-              "description": "Measuring and managing the flow of vehicles on a road network.",
+              "description": "Measuring and managing the flow of vehicles on a road network, including at intersections.",
               "terms": [
                 "Traffic Engineering",
                 "Traffic Volume Study",
-                "Level of Service"
+                "Level of Service",
+                "Traffic Signal Design"
               ]
             }
           ]
