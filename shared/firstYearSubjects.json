@@ -1063,8 +1063,8 @@
           ]
         },
         {
-          "id": "engineering-curves",
-          "name": "Unit 2: Engineering Curves",
+          "id": "conic-sections-unit",
+          "name": "Unit 2: Conic Sections",
           "topics": [
             {
               "id": "conic-sections",
@@ -1077,7 +1077,13 @@
                 "Hyperbola",
                 "Eccentricity"
               ]
-            },
+            }
+          ]
+        },
+        {
+          "id": "cycloidal-curves-unit",
+          "name": "Unit 3: Cycloidal & Involute Curves",
+          "topics": [
             {
               "id": "rolling-curves",
               "name": "Cycloidal & Involute Curves",
@@ -1092,7 +1098,7 @@
         },
         {
           "id": "3d-projections",
-          "name": "Unit 3: 3D Projections",
+          "name": "Unit 4: 3D Projections",
           "topics": [
             {
               "id": "solid-projections",
@@ -1850,6 +1856,23 @@
                 "Continuous Integration",
                 "Continuous Deployment",
                 "Version Control"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "quality-maintenance",
+          "name": "Unit 4: Software Quality & Maintenance",
+          "topics": [
+            {
+              "id": "quality-maintenance-core",
+              "name": "Software Quality & Maintenance",
+              "description": "Measuring and sustaining software quality over its operational lifetime.",
+              "terms": [
+                "Software Metrics",
+                "Software Reliability",
+                "Refactoring",
+                "Legacy System"
               ]
             }
           ]
@@ -3526,64 +3549,105 @@
     {
       "id": "circuit-theory",
       "name": "Circuit Theory",
-      "shortDescription": "AC/DC circuit analysis — the theorems and quantities used to analyze electrical circuits.",
+      "shortDescription": "DC/AC fundamentals, network theorems, resonance, and three-phase systems — a full course in circuit analysis.",
       "termSubjects": [
         "Circuit Theory"
       ],
       "units": [
         {
-          "id": "dc-ac-basics",
-          "name": "Unit 1: DC & AC Circuit Basics",
+          "id": "ct-dc",
+          "name": "Unit 1: DC Circuit Analysis",
           "topics": [
             {
-              "id": "dc-ac-basics-core",
-              "name": "DC & AC Fundamentals",
-              "description": "The basic components and quantities used in direct-current and alternating-current circuits.",
+              "id": "ct-dc-core",
+              "name": "DC Circuit Analysis",
+              "description": "How current, voltage, and resistance combine in series and parallel, and the systematic methods used to solve complex circuits.",
               "terms": [
                 "DC Circuit",
                 "Direct Current",
-                "AC Circuit",
-                "Alternating Current",
                 "Resistor",
-                "Capacitor",
-                "Capacitance",
-                "Inductor",
-                "Inductance"
+                "Series Circuit",
+                "Parallel Circuit",
+                "Voltage Divider",
+                "Current Divider",
+                "Source Transformation",
+                "Node Voltage Method",
+                "Mesh Current Method"
               ]
             }
           ]
         },
         {
-          "id": "circuit-analysis",
-          "name": "Unit 2: Circuit Analysis Theorems",
+          "id": "ct-ac",
+          "name": "Unit 2: AC Circuit Fundamentals",
           "topics": [
             {
-              "id": "circuit-analysis-core",
-              "name": "Circuit Analysis Theorems",
-              "description": "Systematic laws and theorems used to solve for currents and voltages in complex circuits.",
+              "id": "ct-ac-core",
+              "name": "AC Circuit Fundamentals",
+              "description": "The reactive components that store rather than dissipate energy, and how they oppose alternating current.",
+              "terms": [
+                "AC Circuit",
+                "Alternating Current",
+                "Capacitor",
+                "Capacitance",
+                "Inductor",
+                "Inductance",
+                "Reactance",
+                "Admittance"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ct-theorems",
+          "name": "Unit 3: Network Theorems",
+          "topics": [
+            {
+              "id": "ct-theorems-core",
+              "name": "Network Theorems",
+              "description": "Powerful shortcuts for analyzing circuits without solving every equation from scratch.",
               "terms": [
                 "Kirchhoff's Current Law",
                 "Kirchhoff's Voltage Law",
                 "Thevenin's Theorem",
                 "Norton's Theorem",
                 "Superposition Theorem",
-                "Impedance",
-                "Resonance"
+                "Maximum Power Transfer Theorem"
               ]
             }
           ]
         },
         {
-          "id": "three-phase",
-          "name": "Unit 3: Three-Phase Systems",
+          "id": "ct-resonance",
+          "name": "Unit 4: Impedance & Resonance",
           "topics": [
             {
-              "id": "three-phase-core",
-              "name": "Three-Phase Power",
-              "description": "How three-phase systems deliver power more efficiently than single-phase.",
+              "id": "ct-resonance-core",
+              "name": "Impedance & Resonance",
+              "description": "The frequency-dependent opposition an AC circuit presents, and the special frequency at which it's minimized or maximized.",
+              "terms": [
+                "Impedance",
+                "Resonance",
+                "Series Resonance",
+                "Parallel Resonance",
+                "Quality Factor (Circuit)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ct-three-phase",
+          "name": "Unit 5: Three-Phase Systems",
+          "topics": [
+            {
+              "id": "ct-three-phase-core",
+              "name": "Three-Phase Power Systems",
+              "description": "How three-phase power delivers electricity more efficiently than a single-phase system.",
               "terms": [
                 "Three-Phase Power",
-                "Three-Phase System"
+                "Three-Phase System",
+                "Line Voltage",
+                "Phase Voltage"
               ]
             }
           ]
@@ -3594,44 +3658,83 @@
     {
       "id": "control-systems",
       "name": "Control Systems",
-      "shortDescription": "How feedback keeps a system's output at a desired value — the mathematics of stability and control.",
+      "shortDescription": "Feedback control fundamentals, stability analysis, and PID control — a full course in control systems.",
       "termSubjects": [
         "Control Systems"
       ],
       "units": [
         {
-          "id": "control-systems-unit-1",
+          "id": "cs-fundamentals",
           "name": "Unit 1: Control System Fundamentals",
           "topics": [
             {
-              "id": "control-fundamentals",
+              "id": "cs-fundamentals-core",
               "name": "Control System Fundamentals",
-              "description": "The distinction between open-loop and closed-loop control, and how a transfer function models a system.",
+              "description": "The basic building blocks of a feedback control system and how to represent one graphically.",
               "terms": [
                 "Control System",
                 "Open-Loop System",
                 "Closed-Loop System",
                 "Feedback Control",
                 "Transfer Function",
-                "State Space Model"
+                "State Space Model",
+                "Block Diagram",
+                "Signal Flow Graph"
               ]
             }
           ]
         },
         {
-          "id": "control-systems-unit-2",
-          "name": "Unit 2: Stability Analysis",
+          "id": "cs-time-response",
+          "name": "Unit 2: Time-Domain Analysis",
           "topics": [
             {
-              "id": "stability-analysis",
+              "id": "cs-time-response-core",
+              "name": "Time-Domain Response",
+              "description": "How a control system actually behaves over time, and the standard parameters used to characterize that behavior.",
+              "terms": [
+                "Time Response",
+                "Steady-State Error",
+                "Damping Ratio",
+                "Natural Frequency"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cs-stability",
+          "name": "Unit 3: Stability Analysis",
+          "topics": [
+            {
+              "id": "cs-stability-core",
               "name": "Stability Analysis",
-              "description": "Graphical and mathematical tools used to determine whether a control system is stable.",
+              "description": "Graphical and algebraic methods for determining whether a control system is stable, and how close it is to instability.",
               "terms": [
                 "Stability",
                 "Stability Analysis",
                 "Bode Plot",
                 "Root Locus",
-                "PID Controller"
+                "Gain Margin",
+                "Phase Margin",
+                "Nyquist Stability Criterion",
+                "Routh-Hurwitz Criterion"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "cs-pid",
+          "name": "Unit 4: PID Control",
+          "topics": [
+            {
+              "id": "cs-pid-core",
+              "name": "PID Control",
+              "description": "The three fundamental control actions, and how they combine into the most widely used industrial controller.",
+              "terms": [
+                "PID Controller",
+                "Proportional Control",
+                "Integral Control",
+                "Derivative Control"
               ]
             }
           ]
@@ -3642,44 +3745,80 @@
     {
       "id": "electrical-machines",
       "name": "Electrical Machines",
-      "shortDescription": "Motors, generators, and transformers — how electrical and mechanical energy convert into each other.",
+      "shortDescription": "DC and AC machine construction, rotating magnetic fields, and machine characteristics — a full course in electrical machines.",
       "termSubjects": [
         "Electrical Machines"
       ],
       "units": [
         {
-          "id": "electrical-machines-unit-1",
-          "name": "Unit 1: DC Machines",
+          "id": "em-construction",
+          "name": "Unit 1: Machine Construction",
           "topics": [
             {
-              "id": "electrical-machines-dc-machines",
-              "name": "DC Machines",
-              "description": "DC generators and motors, and the electromagnetic effects unique to them.",
+              "id": "em-construction-core",
+              "name": "Machine Construction",
+              "description": "The common physical components — rotor, stator, and windings — shared by every rotating electrical machine.",
               "terms": [
-                "DC Generator",
-                "DC Motor",
-                "Generator",
-                "Armature Reaction",
-                "Back EMF"
+                "Rotor",
+                "Stator",
+                "Field Winding",
+                "Armature Winding"
               ]
             }
           ]
         },
         {
-          "id": "electrical-machines-unit-2",
-          "name": "Unit 2: AC Machines & Transformers",
+          "id": "em-dc-machines",
+          "name": "Unit 2: DC Machines",
           "topics": [
             {
-              "id": "electrical-machines-ac-machines-and-transformers",
-              "name": "AC Machines & Transformers",
-              "description": "Alternators, synchronous and induction motors, and the transformer that links AC systems together.",
+              "id": "em-dc-machines-core",
+              "name": "DC Machines",
+              "description": "How DC generators and motors convert between mechanical and electrical energy, and the commutator that makes it possible.",
+              "terms": [
+                "DC Generator",
+                "DC Motor",
+                "Generator",
+                "Armature Reaction",
+                "Back EMF",
+                "Commutator"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "em-ac-machines",
+          "name": "Unit 3: AC Machines",
+          "topics": [
+            {
+              "id": "em-ac-machines-core",
+              "name": "AC Machines",
+              "description": "How alternators, synchronous motors, and induction motors exploit a rotating magnetic field.",
               "terms": [
                 "Electrical Machines",
                 "Alternator",
                 "Synchronous Motor",
                 "Induction Motor",
                 "Slip",
-                "Transformer"
+                "Slip Ring",
+                "Rotating Magnetic Field",
+                "Synchronous Speed"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "em-transformers",
+          "name": "Unit 4: Transformers & Performance",
+          "topics": [
+            {
+              "id": "em-transformers-core",
+              "name": "Transformers & Machine Performance",
+              "description": "How a transformer works, and the metrics used to judge how well any electrical machine performs.",
+              "terms": [
+                "Transformer",
+                "Torque-Speed Characteristic",
+                "Voltage Regulation (Machines)"
               ]
             }
           ]
@@ -3690,41 +3829,76 @@
     {
       "id": "power-systems",
       "name": "Power Systems",
-      "shortDescription": "Generating, transmitting, and distributing electrical power on a large scale.",
+      "shortDescription": "Generation and transmission, protection, stability, and fault analysis — a full course in power systems.",
       "termSubjects": [
         "Power Systems"
       ],
       "units": [
         {
-          "id": "power-systems-unit-1",
+          "id": "ps-generation-transmission",
           "name": "Unit 1: Generation & Transmission",
           "topics": [
             {
-              "id": "power-generation-transmission",
+              "id": "ps-generation-transmission-core",
               "name": "Generation & Transmission",
-              "description": "How electrical power is generated and moved over long distances to consumers.",
+              "description": "How power moves from a generating station to consumers, and the diagrams used to document that network.",
               "terms": [
                 "Power System",
                 "Power Generation",
                 "Power Transmission",
                 "Power Distribution",
-                "Load Flow Analysis",
-                "Per Unit System",
-                "Power Factor"
+                "Single Line Diagram",
+                "Transmission Line",
+                "Substation"
               ]
             }
           ]
         },
         {
-          "id": "power-systems-unit-2",
-          "name": "Unit 2: Fault Analysis & Protection",
+          "id": "ps-load-flow",
+          "name": "Unit 2: Load Flow & Economic Operation",
           "topics": [
             {
-              "id": "power-protection",
+              "id": "ps-load-flow-core",
+              "name": "Load Flow & Economic Operation",
+              "description": "Analyzing power flow through a network, and dispatching generation as economically as possible.",
+              "terms": [
+                "Load Flow Analysis",
+                "Per Unit System",
+                "Power Factor",
+                "Load Forecasting",
+                "Economic Load Dispatch"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ps-stability-compensation",
+          "name": "Unit 3: Stability & Reactive Power Compensation",
+          "topics": [
+            {
+              "id": "ps-stability-compensation-core",
+              "name": "Stability & Compensation",
+              "description": "Keeping a power system stable after a disturbance, and managing reactive power to maintain voltage levels.",
+              "terms": [
+                "Power System Stability",
+                "Reactive Power Compensation"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ps-fault-protection",
+          "name": "Unit 4: Fault Analysis & Protection",
+          "topics": [
+            {
+              "id": "ps-fault-protection-core",
               "name": "Fault Analysis & Protection",
-              "description": "How faults on a power system are detected and isolated to protect equipment.",
+              "description": "How faults are classified and analyzed, and the equipment that protects the system when they occur.",
               "terms": [
                 "Fault Analysis",
+                "Symmetrical Fault",
+                "Unsymmetrical Fault",
                 "Circuit Breaker",
                 "Relay Protection",
                 "Grounding"
@@ -3738,42 +3912,80 @@
     {
       "id": "power-electronics",
       "name": "Power Electronics",
-      "shortDescription": "Semiconductor devices used to convert and control electrical power.",
+      "shortDescription": "Power semiconductor devices, converter topologies, and DC-DC conversion — a full course in power electronics.",
       "termSubjects": [
         "Power Electronics"
       ],
       "units": [
         {
-          "id": "power-electronics-unit-1",
+          "id": "pe-devices",
           "name": "Unit 1: Power Semiconductor Devices",
           "topics": [
             {
-              "id": "power-electronics-power-semiconductor-devices",
+              "id": "pe-devices-core",
               "name": "Power Semiconductor Devices",
-              "description": "The switching devices used to control large amounts of electrical power.",
+              "description": "The switching devices used to control large amounts of electrical power, and how they're protected from switching stress.",
               "terms": [
                 "Power Electronics",
                 "Thyristor",
                 "MOSFET",
-                "IGBT"
+                "IGBT",
+                "SCR",
+                "Triac",
+                "Snubber Circuit"
               ]
             }
           ]
         },
         {
-          "id": "power-electronics-unit-2",
-          "name": "Unit 2: Power Converters",
+          "id": "pe-ac-conversion",
+          "name": "Unit 2: AC Power Conversion",
           "topics": [
             {
-              "id": "power-electronics-power-converters",
-              "name": "Power Converters",
-              "description": "Circuits built from power devices to convert AC/DC power and regulate voltage.",
+              "id": "pe-ac-conversion-core",
+              "name": "Rectifiers & Inverters",
+              "description": "Converting AC to DC and DC back to AC, and shaping that output using pulse width modulation.",
               "terms": [
                 "Rectifier",
                 "Inverter",
                 "Chopper",
                 "Pulse Width Modulation",
                 "Voltage Regulator"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pe-dc-dc-conversion",
+          "name": "Unit 3: DC-DC Conversion",
+          "topics": [
+            {
+              "id": "pe-dc-dc-conversion-core",
+              "name": "DC-DC Converters",
+              "description": "The three basic switching converter topologies used to step voltage up, down, or both.",
+              "terms": [
+                "Buck Converter",
+                "Boost Converter",
+                "Buck-Boost Converter",
+                "Switching Frequency",
+                "Duty Cycle"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pe-applications",
+          "name": "Unit 4: Applications & Power Quality",
+          "topics": [
+            {
+              "id": "pe-applications-core",
+              "name": "Applications & Power Quality",
+              "description": "Real-world uses of power electronics, and the electrical side-effects that come with fast switching.",
+              "terms": [
+                "Motor Drive",
+                "Power Factor Correction",
+                "Harmonic Distortion",
+                "Electromagnetic Interference"
               ]
             }
           ]
@@ -3982,19 +4194,35 @@
     {
       "id": "electronic-devices",
       "name": "Electronic Devices",
-      "shortDescription": "The semiconductor devices — diodes and transistors — that form the basis of electronic circuits.",
+      "shortDescription": "Diode physics, transistor operation, and amplifier configurations — a full course in electronic devices.",
       "termSubjects": [
         "Electronic Devices"
       ],
       "units": [
         {
-          "id": "electronic-devices-unit-1",
-          "name": "Unit 1: Diodes",
+          "id": "ed-diode-physics",
+          "name": "Unit 1: Diode Physics",
           "topics": [
             {
-              "id": "electronic-devices-diodes",
-              "name": "Diodes",
-              "description": "Two-terminal semiconductor devices that conduct current in only one direction.",
+              "id": "ed-diode-physics-core",
+              "name": "Diode Physics",
+              "description": "How the P-N junction's depletion region determines whether a diode conducts.",
+              "terms": [
+                "Depletion Region",
+                "Forward Bias",
+                "Reverse Bias"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ed-diodes",
+          "name": "Unit 2: Diodes & Rectification",
+          "topics": [
+            {
+              "id": "ed-diodes-core",
+              "name": "Diodes & Rectification",
+              "description": "Real diode devices and the circuits built from them.",
               "terms": [
                 "Diode",
                 "Zener Diode",
@@ -4004,18 +4232,33 @@
           ]
         },
         {
-          "id": "electronic-devices-unit-2",
-          "name": "Unit 2: Transistors & Amplifiers",
+          "id": "ed-transistors",
+          "name": "Unit 3: Transistors",
           "topics": [
             {
-              "id": "electronic-devices-transistors-and-amplifiers",
-              "name": "Transistors & Amplifiers",
-              "description": "Three-terminal devices used to switch or amplify an electronic signal.",
+              "id": "ed-transistors-core",
+              "name": "Transistors",
+              "description": "The three-terminal devices used to switch or amplify a signal.",
               "terms": [
                 "Transistor",
                 "Bipolar Junction Transistor",
-                "Field Effect Transistor",
-                "Amplifier"
+                "Field Effect Transistor"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ed-amplifiers",
+          "name": "Unit 4: Transistor Amplifiers",
+          "topics": [
+            {
+              "id": "ed-amplifiers-core",
+              "name": "Transistor Amplifiers",
+              "description": "How transistors are configured to amplify a signal.",
+              "terms": [
+                "Amplifier",
+                "MOSFET Amplifier",
+                "Common Emitter Amplifier"
               ]
             }
           ]
@@ -4026,23 +4269,54 @@
     {
       "id": "analog-electronics",
       "name": "Analog Electronics",
-      "shortDescription": "Circuits that process continuously-varying signals — amplifiers, filters, and oscillators.",
+      "shortDescription": "Operational amplifiers, filters, and oscillators — a full course in analog electronics.",
       "termSubjects": [
         "Analog Electronics"
       ],
       "units": [
         {
-          "id": "analog-electronics-core",
-          "name": "Unit 1: Analog Circuits",
+          "id": "ae-opamps",
+          "name": "Unit 1: Operational Amplifiers",
           "topics": [
             {
-              "id": "analog-electronics-core-core",
-              "name": "Op-Amps, Filters & Oscillators",
-              "description": "Circuits built around operational amplifiers to amplify, filter, and generate signals.",
+              "id": "ae-opamps-core",
+              "name": "Operational Amplifier Configurations",
+              "description": "The two fundamental op-amp amplifier circuits, and the speed limit that constrains them.",
               "terms": [
                 "Operational Amplifier",
+                "Inverting Amplifier",
+                "Non-Inverting Amplifier",
                 "Feedback Amplifier",
+                "Slew Rate"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ae-filters",
+          "name": "Unit 2: Filters",
+          "topics": [
+            {
+              "id": "ae-filters-core",
+              "name": "Filters",
+              "description": "Circuits that pass some frequencies while blocking others.",
+              "terms": [
                 "Filter",
+                "Low Pass Filter",
+                "High Pass Filter"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ae-oscillators",
+          "name": "Unit 3: Oscillators",
+          "topics": [
+            {
+              "id": "ae-oscillators-core",
+              "name": "Oscillators",
+              "description": "Circuits that generate a repetitive signal on their own, with no external input signal.",
+              "terms": [
                 "Oscillator"
               ]
             }
@@ -4054,24 +4328,75 @@
     {
       "id": "digital-electronics",
       "name": "Digital Electronics",
-      "shortDescription": "Circuits and converters that process binary digital signals.",
+      "shortDescription": "Boolean algebra and logic gates, combinational circuits, and sequential circuits — a full course in digital electronics.",
       "termSubjects": [
         "Digital Electronics"
       ],
       "units": [
         {
-          "id": "digital-electronics-core",
-          "name": "Unit 1: Digital Circuits & Converters",
+          "id": "de-boolean",
+          "name": "Unit 1: Boolean Algebra & Logic Gates",
           "topics": [
             {
-              "id": "digital-electronics-core-core",
-              "name": "Digital Circuits & Converters",
-              "description": "Logic circuits and the converters that bridge the analog and digital worlds.",
+              "id": "de-boolean-core",
+              "name": "Boolean Algebra & Logic Gates",
+              "description": "The mathematical foundation of digital logic, and the basic gates every digital circuit is built from.",
               "terms": [
                 "Boolean Algebra",
                 "Logic Gate",
-                "Counter Circuit",
+                "Karnaugh Map (Digital Electronics)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "de-combinational",
+          "name": "Unit 2: Combinational Circuits",
+          "topics": [
+            {
+              "id": "de-combinational-core",
+              "name": "Combinational Circuits",
+              "description": "Circuits whose output depends only on current inputs — adders, decoders, and multiplexers.",
+              "terms": [
+                "Combinational Circuit (Digital Electronics)",
+                "Half Adder",
+                "Full Adder",
+                "Decoder",
+                "Encoder (Digital Logic)",
+                "Multiplexer (Digital Electronics)",
+                "Demultiplexer"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "de-sequential",
+          "name": "Unit 3: Sequential Circuits",
+          "topics": [
+            {
+              "id": "de-sequential-core",
+              "name": "Sequential Circuits",
+              "description": "Circuits with memory, built from flip-flops, that form registers and counters.",
+              "terms": [
+                "Sequential Circuit (Digital Electronics)",
+                "Flip-Flop (Digital Electronics)",
+                "Register (Digital Electronics)",
+                "Counter (Digital Electronics)",
                 "Shift Register",
+                "Counter Circuit"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "de-converters",
+          "name": "Unit 4: Data Converters",
+          "topics": [
+            {
+              "id": "de-converters-core",
+              "name": "Data Converters",
+              "description": "The circuits that bridge the analog and digital worlds.",
+              "terms": [
                 "Analog-to-Digital Converter",
                 "Digital-to-Analog Converter"
               ]
@@ -4084,23 +4409,23 @@
     {
       "id": "signals-and-systems",
       "name": "Signals & Systems",
-      "shortDescription": "Mathematical tools for analyzing signals in the time and frequency domains.",
+      "shortDescription": "Signal classification, LTI systems, and transform techniques — a full course in signals and systems.",
       "termSubjects": [
         "Signals & Systems"
       ],
       "units": [
         {
-          "id": "signals-and-systems-unit-1",
-          "name": "Unit 1: Signals & LTI Systems",
+          "id": "sas-signals",
+          "name": "Unit 1: Signal Fundamentals",
           "topics": [
             {
-              "id": "signals-and-systems-signals-and-lti-systems",
-              "name": "Signals & LTI Systems",
-              "description": "Classifying signals and the linear time-invariant systems that process them.",
+              "id": "sas-signals-core",
+              "name": "Signal Fundamentals",
+              "description": "The basic categories signals fall into, and how they're sampled from the continuous physical world.",
               "terms": [
                 "Signal",
-                "Linear Time-Invariant System",
-                "Convolution",
+                "Continuous-Time Signal",
+                "Discrete-Time Signal",
                 "Sampling Theorem",
                 "Aliasing"
               ]
@@ -4108,14 +4433,32 @@
           ]
         },
         {
-          "id": "signals-and-systems-unit-2",
-          "name": "Unit 2: Transform Techniques",
+          "id": "sas-lti",
+          "name": "Unit 2: LTI Systems",
           "topics": [
             {
-              "id": "signals-and-systems-transform-techniques",
-              "name": "Transform Techniques",
-              "description": "Moving a signal between the time and frequency domains for easier analysis.",
+              "id": "sas-lti-core",
+              "name": "LTI Systems",
+              "description": "The class of systems whose behavior is fully described by a single impulse response, combined via convolution.",
               "terms": [
+                "Linear Time-Invariant System",
+                "Impulse Response",
+                "Convolution",
+                "Frequency Response"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "sas-transforms",
+          "name": "Unit 3: Transform Techniques",
+          "topics": [
+            {
+              "id": "sas-transforms-core",
+              "name": "Transform Techniques",
+              "description": "Representing signals in the frequency domain, and the transforms used to move between time and frequency.",
+              "terms": [
+                "Fourier Series",
                 "Fourier Transform",
                 "Laplace Transform",
                 "Z-Transform"
@@ -4189,21 +4532,21 @@
     {
       "id": "digital-communication",
       "name": "Digital Communication",
-      "shortDescription": "Transmitting digital data reliably over a communication channel.",
+      "shortDescription": "Baseband and digital modulation, and channel capacity/error control — a full course in digital communication.",
       "termSubjects": [
         "Digital Communication"
       ],
       "units": [
         {
-          "id": "digital-communication-unit-1",
-          "name": "Unit 1: Digital Modulation",
+          "id": "dc-baseband",
+          "name": "Unit 1: Baseband & Pulse Modulation",
           "topics": [
             {
-              "id": "digital-communication-digital-modulation",
-              "name": "Digital Modulation",
-              "description": "Encoding digital data onto a carrier and representing analog signals digitally.",
+              "id": "dc-baseband-core",
+              "name": "Baseband & Pulse Modulation",
+              "description": "Representing an analog signal digitally before transmission.",
               "terms": [
-                "Digital Modulation",
+                "Baseband Signal",
                 "Pulse Code Modulation",
                 "Quantization"
               ]
@@ -4211,16 +4554,47 @@
           ]
         },
         {
-          "id": "digital-communication-unit-2",
-          "name": "Unit 2: Channel Capacity & Error Control",
+          "id": "dc-digital-modulation",
+          "name": "Unit 2: Digital Modulation",
           "topics": [
             {
-              "id": "digital-communication-channel-capacity-and-error-control",
-              "name": "Channel Capacity & Error Control",
-              "description": "The theoretical limit on a channel's data rate, and detecting/correcting transmission errors.",
+              "id": "dc-digital-modulation-core",
+              "name": "Digital Modulation Schemes",
+              "description": "The three basic ways to encode digital data onto a carrier wave.",
+              "terms": [
+                "Digital Modulation",
+                "Amplitude Shift Keying",
+                "Frequency Shift Keying",
+                "Phase Shift Keying"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dc-channel-capacity",
+          "name": "Unit 3: Channel Capacity & Noise",
+          "topics": [
+            {
+              "id": "dc-channel-capacity-core",
+              "name": "Channel Capacity & Noise",
+              "description": "The theoretical limit on a channel's data rate, and the noise that limits real-world performance.",
               "terms": [
                 "Channel Capacity",
                 "Shannon's Theorem",
+                "Signal-to-Noise Ratio"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "dc-error-control",
+          "name": "Unit 4: Error Control",
+          "topics": [
+            {
+              "id": "dc-error-control-core",
+              "name": "Error Control",
+              "description": "Detecting and correcting the errors that inevitably occur during digital transmission.",
+              "terms": [
                 "Bit Error Rate",
                 "Error Correction Code"
               ]
@@ -4233,38 +4607,55 @@
     {
       "id": "wireless-communication",
       "name": "Wireless Communication",
-      "shortDescription": "How data travels wirelessly over cellular and short-range radio networks.",
+      "shortDescription": "Cellular networks, wireless propagation effects, and short-range access technologies — a full course in wireless communication.",
       "termSubjects": [
         "Wireless Communication"
       ],
       "units": [
         {
-          "id": "wireless-communication-unit-1",
-          "name": "Unit 1: Cellular & Mobile Networks",
+          "id": "wc-cellular",
+          "name": "Unit 1: Cellular Networks",
           "topics": [
             {
-              "id": "wireless-communication-cellular-and-mobile-networks",
-              "name": "Cellular & Mobile Networks",
-              "description": "How mobile devices connect through generations of cellular network technology.",
+              "id": "wc-cellular-core",
+              "name": "Cellular Networks",
+              "description": "How mobile networks are organized into cells, and how a connection is preserved as a device moves between them.",
               "terms": [
                 "Wireless Communication",
                 "Mobile Communication",
                 "Cellular Network",
-                "5G"
+                "5G",
+                "Handoff"
               ]
             }
           ]
         },
         {
-          "id": "wireless-communication-unit-2",
-          "name": "Unit 2: Wireless Access Technologies",
+          "id": "wc-propagation",
+          "name": "Unit 2: Propagation Effects",
           "topics": [
             {
-              "id": "wireless-communication-wireless-access-technologies",
-              "name": "Wireless Access Technologies",
-              "description": "Short-range wireless standards and how multiple devices share the same channel.",
+              "id": "wc-propagation-core",
+              "name": "Wireless Propagation Effects",
+              "description": "Why a wireless signal's strength varies unpredictably as it travels and reflects off obstacles.",
+              "terms": [
+                "Fading (Wireless Communication)",
+                "Spread Spectrum"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "wc-access",
+          "name": "Unit 3: Wireless Access Technologies",
+          "topics": [
+            {
+              "id": "wc-access-core",
+              "name": "Short-Range Wireless & Multiple Access",
+              "description": "How multiple devices share limited wireless spectrum, and short-range standards for local connectivity.",
               "terms": [
                 "Bluetooth",
+                "Wi-Fi",
                 "Multiple Access",
                 "Multiple Access Technique"
               ]
@@ -4334,25 +4725,54 @@
     {
       "id": "vlsi-design",
       "name": "VLSI Design",
-      "shortDescription": "Designing integrated circuits with millions of transistors on a single chip.",
+      "shortDescription": "Integrated circuit fundamentals, physical design, and fabrication — a full course in VLSI design.",
       "termSubjects": [
         "VLSI Design"
       ],
       "units": [
         {
-          "id": "vlsi-core",
-          "name": "Unit 1: Integrated Circuit Design",
+          "id": "vlsi-fundamentals",
+          "name": "Unit 1: VLSI Fundamentals",
           "topics": [
             {
-              "id": "vlsi-core-core",
-              "name": "Integrated Circuit Design",
-              "description": "The fabrication technology and scale that define very-large-scale integration.",
+              "id": "vlsi-fundamentals-core",
+              "name": "VLSI Fundamentals",
+              "description": "What defines very-large-scale integration, and the transistor technology it's built on.",
               "terms": [
                 "VLSI Design",
                 "Very Large Scale Integration",
                 "Integrated Circuit",
-                "CMOS Technology",
-                "Semiconductor Fabrication"
+                "CMOS Technology"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "vlsi-physical-design",
+          "name": "Unit 2: Physical Design",
+          "topics": [
+            {
+              "id": "vlsi-physical-design-core",
+              "name": "Physical Design",
+              "description": "Turning a logical circuit design into pre-built, verified building blocks and an actual chip layout.",
+              "terms": [
+                "Standard Cell",
+                "Layout (VLSI)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "vlsi-fabrication",
+          "name": "Unit 3: Fabrication",
+          "topics": [
+            {
+              "id": "vlsi-fabrication-core",
+              "name": "Fabrication",
+              "description": "The manufacturing process that turns a chip layout into working silicon.",
+              "terms": [
+                "Semiconductor Fabrication",
+                "Fabrication Process (VLSI)"
               ]
             }
           ]
@@ -4686,26 +5106,60 @@
     {
       "id": "fluid-mechanics-me",
       "name": "Fluid Mechanics",
-      "shortDescription": "How fluids behave at rest and in motion — viscosity, flow regimes, and energy conservation.",
+      "shortDescription": "Fluid statics and kinematics, viscous flow regimes, and flow measurement — a full course in fluid mechanics.",
       "termSubjects": [
         "Fluid Mechanics"
       ],
       "units": [
         {
-          "id": "fluid-mechanics-me-core",
-          "name": "Unit 1: Fluid Flow Fundamentals",
+          "id": "fm-statics-kinematics",
+          "name": "Unit 1: Fluid Statics & Kinematics",
           "topics": [
             {
-              "id": "fluid-mechanics-me-core-core",
-              "name": "Fluid Flow Fundamentals",
-              "description": "How fluid viscosity and flow speed determine whether flow is smooth (laminar) or chaotic (turbulent), and how energy is conserved along a streamline.",
+              "id": "fm-statics-kinematics-core",
+              "name": "Fluid Statics & Kinematics",
+              "description": "The basic fluid properties, and how fluids at rest and in motion are described.",
+              "terms": [
+                "Density",
+                "Pressure (Fluid Mechanics)",
+                "Fluid Statics",
+                "Buoyancy",
+                "Fluid Kinematics",
+                "Continuity Equation (Fluid Mechanics)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fm-flow-regimes",
+          "name": "Unit 2: Flow Regimes",
+          "topics": [
+            {
+              "id": "fm-flow-regimes-core",
+              "name": "Laminar & Turbulent Flow",
+              "description": "How fluid viscosity and speed determine whether flow is smooth or chaotic.",
               "terms": [
                 "Fluid Mechanics",
                 "Viscosity",
                 "Laminar Flow",
                 "Turbulent Flow",
                 "Reynolds Number",
-                "Bernoulli's Equation"
+                "Boundary Layer (Fluid Mechanics)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "fm-energy-measurement",
+          "name": "Unit 3: Energy Equations & Flow Measurement",
+          "topics": [
+            {
+              "id": "fm-energy-measurement-core",
+              "name": "Energy Equations & Flow Measurement",
+              "description": "How energy is conserved along a streamline, and how that principle is used to measure flow rate.",
+              "terms": [
+                "Bernoulli's Equation",
+                "Venturi Meter"
               ]
             }
           ]
@@ -5517,25 +5971,119 @@
     {
       "id": "aerodynamics",
       "name": "Aerodynamics",
-      "shortDescription": "How air flowing over a wing generates lift and drag.",
+      "shortDescription": "Fluid fundamentals, airfoil theory, incompressible and compressible flow, finite wing aerodynamics, and viscous flow — a full first course in aerodynamics.",
       "termSubjects": [
         "Aerodynamics"
       ],
       "units": [
         {
-          "id": "aerodynamics-core",
-          "name": "Unit 1: Lift & Drag",
+          "id": "aero-intro",
+          "name": "Unit 1: Fundamentals of Aerodynamics",
           "topics": [
             {
-              "id": "aerodynamics-core-core",
-              "name": "Lift & Drag",
-              "description": "How an airfoil's shape and angle to the airflow generate lift, drag, and eventually stall.",
+              "id": "aero-intro-core",
+              "name": "Fundamentals of Aerodynamics",
+              "description": "The conservation laws and basic flow concepts every later aerodynamics topic builds on.",
+              "terms": [
+                "Continuity Equation (Aerodynamics)",
+                "Bernoulli's Equation (Aerodynamics)",
+                "Streamline",
+                "Stagnation Point",
+                "Compressibility (Aerodynamics)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "aero-airfoils",
+          "name": "Unit 2: Airfoil Theory",
+          "topics": [
+            {
+              "id": "aero-airfoils-core",
+              "name": "Airfoil Theory",
+              "description": "How an airfoil's geometry and the pressure distribution around it generate lift and drag.",
               "terms": [
                 "Airfoil",
                 "Angle of Attack",
+                "Chord Line",
+                "Camber",
+                "Pressure Distribution",
                 "Lift",
+                "Lift Coefficient",
                 "Drag",
-                "Stall"
+                "Drag Coefficient",
+                "Center of Pressure"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "aero-incompressible",
+          "name": "Unit 3: Incompressible Flow",
+          "topics": [
+            {
+              "id": "aero-incompressible-core",
+              "name": "Incompressible Flow Theory",
+              "description": "Simplified flow models used to mathematically explain how a wing generates lift.",
+              "terms": [
+                "Potential Flow",
+                "Circulation",
+                "Vortex Flow",
+                "Kutta-Joukowski Theorem"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "aero-compressible",
+          "name": "Unit 4: Compressible Flow",
+          "topics": [
+            {
+              "id": "aero-compressible-core",
+              "name": "Compressible Flow",
+              "description": "How air behaves differently as flow speed approaches and exceeds the speed of sound.",
+              "terms": [
+                "Mach Number",
+                "Speed of Sound",
+                "Isentropic Flow",
+                "Shock Wave",
+                "Expansion Wave",
+                "Critical Mach Number"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "aero-finite-wings",
+          "name": "Unit 5: Finite Wing Aerodynamics",
+          "topics": [
+            {
+              "id": "aero-finite-wings-core",
+              "name": "Finite Wing Aerodynamics",
+              "description": "How a real, finite-span wing differs from idealized 2D airfoil theory, and the extra drag this creates.",
+              "terms": [
+                "Finite Wing",
+                "Induced Drag",
+                "Aspect Ratio (Wing)",
+                "Wingtip Vortex",
+                "High-Lift Device"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "aero-viscous-applied",
+          "name": "Unit 6: Viscous Flow & Applied Aerodynamics",
+          "topics": [
+            {
+              "id": "aero-viscous-applied-core",
+              "name": "Viscous Effects & Stall",
+              "description": "How viscosity near a surface leads to flow separation and stall, and how modern aerodynamics is analyzed computationally.",
+              "terms": [
+                "Boundary Layer",
+                "Flow Separation",
+                "Stall",
+                "Computational Aerodynamics"
               ]
             }
           ]
@@ -5546,24 +6094,89 @@
     {
       "id": "propulsion",
       "name": "Propulsion",
-      "shortDescription": "How aircraft and rockets generate thrust.",
+      "shortDescription": "Air-breathing jet engine cycles and components, and rocket propulsion fundamentals — a full first course in aerospace propulsion.",
       "termSubjects": [
         "Propulsion"
       ],
       "units": [
         {
-          "id": "propulsion-core",
-          "name": "Unit 1: Jet & Rocket Propulsion",
+          "id": "prop-cycle",
+          "name": "Unit 1: Gas Turbine Cycle",
           "topics": [
             {
-              "id": "propulsion-core-core",
-              "name": "Jet & Rocket Propulsion",
-              "description": "How jet engines and rockets generate thrust, and how efficiently they use propellant.",
+              "id": "prop-cycle-core",
+              "name": "The Brayton Cycle",
+              "description": "The idealized thermodynamic cycle every gas turbine (jet) engine is built around.",
               "terms": [
-                "Jet Engine",
-                "Rocket Propulsion",
+                "Brayton Cycle",
                 "Thrust",
-                "Specific Impulse"
+                "Propulsive Efficiency"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "prop-components",
+          "name": "Unit 2: Gas Turbine Engine Components",
+          "topics": [
+            {
+              "id": "prop-components-core",
+              "name": "Engine Components",
+              "description": "The compressor, combustor, and turbine that together make up a gas turbine engine.",
+              "terms": [
+                "Compressor (Jet Engine)",
+                "Combustion Chamber",
+                "Turbine (Jet Engine)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "prop-engine-types",
+          "name": "Unit 3: Air-Breathing Engine Types",
+          "topics": [
+            {
+              "id": "prop-engine-types-core",
+              "name": "Turbojets, Turbofans & Ramjets",
+              "description": "The main categories of air-breathing jet engine, and the speed/efficiency trade-offs between them.",
+              "terms": [
+                "Turbojet Engine",
+                "Turbofan Engine",
+                "Jet Engine",
+                "Ramjet"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "prop-rocket",
+          "name": "Unit 4: Rocket Propulsion",
+          "topics": [
+            {
+              "id": "prop-rocket-core",
+              "name": "Rocket Propulsion",
+              "description": "How a rocket engine generates thrust by carrying and burning its own oxidizer.",
+              "terms": [
+                "Rocket Propulsion",
+                "Specific Impulse",
+                "Propellant",
+                "Rocket Nozzle",
+                "Thrust-to-Weight Ratio"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "prop-rocket-types",
+          "name": "Unit 5: Rocket Engine Types",
+          "topics": [
+            {
+              "id": "prop-rocket-types-core",
+              "name": "Solid & Liquid Rocket Engines",
+              "description": "The two main rocket engine families, and the trade-off between simplicity and controllability.",
+              "terms": [
+                "Solid Rocket Motor",
+                "Liquid Rocket Engine"
               ]
             }
           ]
@@ -5574,23 +6187,85 @@
     {
       "id": "aircraft-structures",
       "name": "Aircraft Structures",
-      "shortDescription": "The structural design of an aircraft's airframe.",
+      "shortDescription": "Aircraft loads, airframe structural elements, structural failure modes, and damage tolerance — a full first course in aircraft structures.",
       "termSubjects": [
         "Aircraft Structures"
       ],
       "units": [
         {
-          "id": "aircraft-structures-core",
-          "name": "Unit 1: Airframe Structures",
+          "id": "astruct-loads",
+          "name": "Unit 1: Aircraft Loads",
           "topics": [
             {
-              "id": "aircraft-structures-core-core",
-              "name": "Airframe Structures",
-              "description": "The structural elements that make up an aircraft's body and wings.",
+              "id": "astruct-loads-core",
+              "name": "Aircraft Loads",
+              "description": "The forces a structure must be designed to withstand, and the diagram used to define its safe operating envelope.",
+              "terms": [
+                "Aircraft Loads",
+                "Load Factor",
+                "V-n Diagram"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "astruct-elements",
+          "name": "Unit 2: Airframe Structural Elements",
+          "topics": [
+            {
+              "id": "astruct-elements-core",
+              "name": "Airframe Structural Elements",
+              "description": "The individual structural members that make up a wing or fuselage.",
               "terms": [
                 "Fuselage",
                 "Spar",
-                "Monocoque Structure"
+                "Rib (Aircraft)",
+                "Stringer",
+                "Skin (Aircraft Structure)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "astruct-construction",
+          "name": "Unit 3: Structural Construction Types",
+          "topics": [
+            {
+              "id": "astruct-construction-core",
+              "name": "Monocoque & Semi-Monocoque Construction",
+              "description": "The two dominant approaches to building a load-bearing aircraft shell.",
+              "terms": [
+                "Monocoque Structure",
+                "Semi-Monocoque Structure"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "astruct-failure",
+          "name": "Unit 4: Structural Failure Modes",
+          "topics": [
+            {
+              "id": "astruct-failure-core",
+              "name": "Buckling & Fatigue",
+              "description": "How thin aircraft structures fail under compression and under repeated cyclic loading.",
+              "terms": [
+                "Buckling",
+                "Fatigue (Aircraft Structures)"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "astruct-damage-tolerance",
+          "name": "Unit 5: Damage Tolerance",
+          "topics": [
+            {
+              "id": "astruct-damage-tolerance-core",
+              "name": "Damage Tolerance Design",
+              "description": "The modern safety philosophy of designing a structure to remain safe even with small existing defects.",
+              "terms": [
+                "Damage Tolerance"
               ]
             }
           ]
@@ -5601,23 +6276,58 @@
     {
       "id": "orbital-mechanics",
       "name": "Orbital Mechanics",
-      "shortDescription": "The physics of objects orbiting a planet.",
+      "shortDescription": "Kepler's laws, orbital elements, and orbital maneuvers — a full first course in orbital mechanics.",
       "termSubjects": [
         "Orbital Mechanics"
       ],
       "units": [
         {
-          "id": "orbital-mechanics-core",
-          "name": "Unit 1: Orbits",
+          "id": "orbit-two-body",
+          "name": "Unit 1: The Two-Body Problem",
           "topics": [
             {
-              "id": "orbital-mechanics-core-core",
-              "name": "Orbits",
-              "description": "The speed and geometry that define a stable orbit around a planet.",
+              "id": "orbit-two-body-core",
+              "name": "The Two-Body Problem",
+              "description": "The idealized gravitational problem, and Kepler's laws that describe its exact solution.",
               "terms": [
-                "Orbit",
-                "Escape Velocity",
+                "Kepler's Laws of Planetary Motion",
+                "Two-Body Problem",
+                "Orbit"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "orbit-elements",
+          "name": "Unit 2: Orbital Elements",
+          "topics": [
+            {
+              "id": "orbit-elements-core",
+              "name": "Describing an Orbit",
+              "description": "The parameters used to fully specify an orbit's size, shape, and key points.",
+              "terms": [
+                "Orbital Elements",
+                "Eccentricity (Orbit)",
+                "Perigee",
+                "Apogee",
                 "Geostationary Orbit"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "orbit-maneuvers",
+          "name": "Unit 3: Orbital Maneuvers",
+          "topics": [
+            {
+              "id": "orbit-maneuvers-core",
+              "name": "Orbital Maneuvers",
+              "description": "How a spacecraft changes its orbit, and the fuel budget required to do so.",
+              "terms": [
+                "Orbital Maneuver",
+                "Hohmann Transfer Orbit",
+                "Delta-V",
+                "Escape Velocity"
               ]
             }
           ]
@@ -5628,22 +6338,53 @@
     {
       "id": "avionics",
       "name": "Avionics",
-      "shortDescription": "The electronic systems used for aircraft navigation and control.",
+      "shortDescription": "Navigation, flight management, and cockpit display systems — a first course in aircraft avionics.",
       "termSubjects": [
         "Avionics"
       ],
       "units": [
         {
-          "id": "avionics-core",
-          "name": "Unit 1: Aircraft Electronics",
+          "id": "avionics-navigation",
+          "name": "Unit 1: Navigation Systems",
           "topics": [
             {
-              "id": "avionics-core-core",
-              "name": "Aircraft Electronics",
-              "description": "Electronic systems that help an aircraft determine its position and navigate.",
+              "id": "avionics-navigation-core",
+              "name": "Navigation Systems",
+              "description": "The systems an aircraft uses to determine its own position, independently or via satellites.",
+              "terms": [
+                "Inertial Navigation System",
+                "Global Positioning System"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "avionics-flight-systems",
+          "name": "Unit 2: Flight Management & Control",
+          "topics": [
+            {
+              "id": "avionics-flight-systems-core",
+              "name": "Flight Management & Automation",
+              "description": "The systems that automate navigation and flight control, reducing pilot workload.",
               "terms": [
                 "Avionics",
-                "Inertial Navigation System"
+                "Flight Management System",
+                "Autopilot"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "avionics-displays",
+          "name": "Unit 3: Cockpit Displays & Sensing",
+          "topics": [
+            {
+              "id": "avionics-displays-core",
+              "name": "Cockpit Displays & Air Data",
+              "description": "How flight data is sensed and presented to the pilot in a modern cockpit.",
+              "terms": [
+                "Glass Cockpit",
+                "Air Data Computer"
               ]
             }
           ]
@@ -5654,22 +6395,55 @@
     {
       "id": "flight-mechanics",
       "name": "Flight Mechanics",
-      "shortDescription": "The motion and orientation of an aircraft in flight.",
+      "shortDescription": "Aircraft performance and static/dynamic stability — a full first course in flight mechanics.",
       "termSubjects": [
         "Flight Mechanics"
       ],
       "units": [
         {
-          "id": "flight-mechanics-core",
-          "name": "Unit 1: Flight Dynamics",
+          "id": "flightmech-stability",
+          "name": "Unit 1: Static & Dynamic Stability",
           "topics": [
             {
-              "id": "flight-mechanics-core-core",
-              "name": "Flight Dynamics",
-              "description": "The three rotational axes and performance envelope that describe an aircraft's motion.",
+              "id": "flightmech-stability-core",
+              "name": "Static & Dynamic Stability",
+              "description": "Whether an aircraft naturally tends back toward equilibrium after a disturbance, and how that tendency actually plays out over time.",
+              "terms": [
+                "Static Stability",
+                "Dynamic Stability",
+                "Longitudinal Stability",
+                "Directional Stability"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "flightmech-motion",
+          "name": "Unit 2: Aircraft Motion",
+          "topics": [
+            {
+              "id": "flightmech-motion-core",
+              "name": "Aircraft Motion",
+              "description": "The three rotational axes used to describe an aircraft's orientation and motion.",
               "terms": [
                 "Pitch, Roll, and Yaw",
                 "Flight Envelope"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "flightmech-performance",
+          "name": "Unit 3: Aircraft Performance",
+          "topics": [
+            {
+              "id": "flightmech-performance-core",
+              "name": "Aircraft Performance",
+              "description": "How an aircraft's design and the atmosphere determine its practical speed, altitude, and range limits.",
+              "terms": [
+                "Aircraft Performance",
+                "Service Ceiling",
+                "Range (Aircraft)"
               ]
             }
           ]

@@ -169,3 +169,51 @@ describe('catalogue audit — subjects flagged for manual review (few units)', (
         expect(shortchanged).toEqual([]);
     });
 });
+
+describe('catalogue audit — major theory subjects must have real multi-unit depth', () => {
+    // A "major theory subject" here means one with a substantial real term pool (>=15
+    // real entries in engineeringTerminology.json) — the kind of subject that would be
+    // a full-semester course with a real 4-6 unit syllabus, not a narrow elective or lab.
+    // This is the literal check requested after the catalogue was found still showing
+    // "1 Unit" for major subjects: it must FAIL, subject by subject, if any such subject
+    // has fewer than 4 units, in the exact "Expected >= 4, Received N" style requested.
+    const MAJOR_THEORY_THRESHOLD = 15;
+    const MINIMUM_UNITS_FOR_MAJOR_SUBJECT = 4;
+
+    it('every major theory subject (>=15 real terms) has at least 4 units', () => {
+        const failures = [];
+        for (const subject of firstYearSubjects.subjects) {
+            const realTermCount = engineeringTerminology.terms.filter((t) => subject.termSubjects.includes(t.subject)).length;
+            if (realTermCount >= MAJOR_THEORY_THRESHOLD && subject.units.length < MINIMUM_UNITS_FOR_MAJOR_SUBJECT) {
+                failures.push(
+                    `FAIL: ${subject.discipline} -> ${subject.name} (${realTermCount} real terms) `
+                    + `Expected >= ${MINIMUM_UNITS_FOR_MAJOR_SUBJECT} units, Received ${subject.units.length}`
+                );
+            }
+        }
+        expect(failures).toEqual([]);
+    });
+
+    it('the total unique technical term count meets the required minimum of 1500', () => {
+        expect(engineeringTerminology.terms.length).toBeGreaterThanOrEqual(1500);
+    });
+
+    it('no canonical term name is an exact case-insensitive duplicate of another (accidental duplicate canonical terms)', () => {
+        // Distinct from the cross-subject "same concept re-tagged" collision guarded
+        // elsewhere — this specifically checks for accidental exact-name duplicates
+        // WITHIN the same subject, which would be a true canonical-term duplication.
+        const bySubject = new Map();
+        for (const t of engineeringTerminology.terms) {
+            const key = t.subject;
+            const seen = bySubject.get(key) || new Set();
+            const normalized = t.term.toLowerCase().trim();
+            if (seen.has(normalized)) {
+                throw new Error(`Duplicate canonical term within one subject: "${t.term}" in "${t.subject}"`);
+            }
+            seen.add(normalized);
+            bySubject.set(key, seen);
+        }
+        // Reaching here without throwing means the assertion passed.
+        expect(true).toBe(true);
+    });
+});

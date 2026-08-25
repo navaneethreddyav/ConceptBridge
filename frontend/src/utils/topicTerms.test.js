@@ -131,7 +131,7 @@ describe('firstYearSubjects.json data integrity (anti-fabrication guard)', () =>
             }
         }
         expect(placedCount).toBe(engineeringTerminology.terms.length);
-        expect(placedCount).toBe(1332);
+        expect(placedCount).toBeGreaterThanOrEqual(1500);
     });
 });
 
