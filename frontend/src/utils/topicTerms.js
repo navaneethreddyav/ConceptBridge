@@ -61,6 +61,15 @@ const loadTermsIndex = () => {
             const byNameAndSubject = new Map(mod.default.terms.map((t) => [`${t.term}::${t.subject}`, t]));
             return byNameAndSubject;
         });
+        // A transient failure (a single dropped chunk request, a cold-start CDN blip)
+        // must not permanently poison every future topic view for the rest of the page
+        // session — without this, one bad network moment left EVERY subsequent topic,
+        // including perfectly valid ones, stuck on "Loading terms..." forever, since
+        // the next call would just get handed back the same already-rejected promise.
+        // Clearing the cache here lets the next call genuinely retry the import.
+        termsIndexPromise.catch(() => {
+            termsIndexPromise = null;
+        });
     }
     return termsIndexPromise;
 };

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ChevronLeft, FileText, Loader2, Sparkles } from 'lucide-react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { ChevronLeft, FileText, Loader2, Sparkles, AlertCircle, RotateCcw } from 'lucide-react';
 import { getTopic, getTopicTerms } from '../utils/topicTerms';
 import { tagDocumentForTopic, getDocumentIdsForTopic } from '../utils/topicDocuments';
 import { API_BASE_URL } from '../config/api';
@@ -29,20 +29,39 @@ const TopicView = ({ subjectId, unitId, topicId, onBack, onOpenDocument }) => {
     const [selectedTerm, setSelectedTerm] = useState(null);
     const [termEntries, setTermEntries] = useState([]);
     const [termsLoading, setTermsLoading] = useState(true);
+    const [termsError, setTermsError] = useState(false);
+    // Bumped to force the effect below to re-run on a manual retry, since
+    // subjectId/unitId/topicId alone wouldn't change.
+    const [termsRetryKey, setTermsRetryKey] = useState(0);
 
     useEffect(() => {
         let cancelled = false;
         setTermsLoading(true);
-        getTopicTerms(subjectId, unitId, topicId).then((entries) => {
-            if (!cancelled) {
+        setTermsError(false);
+        getTopicTerms(subjectId, unitId, topicId)
+            .then((entries) => {
+                if (cancelled) return;
                 setTermEntries(entries);
                 setTermsLoading(false);
-            }
-        });
+            })
+            .catch((error) => {
+                // A failed dynamic import (dropped chunk request, transient network
+                // blip) must surface as a real error state, never leave the UI stuck
+                // on "Loading terms..." forever — see topicTerms.js's loadTermsIndex
+                // for the matching fix that stops this from poisoning later topics too.
+                if (cancelled) return;
+                console.error('TopicView: failed to load technical terms:', error);
+                setTermsError(true);
+                setTermsLoading(false);
+            });
         return () => {
             cancelled = true;
         };
-    }, [subjectId, unitId, topicId]);
+    }, [subjectId, unitId, topicId, termsRetryKey]);
+
+    const retryLoadingTerms = useCallback(() => {
+        setTermsRetryKey((key) => key + 1);
+    }, []);
 
     useEffect(() => {
         let cancelled = false;
@@ -146,6 +165,23 @@ const TopicView = ({ subjectId, unitId, topicId, onBack, onOpenDocument }) => {
                                 <Loader2 className="w-4 h-4 animate-spin" />
                                 Loading terms...
                             </div>
+                        ) : termsError ? (
+                            <div className="flex flex-col items-start gap-2 border border-red-500/20 rounded-lg p-3">
+                                <div className="flex items-center gap-2 text-sm text-red-400">
+                                    <AlertCircle className="w-4 h-4 shrink-0" />
+                                    Could not load technical terms.
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={retryLoadingTerms}
+                                    className="flex items-center gap-1.5 text-xs text-primary hover:underline"
+                                >
+                                    <RotateCcw className="w-3 h-3" />
+                                    Retry
+                                </button>
+                            </div>
+                        ) : termEntries.length === 0 ? (
+                            <p className="text-sm text-text-muted">No technical terms found for this topic.</p>
                         ) : (
                             <>
                                 <p className="text-xs text-text-muted mb-3">
